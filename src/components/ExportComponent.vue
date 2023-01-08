@@ -4,6 +4,7 @@
     <div class='q-pa-md'>
       <q-table
         flat
+        :title="t('exportsComponent.tableTitle')"
         bordered
         :columns="tableHeadForDisplay"
         :rows="contentsForDisp"
@@ -276,10 +277,10 @@ async function fetchDatasForTable() {
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
       const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${admin.value}' GROUP BY \`facture\`.\`factureId\`, \`payments.paymentId\`, \`commandes.orderId\`;`;
-      const values = await newQuery(propq.dbConn, sql);
+      const values = await newQuery(props.dbConn, sql);
       if (!!values && values.values.length) {
         const intRes = sanitizeQueryResult(values.values);
-        console.log(intRes);
+        // console.log(intRes);
         await setDecryptApi();
         const res = await __TRANSFORMOBJ__(intRes);
         for (const k in res) {
@@ -371,7 +372,7 @@ function tableInvoicesDateLibelle(ind: number) {
     locale = sessionStore.getLangDisplayed.nom;
   else{
     // Using Preferences for mobiles platform
-    locale = !!session ? session.langDisplayed.nom : 'en-US';
+    locale = !!session && !!session.langDisplayed ? session.langDisplayed.nom : 'en-US';
   }
   libelle = !!date ? `${date.toLocaleDateString(locale, options)}` : t('invoicesComponent.libelles.no_date');
   ret = libelle;
@@ -383,7 +384,12 @@ function addClick(e: Event){
 };
 function exportClick(e: Event){
   e.preventDefault();
-  router.push({name: t('pdfLinkName'), params: { invoiceIds: selectedIds.value}
+  const ids = selectedIds.value;
+  console.log('destination --> ');
+  console.log(t('pdfPreLinkTarget')+ids.join('/'));
+  router.push({
+    path: t('pdfPreLinkTarget')+ids.join('/'), 
+    // params: { invoiceIds: selectedIds.value}
   });
   // console.log("export click !");
   // console.log(selectedIds.value);

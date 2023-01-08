@@ -153,6 +153,7 @@ import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, 
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
 import sessionAxiosService from 'db/services/session.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Keyboard } from '@capacitor/keyboard';
 
 // VARIABLES
 interface StartProps {
@@ -477,5 +478,20 @@ function getSessionForMobile() {
 // LIFECYCLE EVENTS
 
 // OTHERS
+Keyboard.addListener('keyboardWillShow', info => {
+  console.log('keyboard will show with height:', info.keyboardHeight);
+});
+
+Keyboard.addListener('keyboardDidShow', info => {
+  console.log('keyboard did show with height:', info.keyboardHeight);
+});
+
+Keyboard.addListener('keyboardWillHide', () => {
+  console.log('keyboard will hide');
+});
+
+Keyboard.addListener('keyboardDidHide', () => {
+  console.log('keyboard did hide');
+});
 
 </script>

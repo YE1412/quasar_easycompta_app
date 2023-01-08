@@ -1263,7 +1263,7 @@ function tableInvoicesDateLibelle(ind: number) {
     locale = sessionStore.getLangDisplayed.nom;
   else{
     // Using Preferences for mobiles platform
-    locale = !!session ? session.langDisplayed.nom : 'en-US';
+    locale = !!session && !!session.langDisplayed ? session.langDisplayed.nom : 'en-US';
   }
   libelle = !!date ? `${date.toLocaleDateString(locale, options)}` : t('invoicesComponent.libelles.no_date');
   ret = libelle;
@@ -1279,8 +1279,8 @@ async function hydrateAll() {
     await setDecryptApi();
     const objClear = await __TRANSFORMOBJ__(objContents.value);
     objContents.value = objClear;
-    console.log('after decrypting !');
-    console.log(objContents.value);
+    // console.log('after decrypting !');
+    // console.log(objContents.value);
   }
   // console.log('objContents -->');
   // console.log(objContents.value);

@@ -306,6 +306,16 @@ if (platform.is.desktop){
 } else {
 }
 
+let userCookies = $q.cookies.get('user');
+// console.log('User Cookies !');
+// console.log(userCookies);
+if (!!userCookies) {
+  connected.value = userCookies.connected;
+}
+else {
+  connected.value = false;
+}
+
 // WATCHERS
 watch(
   route,
@@ -418,6 +428,8 @@ onMounted(() => {
           return lang.nom === locale.value;
         });
         newSession.langDisplayed = displayedLanguage.value;
+        // console.log('MainLayout newSession !');
+        // console.log(newSession);
         await prefs.setPref('session', newSession);
       }
       $q.loadingBar.increment(1);

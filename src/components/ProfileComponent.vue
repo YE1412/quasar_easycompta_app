@@ -160,7 +160,7 @@ import { useI18n } from 'vue-i18n';
 import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-//import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 // VARIABLES
 interface ProfileProps {
@@ -306,39 +306,45 @@ async function submit() {
   if (validateForm.value) {
     let ret = true;
     if (!!companyLogo.value){
-      ret = await upload()
-        .then((res) => {
-          // console.log(res);
-          return true;
-        })
-        .catch(async (err) => {
-          if (platform.is.desktop) {
-            messageStore.messages.push({
-              severity: true,
-              content: t('profileComponent.results.ko.upload', {err: err})
+      if (platform.is.desktop){
+        ret = await upload()
+          .then((res) => {
+            // console.log(res);
+            return true;
+          })
+          .catch(async (err) => {
+            if (platform.is.desktop) {
+              messageStore.messages.push({
+                severity: true,
+                content: t('profileComponent.results.ko.upload', {err: err})
+              });
+            }
+            else {
+              await prefs.setPref('message', {
+                messages: [
+                  {
+                    severity: true,
+                    content: t('invoicesComponent.results.ko.upload', { err: err })
+                  }
+                ],
+                messageVisibility: true,
+              });
+            }
+            messageVisibility.value = true;
+            $q.notify({
+              color: 'red-5',
+              textColor: 'white',
+              icon: 'warning',
+              message: t('profileComponent.results.ko.upload', {err: err})
             });
-          }
-          else {
-            await prefs.setPref('message', {
-              messages: [
-                {
-                  severity: true,
-                  content: t('invoicesComponent.results.ko.upload', { err: err })
-                }
-              ],
-              messageVisibility: true,
-            });
-          }
-          messageVisibility.value = true;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('profileComponent.results.ko.upload', {err: err})
+            forceMessageItemsRerender();
+            return false;
           });
-          forceMessageItemsRerender();
-          return false;
-        });
+      }
+      else {
+        console.log(`CompanyLogo uploading !`);
+        console.log(companyLogo.value);
+      }
     }
     // console.log(ret);
     if (ret) {

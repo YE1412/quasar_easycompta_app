@@ -44,6 +44,7 @@ export default {
   pdfTitle: 'Export to pdf',
   pdfLinkName: 'PdfExport',
   pdfLinkTarget: '/pdf/:invoiceIds(\\d+)*',
+  pdfPreLinkTarget: '/pdf/',
   drawer: {
     title: 'Links'
   },
@@ -725,6 +726,10 @@ export default {
       signUp: 'Register',
       logout: 'Logout',
     },
+  },
+  errorNotFoundComponent: {
+    text: 'Oops. Nothing here...',
+    buttonText: 'Go Home',
   },
   forms: {
     headTable: {

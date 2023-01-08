@@ -7,6 +7,11 @@
   "plugins": {
     "CapacitorSQLite": {
       "iosDatabaseLocation": "Library/CapacitorDatabase"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "DARK",
+      "resizeOnFullScreen": true
     }
   },
   "loggingBehavior": "production"

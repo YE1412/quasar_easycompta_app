@@ -1,4 +1,5 @@
 import { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
 	appId: 'org.capacitor.quasar.easycompta',
@@ -8,8 +9,14 @@ const config: CapacitorConfig = {
 	plugins: {
 	    CapacitorSQLite: {
 	      iosDatabaseLocation: "Library/CapacitorDatabase"
+	    },
+	    Keyboard: {
+	    	resize: KeyboardResize.Body,
+	    	style: KeyboardStyle.Dark,
+	    	resizeOnFullScreen: true,
 	    }
-  	}
+  	},
+  	loggingBehavior: "production",
 }
 
 export default config;

@@ -121,13 +121,13 @@ if (platform.is.desktop) {
 }
 else {
   prefs = await import('cap/storage/preferences');
-  // console.log('HomeTable initalisation !');
+  console.log('HomeTable initalisation !');
   const usr = await prefs.getPref('user');
   const session = await prefs.getPref('session');
   // console.log(usr);
-  // console.log(session);
+  console.log(session);
   devise = usr.user.devise;
-  locale = !!session ? session.langDisplayed.nom : 'en-US' ;
+  locale = !!session && !!session.langDisplayed ? session.langDisplayed.nom : 'en-US' ;
   let dateStart = null, dateStartLibelle = null;
   const now = new Date();
   if (now.getMonth() < 5) {
@@ -226,6 +226,8 @@ else {
       }
     );
   }
+  // console.log('Hometable values !');
+  // console.log(contentTable.value);
 }
 
 // FUNCTIONS

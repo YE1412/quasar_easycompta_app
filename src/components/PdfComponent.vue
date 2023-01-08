@@ -9,6 +9,7 @@ import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
 import { useCounterStore } from 'stores/counter';
+import { useSessionStore } from 'stores/session';
 import { Canvg } from 'canvg';
 import 'jspdf-autotable';
 import { jsPDF } from 'jspdf';
@@ -17,7 +18,6 @@ import _ from 'lodash';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
 import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
 
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<PdfComponentProps>(), {
 });
 const $q = useQuasar();
 const platform = $q.platform;
-const { t } = useI18n();
+const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
 const tableXPos = 26.3,
   headerYPos = 41.3,
@@ -77,28 +77,31 @@ const contentsForPrint = computed(() => {
 let userStore = null;
 let invoiceStore = null;
 let counterStore = null;
+let sessionStore = null;
 let languageVal = '', 
   doc = null,
   contentCellTableWidth = parseFloat((headerTableWidth / 7).toFixed(1)),
   footerCellTableWidth = parseFloat((headerTableWidth / 5).toFixed(1)),
   contentXPos = tableXPos + 1.7;
-let prefs = null;
+let prefs = null, user = null, counter = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
   userStore = useUserStore();
   invoiceStore = useInvoiceStore();
   counterStore = useCounterStore();
+  sessionStore = useSessionStore();
 }
 // else {
 
 // }
 (async() => {
   invoiceIds.value = route.params.invoiceIds;
+  let invoicesObj = null;
+  let mainLocale = null;
   if (platform.is.desktop){
     await counterStore.getAllPrices();
     await userStore.retrieveUser(userStore.getUser.userId);
-    let invoicesObj = null;
     invoicesObj = await invoiceStore
       .getMoreInvoices(invoiceIds.value)
       .then(
@@ -114,13 +117,72 @@ if (platform.is.desktop) {
         console.log(err);
         return [];
       });
+    mainLocale = sessionStore.getLangDisplayed.nom;
   }
   else {
+    prefs = await import('cap/storage/preferences');
+    const usr = await prefs.getPref('user');
+    user = !!usr ? usr.user : {};
+    const session = await prefs.getPref('session');
+    const ctr = await prefs.getPref('counter');
+    counter = !!ctr ? ctr : {};
+    const invs = await prefs.getPref('invoice');
+    // console.log(props.dbConn);
+    let isOpen = await isDbConnectionOpen(props.dbConn);
+    isOpen = !!isOpen && !isOpen ? await openDbConnection(props.dbConn) : isOpen;
+    let newCounter = null, newInvoices = null;
+    // console.log(isOpen);
+    if (isOpen) {
+      let sql = `SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;`;
+      let values = await newQuery(props.dbConn, sql);
+      if (!!values && values.values.length) {
+        newCounter = !!ctr ? ctr : {};
+        newCounter.prices = values.values;
+      }
+      else {
+        newCounter = !!ctr ? ctr : {};
+        newCounter.prices = [];
+      }
 
+      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\`, \`commandes->Services\`.\`serviceId\` AS \`commandes.Services.serviceId\`, \`commandes->Services\`.\`montantHt\` AS \`commandes.Services.montantHt\`, \`commandes->Services\`.\`nom\` AS \`commandes.Services.nom\`, \`commandes->Services\`.\`quantite\` AS \`commandes.Services.quantite\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` LEFT OUTER JOIN ( \`contains\` AS \`commandes->Services->contains\` INNER JOIN \`produitservice\` AS \`commandes->Services\` ON \`commandes->Services\`.\`serviceId\` = \`commandes->Services->contains\`.\`serviceId\`) ON \`commandes\`.\`orderId\` = \`commandes->Services->contains\`.\`orderId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE (`;
+      for (const k in invoiceIds.value){
+        sql += k < (invoiceIds.value.length - 1) 
+          ? `\`facture\`.\`factureId\` = '${invoiceIds.value[k]}' OR `
+          : `\`facture\`.\`factureId\` = '${invoiceIds.value[k]}') GROUP BY \`facture\`.\`factureId\`, \`payments.paymentId\`, \`commandes.orderId\`, \`commandes.Services.serviceId\`;`;
+      }
+      // console.log(sql);
+      values = await newQuery(props.dbConn, sql);
+      if (!!values && values.values.length) {
+        // console.log(values.values);
+        const intRes = sanitizeQueryResult(values.values);
+        // console.log(intRes);
+        await setDecryptApi();
+        const res = await __TRANSFORMOBJ__(intRes);
+        // console.log(res);
+        newInvoices = !!invs ? invs : {};
+        newInvoices.invoices = res;
+      }
+      else {
+        newInvoices = !!invs ? invs : {};
+        newInvoices.invoices = [];
+      }
+    }
+    else {
+      newCounter = !!ctr ? ctr : {};
+      newCounter.prices = [];
+      newInvoices = !!invs ? invs : {};
+      newInvoices.invoices = [];
+    }
+    await prefs.setPref('counter', newCounter, false);
+    await prefs.setPref('invoice', newInvoices, false);
+    counter = ctr;
+    invoicesObj = newInvoices.invoices;
   }
   invoicesDetails.value = invoicesObj;
+  // locale.value = mainLocale;
   for (const key in contentsForPrint.value)
     await buildAndSavePdf(contentsForPrint.value[key]);
+  locale.value = mainLocale;
   // console.log(route.params);
 })();
 
@@ -144,7 +206,20 @@ function getConvertFunc() {
     }
   }
   else {
-
+    switch (user.devise.libelle) {
+      case "euro":
+        ret = fromEuroToOther;
+        break;
+      case "dollar":
+        ret = fromDollarToOther;
+        break;
+      case "livre":
+        ret = fromLivreToOther;
+        break;
+      default:
+        ret = fromEuroToOther;
+        break;
+    }
   }
   return ret;
 };
@@ -155,10 +230,10 @@ function tableInvoicesOrdersLibelle(ind: number) {
     totalTT = 0.0,
     totalTTLibelle = "",
     destDevise = invoicesDetails.value[ind]["devise"];
-  let locale =
+  let loc =
     invoicesDetails.value[ind]["langue"].nom;
-  // locale =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : locale;
+  // loc =
+  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
   tvaValue = invoicesDetails.value[ind]["tvaValue"];
   for (const m in invoicesDetails.value[ind]["commandes"]) {
     ret[m] = {};
@@ -168,7 +243,7 @@ function tableInvoicesOrdersLibelle(ind: number) {
       getConvertFunc()
     );
     totalTT = totalHT + totalHT * tvaValue;
-    totalTTLibelle = new Intl.NumberFormat(locale, {
+    totalTTLibelle = new Intl.NumberFormat(loc, {
       minimumFractionDigits: 2,
     }).format(totalTT.toFixed(2));
     ret[m]["orderId"] = invoicesDetails.value[ind]["commandes"][m].orderId;
@@ -191,11 +266,11 @@ function tableInvoicesOrdersLibelle(ind: number) {
         getConvertFunc()
       );
       priceUnitTT = priceUnitHT + priceUnitHT * tvaValue;
-      priceUnitTTLibelle = new Intl.NumberFormat(locale, {
+      priceUnitTTLibelle = new Intl.NumberFormat(loc, {
         minimumFractionDigits: 2,
       }).format(priceUnitTT.toFixed(2));
       montantNetTT = priceUnitTT * quantity;
-      montantNetTTLibelle = new Intl.NumberFormat(locale, {
+      montantNetTTLibelle = new Intl.NumberFormat(loc, {
         minimumFractionDigits: 2,
       }).format(montantNetTT.toFixed(2));
       ret[m]["Services"][n] = {};
@@ -278,25 +353,25 @@ function tableInvoicesVATLibelle(ind: number) {
     tvaMontantLibelle = "",
     destDevise = invoicesDetails.value[ind]["devise"],
     invTTPrice = 0.0;
-  let locale =
+  let loc =
     invoicesDetails.value[ind]["langue"].nom;
-  // locale =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : locale;
+  // loc =
+  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
   invTTPrice = convertAmount(
     invoicesDetails.value[ind].invoiceTTPrice,
     destDevise.libelle,
     getConvertFunc()
   );
   tvaValue = invoicesDetails.value[ind]["tvaValue"] * 100;
-  tvaValueLibelle = new Intl.NumberFormat(locale, {
+  tvaValueLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaValue.toFixed(2));
   tvaMontant = invTTPrice * invoicesDetails.value[ind]["tvaValue"];
-  tvaMontantLibelle = new Intl.NumberFormat(locale, {
+  tvaMontantLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaMontant.toFixed(2));
   tvaBase = invTTPrice - tvaMontant;
-  tvaBaseLibelle = new Intl.NumberFormat(locale, {
+  tvaBaseLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaBase.toFixed(2));
   ret.tvaValueLibelle = `${tvaValueLibelle} %`;
@@ -308,13 +383,13 @@ function tableInvoicesDateLibelle(ind: number) {
   let ret = "",
     libelle = "";
   let date = new Date(invoicesDetails.value[ind]["date"]);
-  let locale =
+  let loc =
     invoicesDetails.value[ind]["langue"].nom;
-  // locale =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : locale;
-  // console.log(locale);
+  // loc =
+  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
+  // console.log(loc);
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-  libelle = `${date.toLocaleDateString(locale, options)}`;
+  libelle = `${date.toLocaleDateString(loc, options)}`;
   ret = libelle;
   return ret;
 };
@@ -325,17 +400,17 @@ function tableInvoicesTTPriceLibelle(ind: number) {
     ttPrice = 0.0,
     destDevise = invoicesDetails.value[ind]["devise"],
     invTTPrice = 0.0;
-  let locale =
+  let loc =
     invoicesDetails.value[ind]["langue"].nom;
-  // locale =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : locale;
+  // loc =
+  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
   invTTPrice = convertAmount(
     invoicesDetails.value[ind].invoiceTTPrice,
     destDevise.libelle,
     getConvertFunc()
   );
   ttPrice = invTTPrice;
-  ttPriceLibelle = new Intl.NumberFormat(locale, {
+  ttPriceLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(ttPrice.toFixed(2));
   ret = ttPriceLibelle.replaceAll(/\s/gi, "");
@@ -357,10 +432,11 @@ function tableInvoicesBillingLibelle(ind: number) {
   return ret;
 };
 async function buildAndSavePdf(inv: any) {
-  console.log(invoicesDetails.value);
-  // console.log(inv.langue);
-  languageVal = inv.langue === "fr_FR" ? "fr" : "";
-  languageVal = inv.langue === "en_US" ? "en" : languageVal;
+  // console.log(invoicesDetails.value);
+  // console.log(inv);
+  languageVal = inv.langue === "fr-FR" ? "fr" : "";
+  languageVal = inv.langue === "en-US" ? "en" : languageVal;
+  locale.value = inv.langue;
   doc = new jsPDF({
     orientation: "p",
     unit: "px",
@@ -373,7 +449,9 @@ async function buildAndSavePdf(inv: any) {
     }
   }
   else {
-
+    if (user.companyLogo !== null){ 
+      await insertLogo();
+    }
   }
   for (const k in inv.commandes) {
     yPos = insertOrder(inv, yPos, k);
@@ -391,9 +469,9 @@ async function buildAndSavePdf(inv: any) {
   //       doc.internal.pageSize.height - 0.5
   //     )
   const date = new Date();
-  let locale = inv["langue"];
-  // locale = inv["langue"] === "us" ? "en-US" : locale;
-  // console.log(locale);
+  let loc = inv["langue"];
+  // loc = inv["langue"] === "us" ? "en-US" : loc;
+  // console.log(loc);
   const options = {
     day: "2-digit",
     month: "2-digit",
@@ -402,7 +480,7 @@ async function buildAndSavePdf(inv: any) {
     minute: "2-digit",
     second: "2-digit",
   };
-  const dateLibelle = date.toLocaleDateString(locale, options);
+  const dateLibelle = date.toLocaleDateString(loc, options);
   const fileName = `${t("exportsComponent.libelles.invoice")}_${
     inv.factureId
   }_${dateLibelle
@@ -422,7 +500,7 @@ function insertHead(inv: any): number {
     heading = userStore.getUser.companyName.toUpperCase();
   }
   else {
-
+    heading = user.companyName.toUpperCase();
   }
   doc.setLanguage(languageVal);
   doc.setFont("helvetica", "bold");
@@ -489,7 +567,7 @@ async function insertLogo() {
       companyLogoURL = userStore.getUser.companyLogo;
     }
     else {
-
+      companyLogoURL = user.companyLogo;
     }
     const v = await Canvg.from(
       context,
@@ -1097,7 +1175,9 @@ function fromEuroToOther(val: number, dest: string): number {
     stock_price = counterStore.getEuroPrice;
   }
   else {
-
+    stock_price = counter.prices.find((p: any) => {
+      return p.euro === 1;
+    });
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
@@ -1118,7 +1198,9 @@ function fromDollarToOther(val: number, dest: string): number {
     stock_price = counterStore.getDollarPrice;
   }
   else {
-
+    stock_price = counter.prices.find((p: any) => {
+      return p.dollar === 1;
+    });
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
@@ -1140,7 +1222,9 @@ function fromLivreToOther(val: number, dest: string): number {
     stock_price = counterStore.getLivrePrice;
   }
   else {
-
+    stock_price = counter.prices.find((p: any) => {
+      return p.livre === 1;
+    });
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
@@ -1152,6 +1236,650 @@ function fromLivreToOther(val: number, dest: string): number {
       break;
     default:
       break;
+  }
+  return ret;
+};
+function sanitizeQueryResult(obj: any) {
+  let ret = [], ind = 0;
+  // console.log('sanitizeQueryResult !');
+  for (const k in obj) {
+    const prevId = k > 0 ? obj[k - 1].factureId : 0;
+    if (prevId && prevId !== obj[k].factureId){
+      ind++;
+    }
+    if (!prevId || (prevId && prevId !== obj[k].factureId)) {
+      ret[ind] = {};
+    }
+    for (const l in obj[k]) {
+      if (prevId === obj[k].factureId) {
+        if (l === 'commandes.orderId') {
+          // console.log(obj[k][l]);
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if(!ret[ind]['commandes'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['commandes'].push({orderId: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['commandes'].findIndex(elem => elem.orderId === obj[k][l]);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['commandes'].push({orderId: obj[k][l]});
+              else
+                ret[ind]['commandes'][foundIndex].orderId = obj[k][l];
+            }
+          }
+        }
+        else if(l === 'commandes.contenuAdditionnel') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          // if (obj[k][l] !== null){
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({contenuAdditionnel: obj[k][l]});
+            }
+            else{
+              const foundIndex = ret[ind]['commandes'].findIndex(elem => elem.orderId === obj[k]['orderId']);
+              if (foundIndex === -1)
+                ret[ind]['commandes'][ret[ind]['commandes'].length - 1].contenuAdditionnel = obj[k][l];
+              else
+                ret[ind]['commandes'][foundIndex].contenuAdditionnel = obj[k][l];
+            }
+          // }
+        }
+        else if(l === 'commandes.priceHt') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({priceHt: obj[k][l]});
+            }
+            else{
+              const foundIndex = ret[ind]['commandes'].findIndex(elem => elem.orderId === obj[k]['orderId']);
+              if (obj[k][l] !== null){
+                if(foundIndex === -1)
+                  ret[ind]['commandes'][ret[ind]['commandes'].length - 1].priceHt = obj[k][l];
+                else
+                  ret[ind]['commandes'][foundIndex].priceHt = obj[k][l];
+              }
+            }
+          }
+        }
+        else if(l === 'commandes.factureId') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null){
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({factureId: obj[k][l]});
+            }
+            else{
+              const foundIndex = ret[ind]['commandes'].findIndex(elem => elem.orderId === obj[k]['orderId']);
+              if (obj[k][l] !== null){
+                if (foundIndex === -1)
+                  ret[ind]['commandes'][ret[ind]['commandes'].length - 1].factureId = obj[k][l];
+                else
+                  ret[ind]['commandes'][foundIndex].factureId = obj[k][l];
+              }
+            }
+          }
+        }
+        else if(l === 'commandes.Services.serviceId') {
+          if (obj[k][l] !== null){
+            if(ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if (!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({serviceId: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k][l]);
+                // if (obj[k][l] !== null){
+                if (foundIndex === -1)
+                  ret[ind]['commandes'][orderLen - 1]['Services'].push({serviceId: obj[k][l]});
+                else
+                  ret[ind]['commandes'][orderLen - 1]['Services'][foundIndex].serviceId = obj[k][l];
+                // }
+              }
+            }
+          }
+        }
+        else if(l === 'commandes.Services.montantHt') {
+          if (obj[k][l] !== null){
+            if(ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if (!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({montantHt: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
+                if (foundIndex === -1)
+                  ret[ind]['commandes'][orderLen - 1]['Services'].push({montantHt: obj[k][l]});
+                else
+                  ret[ind]['commandes'][orderLen - 1]['Services'][foundIndex].montantHt = obj[k][l];
+              }
+            }
+          }
+        }
+        else if(l === 'commandes.Services.nom') {
+          if (obj[k][l] !== null){
+            if(ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if (!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({nom: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
+                if (foundIndex === -1)
+                  ret[ind]['commandes'][orderLen - 1]['Services'].push({nom : obj[k][l]});
+                else
+                  ret[ind]['commandes'][orderLen - 1]['Services'][foundIndex].nom = obj[k][l];
+              }
+            }
+          }
+        }
+        else if(l === 'commandes.Services.quantite') {
+          if (obj[k][l] !== null){
+            if(ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if (!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({quantite: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
+                if (foundIndex === -1)
+                  ret[ind]['commandes'][orderLen - 1]['Services'].push({quantite : obj[k][l]});
+                else
+                  ret[ind]['commandes'][orderLen - 1]['Services'][foundIndex].quantite = obj[k][l];
+              }
+            }
+          }
+        }
+        else if (l === 'payments.paymentId') {
+          // console.log(obj[k][l]);
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if(!ret[ind]['payments'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['payments'].push({paymentId: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['payments'].findIndex(elem => elem.paymentId === obj[k][l]);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['payments'].push({paymentId: obj[k][l]});
+              else
+                ret[ind]['payments'][foundIndex].paymentId = obj[k][l];
+            }
+          }
+        }
+        else if (l === 'payments.etat') {
+          // console.log(obj[k][l]);
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if(!ret[ind]['payments'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['payments'].push({etat: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['payments'].findIndex(elem => elem.paymentId === obj[k]['payments.paymentId']);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['payments'][ret[ind]['payments'].length - 1].etat = obj[k][l];
+              else
+                ret[ind]['payments'][foundIndex].etat = obj[k][l];
+            }
+          }
+        }
+        else if (l === 'payments.paymentValue') {
+          // console.log(obj[k][l]);
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if(!ret[ind]['payments'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['payments'].push({paymentValue: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['payments'].findIndex(elem => elem.paymentId === obj[k]['payments.paymentId']);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['payments'][ret[ind]['payments'].length - 1].paymentValue = obj[k][l];
+              else
+                ret[ind]['payments'][foundIndex].paymentValue = obj[k][l];
+            }
+          }
+        }
+        else if (l === 'payments.paymentType') {
+          // console.log(obj[k][l]);
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if(!ret[ind]['payments'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['payments'].push({paymentType: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['payments'].findIndex(elem => elem.paymentId === obj[k]['payments.paymentId']);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['payments'][ret[ind]['payments'].length - 1].paymentType = obj[k][l];
+              else
+                ret[ind]['payments'][foundIndex].paymentType = obj[k][l];
+            }
+          }
+        }
+        else if (l === 'payments.factureId') {
+          // console.log(obj[k][l]);
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if(!ret[ind]['payments'].length){
+            if (obj[k][l] !== null)
+              ret[ind]['payments'].push({factureId: obj[k][l]});
+          }
+          else {
+            const foundIndex = ret[ind]['payments'].findIndex(elem => elem.paymentId === obj[k]['payments.paymentId']);
+            if (obj[k][l] !== null){
+              if (foundIndex === -1)
+                ret[ind]['payments'][ret[ind]['payments'].length - 1].factureId = obj[k][l];
+              else
+                ret[ind]['payments'][foundIndex].factureId = obj[k][l];
+            }
+          }
+        }
+      }
+      else {
+        if (l === 'langue.langueId') {
+          ret[ind]['langue'] = ret[ind]['langue'] === undefined ? {} : ret[ind]['langue'];
+          if (obj[k][l] === null) {
+            ret[ind]['langue'] = null;
+          } else {
+            ret[ind]['langue']['langueId'] = obj[k][l];
+          }
+        }
+        else if(l === 'langue.libelle'){
+          ret[ind]['langue'] = ret[ind]['langue'] === undefined ? {} : ret[ind]['langue'];
+          if (obj[k][l] === null) {
+            ret[ind]['langue'] = null;
+          } else {
+            ret[ind]['langue']['libelle'] = obj[k][l];
+          }
+        }
+        else if (l === 'langue.nom'){
+          ret[ind]['langue'] = ret[ind]['langue'] === undefined ? {} : ret[ind]['langue'];
+          if (obj[k][l] === null) {
+            ret[ind]['langue'] = null;
+          } else {
+            ret[ind]['langue']['nom'] = obj[k][l];
+          }
+        }
+        else if (l === 'devise.deviseId'){
+          ret[ind]['devise'] = ret[ind]['devise'] === undefined ? {} : ret[ind]['devise'];
+          if (obj[k][l] === null) {
+            ret[ind]['devise'] = null;
+          } else {
+            ret[ind]['devise']['deviseId'] = obj[k][l];
+          }
+        }
+        else if (l === 'devise.symbole'){
+          ret[ind]['devise'] = ret[ind]['devise'] === undefined ? {} : ret[ind]['devise'];
+          if (obj[k][l] === null) {
+            ret[ind]['devise'] = null;
+          } else {
+            ret[ind]['devise']['symbole'] = obj[k][l];
+          }
+        }
+        else if (l === 'devise.libelle'){
+          ret[ind]['devise'] = ret[ind]['devise'] === undefined ? {} : ret[ind]['devise'];
+          if (obj[k][l] === null) {
+            ret[ind]['devise'] = null;
+          } else {
+            ret[ind]['devise']['libelle'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.actorId'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['actorId'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.cp'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['cp'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.email'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['email'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.nom'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['nom'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.nomRue'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['nomRue'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.numCommercant'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          ret[ind]['buyer']['numCommercant'] = obj[k][l];
+        }
+        else if (l === 'buyer.numRue'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['numRue'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.prenom'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['prenom'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.tel'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['tel'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.actorTypeId'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['actorTypeId'] = obj[k][l];
+          }
+        }
+        else if (l === 'buyer.ville'){
+          ret[ind]['buyer'] = ret[ind]['buyer'] === undefined ? {} : ret[ind]['buyer'];
+          if (obj[k][l] === null) {
+            ret[ind]['buyer'] = null;
+          } else {
+            ret[ind]['buyer']['ville'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.actorId'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['actorId'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.cp'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['cp'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.email'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['email'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.nom'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['nom'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.nomRue'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['nomRue'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.numCommercant'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          ret[ind]['seller']['numCommercant'] = obj[k][l];
+        }
+        else if (l === 'seller.numRue'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['numRue'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.prenom'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['prenom'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.tel'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['tel'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.actorTypeId'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['actorTypeId'] = obj[k][l];
+          }
+        }
+        else if (l === 'seller.ville'){
+          ret[ind]['seller'] = ret[ind]['seller'] === undefined ? {} : ret[ind]['seller'];
+          if (obj[k][l] === null) {
+            ret[ind]['seller'] = null;
+          } else {
+            ret[ind]['seller']['ville'] = obj[k][l];
+          }
+        }
+        else if(l === 'commandes.orderId') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({orderId: obj[k][l]});
+            }
+            else{
+              ret[ind]['commandes'][ret[ind]['commandes'].length - 1].orderId = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'commandes.contenuAdditionnel') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({contenuAdditionnel: obj[k][l]});
+            }
+            else{
+              ret[ind]['commandes'][ret[ind]['commandes'].length - 1].contenuAdditionnel = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'commandes.priceHt') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({priceHt: obj[k][l]});
+            }
+            else{
+              ret[ind]['commandes'][ret[ind]['commandes'].length - 1].priceHt = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'commandes.factureId') {
+          ret[ind]['commandes'] = ret[ind]['commandes'] === undefined ? [] : ret[ind]['commandes'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['commandes'].length){
+              ret[ind]['commandes'].push({factureId: obj[k][l]});
+            }
+            else{
+              ret[ind]['commandes'][ret[ind]['commandes'].length - 1].factureId = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'commandes.Services.serviceId') {
+          if (obj[k][l] !== null) {
+            if (ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if(!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({serviceId: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                ret[ind]['commandes'][orderLen - 1]['Services'][serviceLen - 1].serviceId = obj[k][l];
+              }
+            }
+          }
+          // console.log(ret[ind]['commandes']);
+        }
+        else if(l === 'commandes.Services.montantHt') {
+          if (obj[k][l] !== null) {
+            if (ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if(!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({montantHt: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                ret[ind]['commandes'][orderLen - 1]['Services'][serviceLen - 1].montantHt = obj[k][l];
+              }
+            }
+          }
+          // console.log(ret[ind]['commandes']);
+        }
+        else if(l === 'commandes.Services.nom') {
+          if (obj[k][l] !== null) {
+            if (ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if(!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({nom: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                ret[ind]['commandes'][orderLen - 1]['Services'][serviceLen - 1].nom = obj[k][l];
+              }
+            }
+          }
+          // console.log(ret[ind]['commandes']);
+        }
+        else if(l === 'commandes.Services.quantite') {
+          if (obj[k][l] !== null) {
+            if (ret[ind]['commandes'].length){
+              const orderLen = ret[ind]['commandes'].length;
+              ret[ind]['commandes'][orderLen - 1]['Services'] = ret[ind]['commandes'][orderLen - 1]['Services'] === undefined ? [] : ret[ind]['commandes'][orderLen - 1]['Services'];
+              if(!ret[ind]['commandes'][orderLen - 1]['Services'].length){
+                ret[ind]['commandes'][orderLen - 1]['Services'].push({quantite: obj[k][l]});
+              }
+              else{
+                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                ret[ind]['commandes'][orderLen - 1]['Services'][serviceLen - 1].quantite = obj[k][l];
+              }
+            }
+          }
+          // console.log(ret[ind]['commandes']);
+        }
+        else if(l === 'payments.paymentId') {
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['payments'].length){
+              ret[ind]['payments'].push({paymentId: obj[k][l]});
+            }
+            else{
+              ret[ind]['payments'][ret[ind]['payments'].length - 1].paymentId = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'payments.etat') {
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['payments'].length){
+              ret[ind]['payments'].push({etat: obj[k][l]});
+            }
+            else{
+              ret[ind]['payments'][ret[ind]['payments'].length - 1].etat = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'payments.paymentValue') {
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['payments'].length){
+              ret[ind]['payments'].push({paymentValue: obj[k][l]});
+            }
+            else{
+              ret[ind]['payments'][ret[ind]['payments'].length - 1].paymentValue = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'payments.paymentType') {
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['payments'].length){
+              ret[ind]['payments'].push({paymentType: obj[k][l]});
+            }
+            else{
+              ret[ind]['payments'][ret[ind]['payments'].length - 1].paymentType = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else if(l === 'payments.factureId') {
+          ret[ind]['payments'] = ret[ind]['payments'] === undefined ? [] : ret[ind]['payments'];
+          if (obj[k][l] !== null) {
+            if (!ret[ind]['payments'].length){
+              ret[ind]['payments'].push({factureId: obj[k][l]});
+            }
+            else{
+              ret[ind]['payments'][ret[ind]['payments'].length - 1].factureId = obj[k][l];
+            }
+          }
+          // console.log(ret[ind]);
+        }
+        else {
+          ret[ind][l] = obj[k][l];
+        }
+      }
+    }
   }
   return ret;
 };
