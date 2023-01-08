@@ -1,0 +1,114 @@
+// app global css in SCSS form
+@use 'quasar.variables' as vars;
+@font-face {
+	font-family: SenBold;
+	src: url('./fonts/Sen/SenBold-7qoE.otf');
+}
+@font-face {
+	font-family: SenNormal;
+	src: url('./fonts/Sen/Sen-wZy2.otf');
+}
+@font-face {
+	font-family: SenExtraBold;
+	src: url('./fonts/Sen/SenExtrabold-mDKV.otf');
+}
+
+.SenNormal-font {
+	font-family: SenNormal;
+}
+
+.SenBold-font {
+	font-family: SenBold;
+}
+
+.SenExtrabold-font {
+	font-family: SenExtraBold;
+}
+
+.frosted-glass {
+	backdrop-filter: blur(7px);
+	background-color: vars.$glass-back;
+	color: black;
+}
+
+.my-sticky-header-table {
+	height: 310px;
+	.q-table__top,
+	.q-table__bottom,
+	thead tr:first-child th {
+		color: #FFFFFF;
+		background-color: vars.$primary;
+	}
+
+	thead tr th {
+		position: sticky;
+		z-index: 1;
+	}
+
+	thead tr:first-child th {
+		top: 0;
+	}
+
+	// This is when the loading indocator appears
+	&.q-table--loading thead tr:last-child th {
+		// height of all previous header rows
+		top: 48px;
+	}
+}
+
+// .material-symbols-sharp-comptalink {
+//   font-variation-settings:
+//   'FILL' 1,
+//   'wght' 400,
+//   'GRAD' 200,
+//   'opsz' 48
+// }
+
+// MESSAGES
+.messages {
+    width:  100%;
+}
+.messages > div {
+    padding-left: 200px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.messages > div.severityOk {
+    background-color: vars.$severity-OK-back;
+}
+.messages > div.severityKo {
+    background-color: vars.$severity-KO-back;
+}
+// .messages > div:after, .messages > div:before {
+//     display: inline-block;
+//     width: 100%;
+//     content: "";
+//     vertical-align: middle;
+// }
+.messages > div > button {
+    margin: 0;
+    background: none;
+    border-radius: 0px;
+    border: none;
+    color: #333;
+    padding: 0;
+    width: 50%;
+    display: inline-block;
+    padding-right: 15px;
+    text-align: right;
+}
+.messages > div > span {
+    width: 50%;
+    display: inline-block;
+    font-family: SenBold, sans-serif;
+    font-weight: bolder;
+}
+.messages > div > span.severityOk{
+    color: vars.$severity-OK-text;
+}
+.messages > div > span.severityKo{
+    color: vars.$severity-KO-text;
+}

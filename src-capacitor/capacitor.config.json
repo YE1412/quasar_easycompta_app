@@ -1,0 +1,13 @@
+{
+  "appId": "org.capacitor.quasar.easycompta",
+  "appName": "Quasar Easy-Compta App",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorSQLite": {
+      "iosDatabaseLocation": "Library/CapacitorDatabase"
+    }
+  },
+  "loggingBehavior": "production"
+}

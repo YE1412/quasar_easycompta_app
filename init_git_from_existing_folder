@@ -1,0 +1,13 @@
+# Create a new repository on the command line
+echo "# quasar_easycompta_app" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/YE1412/quasar_easycompta_app.git
+git push -u origin main
+
+# Push an existing repository from the command line
+git remote add origin https://github.com/YE1412/quasar_easycompta_app.git
+git branch -M main
+git push -u origin main
