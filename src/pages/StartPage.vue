@@ -182,7 +182,7 @@ const headingMobileClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h4 text-upper
 const doGetImgForMobiles = async():HttpResponse => {
   let ret = null;
   const options: HttpOptions = {
-    url: `${window.location.origin}/dist/assets/uploads/${encodeURIComponent('CL_SVG.svg')}`,
+    url: `${window.location.origin}/favicon.ico`,
     responseType: 'blob',
     shouldEncodeUrlParams: true,
   };
@@ -250,7 +250,7 @@ if (platform.is.desktop){
   imgSrc.value = "dist/assets/imgs/slider-2.jpg";
 }
 else {
-  imgSrc.value = "assets/imgs/slider-2.jpg";
+  imgSrc.value = `/assets/imgs/slider-2.jpg`;
   (async () => {
     prefs = await import('cap/storage/preferences');
     // console.log('Get messages preferences !');
@@ -266,9 +266,9 @@ else {
       messageVisibility.value = vis !== null ? vis : false;
     }
 
-    const response = await doGetImgForMobiles();
-    console.log('Responses !');
-    console.log(response);
+    // const response = await doGetImgForMobiles();
+    // console.log('Responses !');
+    // console.log(response);
     // const rode = await doReadDir();
     // console.log('Rode dir data --> ');
     // console.log(rode);
