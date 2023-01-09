@@ -159,8 +159,8 @@ import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
 import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+// import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+// import { FilesystemDirectory, Plugins, FilesystemEncoding } from '@capacitor/core';
 
 // VARIABLES
 interface ProfileProps {
@@ -169,6 +169,7 @@ interface ProfileProps {
 const props = withDefaults(defineProps<ProfileProps>(), {
   dbConn: null
 });
+// const { Filesystem } = Plugins;
 const $q = useQuasar();
 const userId = ref(0);
 const firstName = ref(null);

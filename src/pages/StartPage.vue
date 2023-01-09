@@ -143,7 +143,6 @@ import { ref, onMounted, computed, nextTick } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useSessionStore } from 'stores/session';
-// import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import MessagesItem from 'components/MessagesItem.vue';
 import { useRouter } from 'vue-router';
@@ -153,7 +152,8 @@ import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, 
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
 import sessionAxiosService from 'db/services/session.service';
 import { v4 as uuidv4 } from 'uuid';
-import { Keyboard } from '@capacitor/keyboard';
+import { Http } from '@capacitor-community/http';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 // VARIABLES
 interface StartProps {
@@ -179,6 +179,63 @@ const nonEmptyPass = computed(() => {
 });
 const headingDesktopClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold';
 const headingMobileClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h4 text-uppercase text-center text-bold';
+const doGetImgForMobiles = async():HttpResponse => {
+  let ret = null;
+  const options: HttpOptions = {
+    url: `${window.location.origin}/dist/assets/uploads/${encodeURIComponent('CL_SVG.svg')}`,
+    responseType: 'blob',
+    shouldEncodeUrlParams: true,
+  };
+  console.log('HTTP Capacitor GET -->');
+  // console.log($q);
+  ret = await Http.get(options);
+  return ret;
+};
+const doReadDir = async():ReaddirResult => {
+  let ret = null;
+
+  const options: ReaddirOptions = {
+    path: ``,
+    directory: Directory.Library
+  };
+  // await Filesystem.mkdir({
+  //   path: 'folder',
+  //   directory: Directory.Data,
+  //   recursive: false,
+  // });
+  // ret = await Filesystem.getUri(options);
+  // console.log()
+  await Filesystem.getUri(options)
+    // .then((res) => {
+    //   ret = res
+    //   console.log(res);
+    // }, (mes) => {
+    //   console.log('Error while getting uri dir - empty Dir !');
+    //   console.log(mes);
+    // })
+    // .catch((err) => {
+    //   console.log('Error while getting uri dir !')
+    //   console.log(err);
+    //   ret = err;
+    // });
+  console.log('Rode dir data --> ');
+  ret = await Filesystem.readdir(options);
+    // .then((res) => {
+    //   ret = res
+    //   console.log(res);
+    // }, (mes) => {
+    //   console.log('Error while reading dir - empty Dir !');
+    //   console.log(mess);
+    // })
+    // .catch((err) => {
+    //   console.log('Error while reading dir !')
+    //   console.log(err);
+    //   ret = err;
+    // });
+  // console.error('Unable to read dir !', e);
+  // console.log(ret);
+  return ret;
+};
 
 let userStore = null, sessionStore = null, messageStore = null, prefs = null;
 
@@ -208,6 +265,13 @@ else {
     } else {
       messageVisibility.value = vis !== null ? vis : false;
     }
+
+    const response = await doGetImgForMobiles();
+    console.log('Responses !');
+    console.log(response);
+    // const rode = await doReadDir();
+    // console.log('Rode dir data --> ');
+    // console.log(rode);
   })();
 }
 
@@ -478,20 +542,20 @@ function getSessionForMobile() {
 // LIFECYCLE EVENTS
 
 // OTHERS
-Keyboard.addListener('keyboardWillShow', info => {
-  console.log('keyboard will show with height:', info.keyboardHeight);
-});
+// Keyboard.addListener('keyboardWillShow', info => {
+//   console.log('keyboard will show with height:', info.keyboardHeight);
+// });
 
-Keyboard.addListener('keyboardDidShow', info => {
-  console.log('keyboard did show with height:', info.keyboardHeight);
-});
+// Keyboard.addListener('keyboardDidShow', info => {
+//   console.log('keyboard did show with height:', info.keyboardHeight);
+// });
 
-Keyboard.addListener('keyboardWillHide', () => {
-  console.log('keyboard will hide');
-});
+// Keyboard.addListener('keyboardWillHide', () => {
+//   console.log('keyboard will hide');
+// });
 
-Keyboard.addListener('keyboardDidHide', () => {
-  console.log('keyboard did hide');
-});
+// Keyboard.addListener('keyboardDidHide', () => {
+//   console.log('keyboard did hide');
+// });
 
 </script>

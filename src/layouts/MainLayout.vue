@@ -172,6 +172,7 @@ import getConnection, { openDbConnection, isDbConnectionOpen, newQuery, newRun, 
 import { Loading, useQuasar } from 'quasar';
 import { ClassLangAssoc } from 'components/models';
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+// import { CapacitorHttp } from '@capacitor/core';
 
 // VARIABLES
 // const app = getCurrentInstance()
