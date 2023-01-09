@@ -32,6 +32,10 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "assets/imgs/slide-2.jpg",
+      "type": "image/jpeg"
     }
   ]
 }
