@@ -12,9 +12,6 @@
       "resize": "body",
       "style": "DARK",
       "resizeOnFullScreen": true
-    },
-    "CapacitorHttp": {
-      "enabled": true
     }
   },
   "loggingBehavior": "production"

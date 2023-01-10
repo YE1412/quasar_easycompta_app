@@ -152,8 +152,6 @@ import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, 
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
 import sessionAxiosService from 'db/services/session.service';
 import { v4 as uuidv4 } from 'uuid';
-import { Http } from '@capacitor-community/http';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 // VARIABLES
 interface StartProps {
@@ -179,63 +177,6 @@ const nonEmptyPass = computed(() => {
 });
 const headingDesktopClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold';
 const headingMobileClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h4 text-uppercase text-center text-bold';
-const doGetImgForMobiles = async():HttpResponse => {
-  let ret = null;
-  const options: HttpOptions = {
-    url: `${window.location.origin}/favicon.ico`,
-    responseType: 'blob',
-    shouldEncodeUrlParams: true,
-  };
-  console.log('HTTP Capacitor GET -->');
-  // console.log($q);
-  ret = await Http.get(options);
-  return ret;
-};
-const doReadDir = async():ReaddirResult => {
-  let ret = null;
-
-  const options: ReaddirOptions = {
-    path: ``,
-    directory: Directory.Library
-  };
-  // await Filesystem.mkdir({
-  //   path: 'folder',
-  //   directory: Directory.Data,
-  //   recursive: false,
-  // });
-  // ret = await Filesystem.getUri(options);
-  // console.log()
-  await Filesystem.getUri(options)
-    // .then((res) => {
-    //   ret = res
-    //   console.log(res);
-    // }, (mes) => {
-    //   console.log('Error while getting uri dir - empty Dir !');
-    //   console.log(mes);
-    // })
-    // .catch((err) => {
-    //   console.log('Error while getting uri dir !')
-    //   console.log(err);
-    //   ret = err;
-    // });
-  console.log('Rode dir data --> ');
-  ret = await Filesystem.readdir(options);
-    // .then((res) => {
-    //   ret = res
-    //   console.log(res);
-    // }, (mes) => {
-    //   console.log('Error while reading dir - empty Dir !');
-    //   console.log(mess);
-    // })
-    // .catch((err) => {
-    //   console.log('Error while reading dir !')
-    //   console.log(err);
-    //   ret = err;
-    // });
-  // console.error('Unable to read dir !', e);
-  // console.log(ret);
-  return ret;
-};
 
 let userStore = null, sessionStore = null, messageStore = null, prefs = null;
 
@@ -282,14 +223,19 @@ async function forceMessageItemsRerender() {
   renderComponent.value = true;
 };
 async function transformObject(obj: any) {
-  if (__KEY__ === null) {
+  // console.log('Generate Key !');
+  // console.log(window.__KEY__);
+  if (!!window.__KEY__ === false) {
     await setGenApi();
   }
+  // console.log('Key --> '+window.__KEY__);
   await setCryptApi();
   __FORMATOBJ__(obj);
 };
 async function submit(){
+  // console.log('login !');
   const ret = await loginDb();
+  // console.log('login done !');
   if (platform.is.desktop){
     if (ret) {
       const res = await sessionStore.getSession()
@@ -386,6 +332,8 @@ async function loginDb() {
     login: login.value,
     pass: pass.value,
   };
+  // console.log('transform obj !');
+  // console.log(obj);
   await transformObject(obj);
   // console.log("User Login !");
   // console.log(obj);
@@ -419,10 +367,10 @@ async function loginDb() {
   else {
     // console.log(`mobile part !`);
     // console.log(props);
-    console.log(props.dbConn);
+    // console.log(props.dbConn);
     let isOpen = await isDbConnectionOpen(props.dbConn);
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
-    console.log(`isOpen --> ${isOpen} !`);
+    // console.log(`isOpen --> ${isOpen} !`);
     if (isOpen) {
       const sql = `SELECT \`user\`.\`userId\`, \`user\`.\`firstName\`, \`user\`.\`lastName\`, \`user\`.\`login\`, \`user\`.\`email\`, \`user\`.\`companyName\`, \`user\`.\`companyLogo\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`user_type\`.\`userTypeId\` AS \`user_type.userTypeId\`, \`user_type\`.\`regular\` AS \`user_type.regular\`, \`user_type\`.\`admin\` AS \`user_type.admin\` FROM \`user\` AS \`user\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`user\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`user_type\` AS \`user_type\` ON \`user\`.\`userTypeId\` = \`user_type\`.\`userTypeId\` WHERE (\`user\`.\`login\` = '${obj.login}' OR \`user\`.\`email\` = '${obj.login}') AND \`user\`.\`pass\` = '${obj.pass}';`;
       // console.log(sql);

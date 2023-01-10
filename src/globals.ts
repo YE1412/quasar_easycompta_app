@@ -52,10 +52,9 @@ const __TRANSFORMOBJ__ = async (obj: any): any => {
 
 async function setGenApi() {
   const ret = await genMod;
-  // console.log(ret);
   if (!isServer) {
     window.__GENKEYAPI__ = ret;
-    if (window.__KEY__ === undefined || window.__KEY__ === null)
+    if (!!window.__KEY__ === false)
       window.__KEY__ = window.__GENKEYAPI__.generate_key(__SECRET__);
   }
   return ret;
@@ -93,6 +92,7 @@ async function setDecryptApi() {
   // });
 // }
 if (!isServer){
+  // console.log(isServer);
   setGenApi();
   // window.__KEY__ = null;
 }

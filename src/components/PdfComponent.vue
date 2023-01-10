@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { Suspense, ref, nextTick, watch, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
@@ -20,7 +20,9 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-
+import { Http } from '@capacitor-community/http';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { FileOpener } from '@capacitor-community/file-opener';
 // VARIABLES
 interface PdfComponentProps {
   dbConn: SQLiteDBConnection | null;
@@ -32,6 +34,7 @@ const $q = useQuasar();
 const platform = $q.platform;
 const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
+const router = useRouter();
 const tableXPos = 26.3,
   headerYPos = 41.3,
   headerTableWidth = 393.9,
@@ -180,9 +183,18 @@ if (platform.is.desktop) {
   }
   invoicesDetails.value = invoicesObj;
   // locale.value = mainLocale;
-  for (const key in contentsForPrint.value)
-    await buildAndSavePdf(contentsForPrint.value[key]);
+  let buildedPdf = [];
+  for (const key in contentsForPrint.value){
+    const builded = await buildAndSavePdf(contentsForPrint.value[key]);
+    if (!!builded)
+      buildedPdf.push(builded);
+  }
   locale.value = mainLocale;
+  if (platform.is.mobile && buildedPdf.length){
+    const mimeType = getMimeType(buildedPdf[0].name);
+    await openFile(buildedPdf[0].uri, mimeType);
+  }
+  router.push(t('exportLinkTarget'));
   // console.log(route.params);
 })();
 
@@ -432,8 +444,6 @@ function tableInvoicesBillingLibelle(ind: number) {
   return ret;
 };
 async function buildAndSavePdf(inv: any) {
-  // console.log(invoicesDetails.value);
-  // console.log(inv);
   languageVal = inv.langue === "fr-FR" ? "fr" : "";
   languageVal = inv.langue === "en-US" ? "en" : languageVal;
   locale.value = inv.langue;
@@ -457,21 +467,8 @@ async function buildAndSavePdf(inv: any) {
     yPos = insertOrder(inv, yPos, k);
   }
   yPos = insertInvoiceFoot(inv, yPos);
-  //  // Creating footer and saving file
-  // doc
-  //     .setFont("times")
-  //     .setFontSize(11)
-  //     .setFontStyle("italic")
-  //     .setTextColor(0, 0, 255)
-  //     .text(
-  //       "This is a simple footer located .5 inches from page bottom",
-  //       0.5,
-  //       doc.internal.pageSize.height - 0.5
-  //     )
   const date = new Date();
   let loc = inv["langue"];
-  // loc = inv["langue"] === "us" ? "en-US" : loc;
-  // console.log(loc);
   const options = {
     day: "2-digit",
     month: "2-digit",
@@ -488,9 +485,19 @@ async function buildAndSavePdf(inv: any) {
     .replaceAll(" ", "_")
     .replaceAll(":", "_")
     .replaceAll(",", "")}`;
-  // console.log(dateLibelle);
-  // console.log(fileName);
-  doc.save(`${fileName}.pdf`);
+  if (platform.is.desktop){
+    doc.save(`${fileName}.pdf`);
+    return null;
+  }
+  else {
+    const output = doc.output(undefined, `${fileName}.pdf`);
+    // console.log(output);
+    // console.log('Downloading file !');
+    // const res = await downloadForMobile(`${fileName}.pdf`, null, output);
+    const res = await writeFileForMobile(`${fileName}.pdf`, output);
+    console.log(res);
+    return {uri: res.uri, name: `${fileName}.pdf`};
+  }
   // // doc.addPage(format, orientation);
 };
 function insertHead(inv: any): number {
@@ -562,20 +569,25 @@ async function insertLogo() {
     context = canvas.getContext("2d");
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    let companyLogoURL = null;
+    let companyLogoURL = null, v = null;
     if (platform.is.desktop){
       companyLogoURL = userStore.getUser.companyLogo;
+      v = await Canvg.from(
+        context,
+        `${window.location.origin}/dist/assets/uploads/${companyLogoURL}`
+      );
     }
     else {
       companyLogoURL = user.companyLogo;
+      v = await Canvg.from(
+        context,
+        `${window.location.origin}/assets/uploads/${companyLogoURL}`
+      );
     }
-    const v = await Canvg.from(
-      context,
-      `${window.location.origin}/dist/assets/uploads/${companyLogoURL}`
-    );
 
     // Start SVG rendering with animations and mouse handling.
-    v.start();
+    if (!!v)
+      v.start();
   }
 
   var imgData = canvas.toDataURL("image/png");
@@ -1882,6 +1894,70 @@ function sanitizeQueryResult(obj: any) {
     }
   }
   return ret;
+};
+async function downloadForMobile(dest: string, path?: string = '', data?: any = undefined): HttpDownloadFileResult {
+  let res: HttpDownloadFileResult = null;
+  let options: HttpDownloadFileOptions = null; 
+  if (!!data){
+    options = {
+      filePath: `${dest}`,
+      url: `${window.location.origin}/fvdfgdgf`,
+      data: data,
+      // fileDirectory: Directory.Documents,
+    };
+  }
+  else {
+    options = {
+      filePath: `${dest}`,
+      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+      // fileDirectory: Directory.Documents,
+    }; 
+  }
+  console.log(options);
+  res = await Http.downloadFile(options);
+  return res;
+};
+async function writeFileForMobile(dest: string, data: any){
+  let ret: WriteFileResult = null;
+  const options: WriteFileOptions = {
+    path: `${dest}`,
+    data: data,
+    directory: Directory.Documents,
+    encoding: Encoding.ASCII,
+    recursive: false
+  };
+  // console.log(options);
+  ret = await Filesystem.writeFile(options);
+  return ret;
+};
+function getMimeType(name: string){
+  let ret: string = null;
+  if (name.indexOf('pdf')){
+    ret = 'application/pdf';
+  }
+  else if(name.indexOf('png')){
+    ret = 'image/png';
+  }
+  else if(name.indexOf('jpg') || name.indexOf('jpeg')){
+    ret = 'image/jpeg';
+  }
+  else if(name.indexOf('mp4')){
+    ret = 'video/mp4';
+  }
+  else if(name.indexOf('mp3')){
+    ret = 'audio/mp3';
+  }
+
+  return ret;
+};
+async function openFile(uriPath: string, mimeType: string){
+  const options: FileOpenerOptions = {
+    filePath: uriPath,
+    contentType: mimeType,
+    openWithDefault: false,
+  };
+
+  await FileOpener.open(options);
 };
 
 // WATCHERS

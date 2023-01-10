@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
-import { i18n } from '../boot/i18n';
+import { i18n } from 'app/src/boot/i18n';
 
 // console.log(i18n.global.t);
 const t = i18n.global.t;
@@ -160,13 +160,36 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  { 
+    path: t('uploadLinkTarget'),
+    name: 'upload',
+    // component: () => import('pages/UploadPage.vue'),
+    meta: {
+      // title: t('registerTitle'),
+      middleware: 'upload',
+      requiresAuth: true,
+    },
+  },
+  { 
+    path: t('downloadLinkTarget')+'/:filename([a-zA-Z0-9_\.]+)*',
+    name: 'download',
+    // component: () => import('pages/DownloadPage.vue'),
+    meta: {
+      // title: t('registerTitle'),
+      middleware: 'download',
+      requiresAuth: true,
+    },
+  },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
+    // name: 'Others'
   },
 ];
+
+console.log(t('uploadLinkTarget'));
 
 export default routes;

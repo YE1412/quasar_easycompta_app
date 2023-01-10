@@ -95,7 +95,7 @@
       <q-file
         filled
         v-model="companyLogo"
-        accept=".svg"
+        accept="image/*"
         :max-file-size="maxSize"
         :multiple="false"
         :stack-label="true"
@@ -159,8 +159,8 @@ import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
 import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-// import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-// import { FilesystemDirectory, Plugins, FilesystemEncoding } from '@capacitor/core';
+import { Http } from '@capacitor-community/http';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 // VARIABLES
 interface ProfileProps {
@@ -169,7 +169,6 @@ interface ProfileProps {
 const props = withDefaults(defineProps<ProfileProps>(), {
   dbConn: null
 });
-// const { Filesystem } = Plugins;
 const $q = useQuasar();
 const userId = ref(0);
 const firstName = ref(null);
@@ -250,6 +249,30 @@ const validateForm = computed(() => {
   const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
   return ret1 && ret2 && ret3;
 });
+// const doGetImgForMobiles = async():HttpResponse => {
+//   let ret = null;
+//   const options: HttpOptions = {
+//     url: `${window.location.origin}/favicon.ico`,
+//     responseType: 'blob',
+//     shouldEncodeUrlParams: true,
+//   };
+//   console.log('HTTP Capacitor GET -->');
+//   // console.log($q);
+//   ret = await Http.get(options);
+//   return ret;
+// };
+// const doReadDir = async():ReaddirResult => {
+//   let ret = null;
+
+//   const options: ReaddirOptions = {
+//     path: ``,
+//     directory: Directory.Library
+//   };
+//   // await Filesystem.getUri(options)
+//   console.log('Rode dir data --> ');
+//   ret = await Filesystem.readdir(options);
+//   return ret;
+// };
 
 let userStore = null, messageStore = null, invoiceStore = null, prefs = null;
 
@@ -274,6 +297,12 @@ else {
     } else {
       messageVisibility.value = vis !== null ? vis : false;
     }
+    // const res1 = await getRequest('assets/uploads/CL_SVG.svg');
+    // console.log(res1);
+    // const res2 = await downloadForMobile('svg_file_12svg', 'assets/uploads/CL_SVG.svg');
+    // console.log(res2);
+    // const res3 = await readFile(res2.path);
+    // console.log(res3);
   })();
 }
 hydrateForm();
@@ -303,7 +332,8 @@ function reset() {
   userType.value = null;
 };
 async function submit() {
-  // console.log(companyLogo.value);
+  console.log('Submit !');
+  console.log(companyLogo.value);
   if (validateForm.value) {
     let ret = true;
     if (!!companyLogo.value){
@@ -345,9 +375,12 @@ async function submit() {
       else {
         console.log(`CompanyLogo uploading !`);
         console.log(companyLogo.value);
+        // ret = await uploadForMobile();
+        ret = false;
       }
     }
     // console.log(ret);
+    // ret = false;
     if (ret) {
       if (platform.is.desktop){
         const res = await updateUserInDb();
@@ -359,7 +392,7 @@ async function submit() {
             icon: 'cloud_done',
             message: t('profileComponent.results.ok.update')
           });
-          hydrateForm();
+          // hydrateForm();
         }
         else {
           $q.notify({
@@ -379,7 +412,7 @@ async function submit() {
             icon: 'cloud_done',
             message: t('profileComponent.results.ok.update')
           });
-          hydrateForm();
+          // hydrateForm();
         }
         else {
           $q.notify({
@@ -520,7 +553,7 @@ async function hydrateForm() {
     pass.value = null;
     companyName.value = user.companyName;
     companyLogo.value = null;
-    companyLogoURL.value = !!user.companyLogo && user.companyLogo != '' ? `${window.location.origin}/dist/assets/uploads/${user.companyLogo}` : null;
+    companyLogoURL.value = !!user.companyLogo && user.companyLogo != '' ? `assets/uploads/${user.companyLogo}` : null;
     devise.value = {value: user.devise.deviseId, label: `${user.devise.symbole} - ${user.devise.libelle}`, cannotSelect: false, deviseId: user.devise.deviseId, libelle: user.devise.libelle, symbole: user.devise.symbole};
     let userTypeLabel = null;
     if (!!user.user_type) {
@@ -675,8 +708,8 @@ async function updateUserInSQLiteDb() {
     deviseId: devise.value.deviseId,
     userTypeId: userType.value.userTypeId,
   };
-  console.log(userId.value);
-  console.log(obj);
+  // console.log(userId.value);
+  // console.log(obj);
   await transformObject(obj);
   let isOpen =  await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
@@ -695,7 +728,7 @@ async function updateUserInSQLiteDb() {
         ],
         messageVisibility: true,
       });
-      const usrCookie = prefs.getPref('user');
+      const usrCookie = await prefs.getPref('user');
       usrCookie.user.firstName = firstName.value;
       usrCookie.user.lastName = lastName.value;
       usrCookie.user.login = login.value;
@@ -743,13 +776,150 @@ function upload() {
       progress.vale = Math.round((100 * event.loaded) / event.total);
     });
 };
+async function uploadForMobile(filePath: string): HttpUploadFileResult {
+  let ret = false;
+  let res: HttpUploadFileResult = null;
+  const options: HttpUploadFileOptions = {
+    name: 'companyLogo',
+    // url: `${window.location.origin}/#${t('uploadLinkTarget')}`,
+    url: `${window.location.origin}`,
+    filePath: filePath,
+  };
+  console.log(options);
+  res = await Http.uploadFile(options);
+
+  if(res.status !== 500 && res.status !== 404){
+    ret = true;
+  }
+  else {
+    console.log(res);
+  }
+  return ret;
+};
+async function readFile(path: string): ReadFileResult{
+  let ret: ReadFileResult = null;
+  const options: ReadFileOptions = {
+    path: path
+  };
+  // console.log('Reading filepath --> '+options.path);
+  ret = await Filesystem.readFile(options);
+  return ret;
+};
+async function downloadForMobile(dest: string, path?: string = '', data?: any = undefined): HttpDownloadFileResult {
+  let res: HttpDownloadFileResult = null;
+  let options: HttpDownloadFileOptions = null; 
+  if (!!data){
+    options = {
+      filePath: `${dest}`,
+      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+      data: data,
+      // fileDirectory: Directory.Documents,
+    };
+  }
+  else {
+    options = {
+      filePath: `${dest}`,
+      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+      // fileDirectory: Directory.Documents,
+    }; 
+  }
+  console.log(options.url);
+  res = await Http.downloadFile(options);
+  return res;
+};
+async function getRequest(path: string): HttpResponse {
+    let res: HttpResponse = null;
+    const options: HttpOptions = {
+    url: `${window.location.origin}/${path}`,
+    responseType: 'blob',
+  };
+  res = await Http.get(options);
+  return res;
+};
+async function readInternalDir(path: string) {
+  let ret: ReaddirResult = null;
+  const options: ReaddirOptions=  {
+    path: path,
+  };
+
+  ret = await Filesystem.readdir(options);
+  return ret;
+};
+interface HttpOptions {
+  url: string;
+  connectTimeout?: number; // How long to wait for the initial connection.
+  data?: any;
+  headers?: HttpHeaders;
+  method?: string;
+  params?: HttpParams;
+  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
+  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
+  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+};
+interface HttpResponse {
+  data: any;
+  headers: HttpHeaders;
+  status: number;
+  url: string;
+};
+interface HttpDownloadFileOptions {
+  filePath: string; //  The path the downloaded file should be moved to
+  url: string;
+  connectTimeout?: number; // How long to wait for the initial connection.
+  data?: any;
+  fileDirectory?: Directory; // Optionally, the directory to put the file in. If this option is used, filePath can be a relative path rather than absolute
+  headers?: HttpHeaders;
+  method?: string;
+  params?: HttpParams;
+  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
+  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
+  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+};
+interface HttpDownloadFileResult {
+  blob?: Blob;
+  path?: string;
+};
+interface HttpUploadFileOptions {
+  name: string; //  The field name to upload the file with
+  url: string; // The URL to upload the file to.
+  blob?: Blob; // For uploading a file on the web, a JS Blob to upload
+  connectTimeout?: number; // How long to wait for the initial connection
+  data?: any;
+  fileDirectory?: Directory; // Optionally, the directory to look for the file in. If this option is used, filePath can be a realtive path rather than absolute
+  filePath?: string; // For uploading a file natively, the path to the file on disk to upload
+  headers?: HttpHeaders;
+  method?: string;
+  params?: HttpParams;
+  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is 'json', this value is ingnored
+  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true
+  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+};
+interface HttpUploadFileResult {
+  data: any;
+  headers: HttpHeaders;
+  status: number;
+  url: string;
+};
 
 // WATCHERS
 watch(
   companyLogo,
-  (newCompanyLogo) => {
-    if (newCompanyLogo !== null && validCompanyLogo.value) {
-      companyLogoURL.value = URL.createObjectURL(newCompanyLogo)
+  async (newCompanyLogo) => {
+    // console.log(newCompanyLogo);
+    if (!!newCompanyLogo) {
+      companyLogoURL.value = URL.createObjectURL(newCompanyLogo);
+      // const res1 = await getRequest('assets/uploads/CL_SVG.svg');
+      // console.log(res1);
+      // const res2 = await downloadForMobile('svg_file_16.svg', null, res1.data);
+      // console.log(res2);
+      const res3 = await readInternalDir('file:///Users/mados/Library/Developer/CoreSimulator/Devices/462296F4-8DDC-4F1B-AD30-AAFED6B53D27/data/Containers/Data/Application/1B5AD32A-3A2B-457F-9566-6744B9244E3F/Documents');
+      for (const k in res3.files)
+        console.log(res3.files[k].name);
+      const res = await uploadForMobile('file:///Users/mados/Library/Developer/CoreSimulator/Devices/462296F4-8DDC-4F1B-AD30-AAFED6B53D27/data/Containers/Data/Application/1B5AD32A-3A2B-457F-9566-6744B9244E3F/Documents/svg_file_16.svg');
+      console.log(res);
     } 
     else {
       companyLogoURL.value = null;

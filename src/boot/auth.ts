@@ -7,6 +7,7 @@ import { i18n } from 'app/src/boot/i18n';
 // import { Capacitor } from '@capacitor/core';
 import { Platform, Cookies } from 'quasar';
 import * as prefs from 'app/src/capacitor/storage/preferences';
+import { upload, download } from 'app/src/middleware/index';
 
 // const plateform = Capacitor.getPlatform();
 const t = i18n.global.t;
@@ -183,48 +184,51 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
   const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-
+  const requireMiddleware = to.meta.middleware;
   console.log('-------------------------------------');
   console.log(`from --> `);
   console.log(from.fullPath);
   console.log(`to --> `);
-  console.log(to.fullPath);
+  console.log(to);
   console.log(`has route ? --> ${hasRoute}`);
   console.log(`accessible ? --> `);
   console.log(accessiblePath);
   console.log(`require Auth ? --> ${requireAuth}`);
+  console.log(`require Middleware ? --> ${requireMiddleware}`);
   console.log('Cookie Session --> ')
   console.log(sessionCookie);
   console.log('Cookie User --> ')
   console.log(userCookie);
   console.log(`current Local --> ${i18n.global.locale.value}`);
   console.log('-------------------------------------');
-
+  
+  // if (requireMiddleware === 'upload'){
+  //   console.log('uploading middleware !');
+  //   return await upload(to, next);
+  // }
+  // else{
+  //   console.log('downloading middleware !');
+  //   return await download(to, next);
+  // }
   if (requireAuth) {
     // console.log(await validateSession(sessionCookie, platform));
     const res = await validateSession(sessionCookie, platform);
-    // console.log(res);
-      // .then(
-      //   (res: any) => {
-      //     console.log(res);
-      //     if (!!userCookie && userCookie.connected)
-      //       next();
-      //     else
-      //       next(t("startLinkTarget"));
-      //   }
-      // )
-      // .catch(async (err: any) => {
-      //   console.log('Err --> ');
-      //   console.log(err);
-      //   // userStore.reset();
-      //   await prefs.setPref('user', {connected: false, user: {}});
-      //   console.log(decodeURIComponent(cookie.getAll().user));
-      //   next(t("startLinkTarget"));
-      // });
+    console.log(res);
     if (res){
       // console.log(res);
-      if (!!userCookie && userCookie.connected)
+      if (!!userCookie && userCookie.connected){
+        if (!!requireMiddleware){
+          if (requireMiddleware === 'upload'){
+            console.log('uploading middleware !');
+            return await upload(ctx);
+          }
+          else{
+            console.log('downloading middleware !');
+            return await download(ctx);
+          }
+        }
         next();
+      }
       else
         next(t("startLinkTarget"));
     }

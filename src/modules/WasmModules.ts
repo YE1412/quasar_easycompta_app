@@ -9,6 +9,7 @@ import decryptFileModule from "./plugins/rc_decrypt_file";
 const genMod = !import.meta.env.SSR
   ? new Promise((resolve) => {
     generateModule().then(function (Module: any) {
+      // console.log('Generate module setting !');
       const api = {
         generate_key: Module.cwrap("generate", "string", ["string"]),
       };

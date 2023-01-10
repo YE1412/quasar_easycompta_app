@@ -45,6 +45,8 @@ export default {
   pdfLinkName: 'PdfExport',
   pdfLinkTarget: '/pdf/:invoiceIds(\\d+)*',
   pdfPreLinkTarget: '/pdf/',
+  uploadLinkTarget: '/api/users/upload',
+  downloadLinkTarget: '/api/users/download',
   drawer: {
     title: 'Links'
   },
