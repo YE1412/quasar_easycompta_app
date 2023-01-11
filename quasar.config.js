@@ -11,9 +11,12 @@
 
 const { configure } = require('quasar/wrappers');
 const path = require('path');
+const dotenv =  require("dotenv");
+dotenv.config({ path: path.join(__dirname, "/envs/.env") });
 
 module.exports = configure(function (ctx) {
   // console.log(ctx.mode);
+  // console.log(process.env);
   return {
     eslint: {
       fix: false,
@@ -86,9 +89,14 @@ module.exports = configure(function (ctx) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      publicPath: '/dist',
+      publicPath: process.env.PUB_PATH,
       // analyze: true,
-      // env: {},
+      env: {
+        PORT_SSR: ctx.dev ? process.env.SSR_DEV_PORT : process.env.SSR_PROD_PORT,
+        PORT_SPA: ctx.dev ? process.env.SPA_DEV_PORT : process.env.SPA_PROD_PORT,
+        PORT_CAP: ctx.dev ? process.env.CAP_DEV_PORT : process.env.CAP_PROD_PORT,
+        PUBLIC_PATH: process.env.PUB_PATH,
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -117,7 +125,7 @@ module.exports = configure(function (ctx) {
     devServer: {
       https: false,
       open: true, // opens browser window automatically
-      port: ctx.mode.ssr || ctx.mode.pwa ? 3000 : (ctx.mode.spa ? 3100 : 3200),
+      port: ctx.mode.ssr || ctx.mode.pwa ? process.env.SSR_DEV_PORT : (ctx.mode.spa ? process.env.SPA_DEV_PORT : process.env.CAP_DEV_PORT),
       vueDevtools: true,
     },
 
@@ -177,7 +185,7 @@ module.exports = configure(function (ctx) {
       manualStoreHydration: true,
       // manualPostHydrationTrigger: true,
 
-      prodPort: 9000, // The default port that the production server should use
+      prodPort: process.env.SSR_PROD_PORT, // The default port that the production server should use
                       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [

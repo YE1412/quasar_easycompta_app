@@ -10,6 +10,7 @@
         filled
         type="text"
         v-model="firstName"
+        ref="firstNameRef"
         :label="t('profileComponent.inputLabels.firstName')+' *'"
         :hint="t('profileComponent.hints.firstName')"
         :hide-hint="true"
@@ -24,6 +25,7 @@
         filled
         type="text"
         v-model="lastName"
+        ref="lastNameRef"
         :label="t('profileComponent.inputLabels.lastName')+' *'"
         :hint="t('profileComponent.hints.lastName')"
         :hide-hint="true"
@@ -38,6 +40,7 @@
         filled
         type="text"
         v-model="login"
+        ref="loginRef"
         :label="t('profileComponent.inputLabels.login')+' *'"
         :hint="t('profileComponent.hints.login')"
         :hide-hint="true"
@@ -52,6 +55,7 @@
         filled
         type="email"
         v-model="email"
+        ref="emailRef"
         :label="t('profileComponent.inputLabels.email')+' *'"
         :hint="t('profileComponent.hints.email')+' *'"
         :hide-hint="true"
@@ -67,6 +71,7 @@
         filled
         type="email"
         v-model="confirmEmail"
+        ref="confirmEmailRef"
         :label="t('profileComponent.inputLabels.confirmEmail')+' *'"
         :hint="t('profileComponent.hints.confirmEmail')+' *'"
         :hide-hint="true"
@@ -81,6 +86,7 @@
         filled
         type="password"
         v-model="pass"
+        ref="passRef"
         :label="t('profileComponent.inputLabels.pass')+' *'"
         :hint="t('profileComponent.hints.pass')"
         :hide-hint="true"
@@ -95,6 +101,7 @@
         filled
         type="password"
         v-model="confirmPass"
+        ref="confirmPassRef"
         :label="t('profileComponent.inputLabels.confirmPass')+' *'"
         :hint="t('profileComponent.hints.confirmPass')"
         :hide-hint="true"
@@ -109,6 +116,7 @@
         filled
         type="text"
         v-model="companyName"
+        ref="companyNameRef"
         :label="t('profileComponent.inputLabels.companyName')+' *'"
         :hint="t('profileComponent.hints.companyName')"
         :hide-hint="true"
@@ -119,7 +127,30 @@
           val => validCompanyName || t('profileComponent.errors.error.companyName')
         ]"
       />
-      <q-file
+      <div class="flex justify-start row items-center">
+        <q-avatar v-if="!!companyLogoURL">
+          <img :src="companyLogoURL" />
+        </q-avatar>
+        <q-uploader
+          style="width: 100%"
+          ref='companyLogoUploader'
+          :factory="factoryFn"
+          accept="image/svg"
+          :max-file-size="maxSize"
+          :multiple="false"
+          :auto-upload="false"
+          :hide-upload-btn="true"
+          :label="t('profileComponent.inputLabels.companyLogo')"
+          field-name='file'
+          @uploaded="onFileUploaded"
+          @rejected="onInvalidCompanyLogo"
+          @failed="onFailedCompanyLogoUpload"
+          @added="addedFile"
+          @removed="removedFile"
+        >
+        </q-uploader>
+      </div>
+      <!-- <q-file
         filled
         v-model="companyLogo"
         accept=".svg"
@@ -141,10 +172,11 @@
             <img :src="companyLogoURL" />
           </q-avatar>
         </template>
-      </q-file>
+      </q-file> -->
       <q-select
         filled
         v-model="devise"
+        ref="deviseRef"
         :options="selectDevisesOption"
         option-disable="cannotSelect"
         :label="t('profileComponent.inputLabels.devise')+' *'"
@@ -157,6 +189,7 @@
       <q-select
         filled
         v-model="userType"
+        ref="userTypeRef"
         :options="selectUserTypesOption"
         option-disable="cannotSelect"
         :label="t('profileComponent.inputLabels.userType')+' *'"
@@ -198,19 +231,30 @@ const props = withDefaults(defineProps<RegisterCompProps>(), {
 const $q = useQuasar();
 const userId = ref(0);
 const firstName = ref(null);
+const firstNameRef = ref(null);
 const lastName = ref(null);
+const lastNameRef = ref(null);
 const login = ref(null);
+const loginRef = ref(null);
 const email = ref(null);
+const emailRef = ref(null);
 const confirmEmail = ref(null);
+const confirmEmailRef = ref(null);
 const pass = ref(null);
+const passRef = ref(null);
 const confirmPass = ref(null);
+const confirmPassRef = ref(null);
 const companyName = ref(null);
+const companyNameRef = ref(null);
 const companyLogo = ref(null);
+const companyLogoUploader = ref(null);
 const companyLogoURL = ref(null);
 const maxSize = ref(2 * 1024 * 1024);
 const devise = ref(null);
+const deviseRef = ref([]);
 const selectDevisesOption = ref([]);
 const userType = ref(null);
+const userTypeRef = ref(null);
 const selectUserTypesOption = ref([]); 
 const platform = $q.platform;
 const messageVisibility = ref(false);
@@ -220,76 +264,144 @@ const progress = ref(0);
 const router = useRouter();
 const validFirstName = computed(() => {
   const re = /^(([a-zA-Z])([-])*){2,30}$/;
-  return re.test(firstName.value);
+  const ret = re.test(firstName.value);
+  if (!ret){
+    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+
+  return ret;
 });
 const nonEmptyFirstName = computed(() => {
-  return !!firstName.value && firstName.value !== '';
+  const ret = !!firstName.value && firstName.value !== '';
+  if (!ret){
+    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validLastName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
-  return re.test(lastName.value);
+  const ret = re.test(lastName.value);
+  if (!ret){
+    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyLastName = computed(() => {
-  return !!lastName.value && lastName.value !== '';
+  const ret = !!lastName.value && lastName.value !== '';
+  if (!ret){
+    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validLogin = computed(() => {
   const re = /^(([a-zA-Z])([_])*){2,15}$/;
-  return re.test(firstName.value);
+  const ret = re.test(firstName.value);
+  if (!ret){
+    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyLogin = computed(() => {
-  return !!login.value && login.value !== '';
+  const ret = !!login.value && login.value !== '';
+  if (!ret){
+    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validEmail = computed(() => {
-  return true;
+  const ret = true;
+  if (!ret){
+    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyEmail = computed(() => {
-  return !!email.value && email.value !== '';
+  const ret = !!email.value && email.value !== '';
+  if (!ret){
+    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validPass = computed(() => {
   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-_(\[\])@$!%*#?&{}])[A-Za-z\d\-_(\[\])@$!%*#?&{}]{8,30}$/;
-  return re.test(pass.value);
+  const ret = re.test(pass.value);
+  if (!ret){
+    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyPass = computed(() => {
-  return !!pass.value && pass.value !== '';
+  const ret = !!pass.value && pass.value !== '';
+  if (!ret){
+    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validCompanyName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
-  return re.test(companyName.value);
+  const ret = re.test(companyName.value);
+  if (!ret){
+    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyCompanyName = computed(() => {
-  return !!companyName.value && companyName.value !== '';
+  const ret = !!companyName.value && companyName.value !== '';
+  if (!ret){
+    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
-const validCompanyLogo = computed(() => {
-  const re = /(\.svg)$/i;
-  if (!!companyLogo.value)
-    return re.test(companyLogo.value.name);
-  else
-    return true;
-});
+// const validCompanyLogo = computed(() => {
+//   const re = /(\.svg)$/i;
+//   if (!!companyLogo.value)
+//     return re.test(companyLogo.value.name);
+//   else
+//     return true;
+// });
 const nonEmptyDevise = computed(() => {
-  return !!devise.value && devise.value.value != 0;
+  const ret = !!devise.value && devise.value.value != 0;
+  if (!ret){
+    deviseRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyUserType = computed(() => {
-  return !!userType.value && userType.value.value != 0;
+  const ret = !!userType.value && userType.value.value != 0;
+  if (!ret){
+    userTypeRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validConfirmEmail = computed(() => {
-  return (confirmEmail.value === email.value);
+  const ret = (confirmEmail.value === email.value);
+  if (!ret){
+    confirmEmailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validConfirmPass = computed(() => {
-  return (confirmPass.value === pass.value);
+  const ret = (confirmPass.value === pass.value);
+  if (!ret){
+    confirmPassRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const emailCheck = async () => {
-  const ret = await checkEmail()
+  const ret = await checkEmail();
+  if (!ret){
+    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
   return ret;
 };
 const validateForm = async () => {
-  const ret1 = (validFirstName.value && validLastName.value && validLogin.value && validEmail.value && validPass.value && validCompanyName.value && validCompanyLogo.value && validConfirmEmail.value && validConfirmPass.value && await emailCheck());
+  const ret1 = (validFirstName.value && validLastName.value && validLogin.value && validEmail.value && validPass.value && validCompanyName.value && validConfirmEmail.value && validConfirmPass.value && await emailCheck());
   const ret2 = (nonEmptyFirstName.value && nonEmptyLastName.value && nonEmptyLogin.value && nonEmptyEmail.value && nonEmptyPass.value && nonEmptyCompanyName.value && nonEmptyDevise.value && nonEmptyUserType.value);
-  const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
-  return ret1 && ret2 && ret3;
+  // const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
+  return ret1 && ret2;
 };
 
-let userStore = null, messageStore = null, invoiceStore = null, prefs = null;
+let userStore = null, messageStore = null, invoiceStore = null, prefs = null, origin = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
@@ -314,6 +426,13 @@ else {
     }
   })();
 }
+if (!import.meta.env.SSR){
+  const fullOrigin = window.location.origin;
+  // console.log(import.meta.env);
+  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(":") + 1);
+  // console.log(origin);
+  // console.log(process.env);
+}
 hydrateForm(); 
 
 // FUNCTIONS
@@ -333,12 +452,13 @@ function reset() {
   firstName.value = null;
   lastName.value = null;
   login.value = null;
-  email.value = ref(null);
+  email.value = null;
   pass.value = null;
   companyName.value = null;
   companyLogo.value = null;
   devise.value = null;
   userType.value = null;
+  companyLogoUploader.value.reset();
 };
 async function submit() {
   // console.log('Register a new User !');
@@ -346,41 +466,42 @@ async function submit() {
   const valid = await validateForm();
   // console.log(`validate state: ${valid}`);
   if (valid) {
-    let ret = true;
+    // let ret = true;
     if (!!companyLogo.value){
-      ret = await upload()
-        .then((res) => {
-          // console.log(res);
-          return true;
-        })
-        .catch(async (err) => {
-          if (platform.is.desktop) {
-            messageStore.messages.push({
-              severity: true,
-              content: t('profileComponent.results.ko.upload', {err: err})
-            });
-          }
-          else {
-            await prefs.setPref('messages', [
-              {
-                severity: true,
-                content: t('invoicesComponent.results.ko.upload', { err: err })
-              }
-            ]);
-          }
-          messageVisibility.value = true;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('profileComponent.results.ko.upload', {err: err})
-          });
-          forceMessageItemsRerender();
-          return false;
-        });
+      companyLogoUploader.value.upload();
+      // ret = await upload()
+      //   .then((res) => {
+      //     // console.log(res);
+      //     return true;
+      //   })
+      //   .catch(async (err) => {
+      //     if (platform.is.desktop) {
+      //       messageStore.messages.push({
+      //         severity: true,
+      //         content: t('profileComponent.results.ko.upload', {err: err})
+      //       });
+      //     }
+      //     else {
+      //       await prefs.setPref('messages', [
+      //         {
+      //           severity: true,
+      //           content: t('invoicesComponent.results.ko.upload', { err: err })
+      //         }
+      //       ]);
+      //     }
+      //     messageVisibility.value = true;
+      //     $q.notify({
+      //       color: 'red-5',
+      //       textColor: 'white',
+      //       icon: 'warning',
+      //       message: t('profileComponent.results.ko.upload', {err: err})
+      //     });
+      //     forceMessageItemsRerender();
+      //     return false;
+      //   });
     }
     // console.log(ret);
-    if (ret) {
+    else {
       if (platform.is.desktop){
         const res = await addUserInDb();
         // console.log(res);
@@ -426,6 +547,14 @@ async function submit() {
         }
       }
     }
+  }
+  else {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('forms.errors.error.inputs')
+    });
   }
 };
 async function hydrateForm() {
@@ -672,7 +801,7 @@ async function addUserInDb() {
     email: email.value,
     password: pass.value,
     companyName: companyName.value,
-    companyLogo: !!companyLogo.value ? companyLogo.value.name : companyLogo.value,
+    companyLogo: !!companyLogo.value ? companyLogo.value : null,
     deviseId: devise.value.deviseId,
     type: userType.value.userTypeId,
   };
@@ -705,7 +834,7 @@ async function addUserInSQLiteDb() {
     email: email.value,
     pass: pass.value,
     companyName: companyName.value,
-    companyLogo: !!companyLogo.value ? companyLogo.value.name : companyLogo.value,
+    companyLogo: !!companyLogo.value ? companyLogo.value : null,
     deviseId: devise.value.deviseId,
     userTypeId: userType.value.userTypeId,
   };
@@ -717,11 +846,11 @@ async function addUserInSQLiteDb() {
     const sql = !!obj.companyLogo 
       ? `INSERT INTO \`user\` (\`firstName\`, \`lastName\`, \`login\`, \`email\`, \`pass\`, \`companyName\`, \`companyLogo\`, \`deviseId\`, \`userTypeId\`) VALUES ('${obj.firstName}', '${obj.lastName}', '${obj.login}', '${obj.email}', '${obj.pass}', '${obj.companyName}', '${obj.companyLogo}', '${obj.deviseId}', '${obj.userTypeId}');` 
       : `INSERT INTO \`user\` (\`firstName\`, \`lastName\`, \`login\`, \`email\`, \`pass\`, \`companyName\`, \`deviseId\`, \`userTypeId\`) VALUES ('${obj.firstName}', '${obj.lastName}', '${obj.login}', '${obj.email}', '${obj.pass}', '${obj.companyName}', '${obj.deviseId}', '${obj.userTypeId}');`;
-    console.log(sql);
+    // console.log(sql);
     // console.log(await newQuery(props.dbConn, 'SELECT * FROM user;'));
     const values = await newRun(props.dbConn, sql);
     let ret = false;
-    console.log(values);
+    // console.log(values);
     if (!!values && values.changes.changes) {
       // console.log(`User inserted with id --> ${values.changes.lastId}`);
       await prefs.setPref('message', {
@@ -764,10 +893,124 @@ async function addUserInSQLiteDb() {
     return false;
   }
 };
-function upload() {
-  return uploadImageAxiosService
-    .upload(companyLogo.value, (event) => {
-      progress.vale = Math.round((100 * event.loaded) / event.total);
+// function upload() {
+//   return uploadImageAxiosService
+//     .upload(companyLogo.value, (event) => {
+//       progress.vale = Math.round((100 * event.loaded) / event.total);
+//     });
+// };
+function onInvalidCompanyLogo(entries) {
+  // console.log(entries);
+  for (const k in entries){
+    const filename = entries[k].file.name;
+    const filesize = entries[k].file.size;
+    const ext = filename.lastIndexOf(".") !== -1 
+      ? filename.slice(filename.lastIndexOf(".")) 
+      : filename;
+    if (entries[k].failedPropValidation === 'accept'){
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('profileComponent.errors.error.companyLogo.accept', {ext: ext})
+      });
+    }
+    else if(entries[k].failedPropValidation === 'max-file-size'){
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('profileComponent.errors.error.companyLogo.maxFileSize', {max: maxSize, size: filesize})
+      });
+    }
+  }
+};
+async function onFailedCompanyLogoUpload({files, xhr}) {
+  const res = JSON.parse(xhr.response);
+  // console.log(res);
+  $q.notify({
+    color: 'red-5',
+    textColor: 'white',
+    icon: 'warning',
+    message: t('profileComponent.results.ko.upload', {err: `Request handling failed !`})
+  });
+  if (platform.is.desktop){
+    messageStore.messages.push({
+      severity: true,
+      content: t('profileComponent.results.ko.upload', {err: `Request handling failed (${res.message}) !`})
     });
+    messageStore.setMessagesVisibility(true);
+  }
+  else {
+    await prefs.setPref('message', {
+      messages: [
+        {
+          severity: true,
+          content: t('profileComponent.results.ko.upload', { err: `Request handling failed (${res.message}) !` })
+        }
+      ],
+      messageVisibility: true,
+    });
+  }
+  messageVisibility.value = true;
+  forceMessageItemsRerender();
+  companyLogoUploader.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+};
+async function onFileUploaded({files, xhr}){
+  const xhrRes = JSON.parse(xhr.response);
+  let res = false;
+  // console.log(res);
+  companyLogo.value = xhrRes.filename;
+  if (platform.is.desktop){
+    res = await addUserInDb();
+    // console.log(res);
+  }
+  else {
+    res = await addUserInSQLiteDb();
+    // console.log(`Adding User Result --> ${res}`);
+  }
+  if (res) {
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('profileComponent.results.ok.add')
+    });
+    router.push({name: t('startLinkName')});
+    // hydrateForm();
+  }
+  else {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('profileComponent.results.ko.add')
+    });
+    forceMessageItemsRerender();
+  }
+};
+function factoryFn(files) {
+  return new Promise((resolve) => {
+    // console.log(files);
+    resolve({
+      url: `${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/users/upload`,
+      method: "POST",
+    });
+  });
+};
+function addedFile(files) {
+  // console.log(files);
+  // console.log(companyLogoUploader.value);
+  if (!!files && files.length) {
+    companyLogoURL.value = URL.createObjectURL(files[0]);
+    companyLogo.value = URL.createObjectURL(files[0]);
+  }
+  // else {
+  //   companyLogoURL.value = null;
+  // }
+};
+function removedFile(files) {
+  companyLogoURL.value = null;
+  companyLogo.value = null;
 };
 </script>

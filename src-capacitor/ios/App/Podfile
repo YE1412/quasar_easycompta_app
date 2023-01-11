@@ -11,11 +11,13 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorCommunityFileOpener', :path => '../../node_modules/@capacitor-community/file-opener'
   pod 'CapacitorCommunityHttp', :path => '../../node_modules/@capacitor-community/http'
   pod 'CapacitorCommunitySqlite', :path => '../../node_modules/@capacitor-community/sqlite'
   pod 'CapacitorFilesystem', :path => '../../node_modules/@capacitor/filesystem'
   pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
   pod 'CapacitorPreferences', :path => '../../node_modules/@capacitor/preferences'
+  pod 'CapacitorBlobWriter', :path => '../../node_modules/capacitor-blob-writer'
 end
 
 target 'App' do

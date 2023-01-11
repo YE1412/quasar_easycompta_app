@@ -10,6 +10,7 @@
         filled
         type="text"
         v-model="firstName"
+        ref="firstNameRef"
         :label="t('profileComponent.inputLabels.firstName')+' *'"
         :hint="t('profileComponent.hints.firstName')"
         :hide-hint="true"
@@ -24,6 +25,7 @@
         filled
         type="text"
         v-model="lastName"
+        ref="lastNameRef"
         :label="t('profileComponent.inputLabels.lastName')+' *'"
         :hint="t('profileComponent.hints.lastName')"
         :hide-hint="true"
@@ -38,6 +40,7 @@
         filled
         type="text"
         v-model="login"
+        ref="loginRef"
         :label="t('profileComponent.inputLabels.login')+' *'"
         :hint="t('profileComponent.hints.login')"
         :hide-hint="true"
@@ -52,6 +55,7 @@
         filled
         type="email"
         v-model="email"
+        ref="emailRef"
         :label="t('profileComponent.inputLabels.email')+' *'"
         :hint="t('profileComponent.hints.email')+' *'"
         :hide-hint="true"
@@ -68,6 +72,7 @@
         filled
         type="password"
         v-model="pass"
+        ref="passRef"
         :label="t('profileComponent.inputLabels.pass')+' *'"
         :hint="t('profileComponent.hints.pass')"
         :hide-hint="true"
@@ -82,6 +87,7 @@
         filled
         type="text"
         v-model="companyName"
+        ref="companyNameRef"
         :label="t('profileComponent.inputLabels.companyName')+' *'"
         :hint="t('profileComponent.hints.companyName')"
         :hide-hint="true"
@@ -92,9 +98,33 @@
           val => validCompanyName || t('profileComponent.errors.error.companyName')
         ]"
       />
-      <q-file
+      <div class="flex justify-start row items-center">
+        <q-avatar v-if="!!companyLogoURL">
+          <img :src="companyLogoURL" />
+        </q-avatar>
+        <q-uploader
+          style="width: 100%"
+          ref="companyLogoUploader"
+          :factory="factoryFn"
+          accept="image/svg"
+          :max-file-size="maxSize"
+          :multiple="false"
+          :auto-upload="false"
+          :hide-upload-btn="true"
+          :label="t('profileComponent.inputLabels.companyLogo')"
+          field-name='file'
+          @uploaded="onFileUploaded"
+          @rejected="onInvalidCompanyLogo"
+          @failed="onFailedCompanyLogoUpload"
+          @added="addedFile"
+          @removed="removedFile"
+        >
+        </q-uploader>
+      </div>
+      <!-- <q-file
         filled
         v-model="companyLogo"
+        :factory="upload"
         accept="image/*"
         :max-file-size="maxSize"
         :multiple="false"
@@ -114,10 +144,11 @@
             <img :src="companyLogoURL" />
           </q-avatar>
         </template>
-      </q-file>
+      </q-file> -->
       <q-select
         filled
         v-model="devise"
+        ref="deviseRef"
         :options="selectDevisesOption"
         option-disable="cannotSelect"
         :label="t('profileComponent.inputLabels.devise')+' *'"
@@ -130,6 +161,7 @@
       <q-select
         filled
         v-model="userType"
+        ref="userTypeRef"
         :options="selectUserTypesOption"
         option-disable="cannotSelect"
         :label="t('profileComponent.inputLabels.userType')+' *'"
@@ -161,6 +193,8 @@ import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, 
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
 import { Http } from '@capacitor-community/http';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+// import * as dotenv from "dotenv";
+// dotenv.config({ path: "../../envs/.env" });
 
 // VARIABLES
 interface ProfileProps {
@@ -172,17 +206,26 @@ const props = withDefaults(defineProps<ProfileProps>(), {
 const $q = useQuasar();
 const userId = ref(0);
 const firstName = ref(null);
+const firstNameRef = ref(null);
 const lastName = ref(null);
+const lastNameRef = ref(null);
 const login = ref(null);
+const loginRef = ref(null);
 const email = ref(null);
+const emailRef = ref(null);
 const pass = ref(null);
+const passRef = ref(null);
 const companyName = ref(null);
+const companyNameRef = ref(null);
+const companyLogoUploader = ref(null);
 const companyLogo = ref(null);
 const companyLogoURL = ref(null);
 const maxSize = ref(2 * 1024 * 1024);
 const devise = ref(null);
+const deviseRef =ref(null);
 const selectDevisesOption = ref([]);
 const userType = ref(null);
+const userTypeRef = ref(null);
 const selectUserTypesOption = ref([]); 
 const platform = $q.platform;
 const messageVisibility = ref(false);
@@ -191,63 +234,120 @@ const { t } = useI18n();
 const progress = ref(0);
 const validFirstName = computed(() => {
   const re = /^(([a-zA-Z])([-])*){2,30}$/;
-  return re.test(firstName.value);
+  const ret = re.test(firstName.value);
+  if (!ret){
+    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+
+  return ret;
 });
 const nonEmptyFirstName = computed(() => {
-  return !!firstName.value && firstName.value !== '';
+  const ret = !!firstName.value && firstName.value !== '';
+  if (!ret){
+    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validLastName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
-  return re.test(lastName.value);
+  const ret = re.test(lastName.value);
+  if (!ret){
+    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyLastName = computed(() => {
-  return !!lastName.value && lastName.value !== '';
+  const ret = !!lastName.value && lastName.value !== '';
+  if (!ret){
+    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validLogin = computed(() => {
   const re = /^(([a-zA-Z])([_])*){2,15}$/;
-  return re.test(firstName.value);
+  const ret = re.test(firstName.value);
+  if (!ret){
+    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyLogin = computed(() => {
-  return !!login.value && login.value !== '';
+  const ret = !!login.value && login.value !== '';
+  if (!ret){
+    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validEmail = computed(() => {
-  return true;
+  const ret = true;
+  if (!ret){
+    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyEmail = computed(() => {
-  return !!email.value && email.value !== '';
+  const ret = !!email.value && email.value !== '';
+  if (!ret){
+    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validPass = computed(() => {
   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-_(\[\])@$!%*#?&{}])[A-Za-z\d\-_(\[\])@$!%*#?&{}]{8,30}$/;
-  return re.test(pass.value);
+  const ret = re.test(pass.value);
+  if (!ret){
+    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyPass = computed(() => {
-  return !!pass.value && pass.value !== '';
+  const ret = !!pass.value && pass.value !== '';
+  if (!ret){
+    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validCompanyName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
-  return re.test(companyName.value);
+  const ret = re.test(companyName.value);
+  if (!ret){
+    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyCompanyName = computed(() => {
-  return !!companyName.value && companyName.value !== '';
+  const ret = !!companyName.value && companyName.value !== '';
+  if (!ret){
+    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
-const validCompanyLogo = computed(() => {
-  const re = /(\.svg)$/i;
-  if (!!companyLogo.value)
-    return re.test(companyLogo.value.name);
-  else
-    return true;
-});
+// const validCompanyLogo = computed(() => {
+//   const re = /(\.svg)$/i;
+//   if (!!companyLogo.value)
+//     return re.test(companyLogo.value.name);
+//   else
+//     return true;
+// });
 const nonEmptyDevise = computed(() => {
-  return !!devise.value && devise.value.value != 0;
+  const ret = !!devise.value && devise.value.value != 0;
+  if (!ret){
+    deviseRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const nonEmptyUserType = computed(() => {
-  return !!userType.value && userType.value.value != 0;
+  const ret = !!userType.value && userType.value.value != 0;
+  if (!ret){
+    userTypeRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  }
+  return ret;
 });
 const validateForm = computed(() => {
-  const ret1 = (validFirstName.value && validLastName.value && validLogin.value && validEmail.value && validPass.value && validCompanyName.value && validCompanyLogo.value);
+  const ret1 = (validFirstName.value && validLastName.value && validLogin.value && validEmail.value && validPass.value && validCompanyName.value);
   const ret2 = (nonEmptyFirstName.value && nonEmptyLastName.value && nonEmptyLogin.value && nonEmptyEmail.value && nonEmptyPass.value && nonEmptyCompanyName.value && nonEmptyDevise.value && nonEmptyUserType.value);
-  const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
-  return ret1 && ret2 && ret3;
+  // const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
+  return ret1 && ret2;
 });
 // const doGetImgForMobiles = async():HttpResponse => {
 //   let ret = null;
@@ -274,7 +374,7 @@ const validateForm = computed(() => {
 //   return ret;
 // };
 
-let userStore = null, messageStore = null, invoiceStore = null, prefs = null;
+let userStore = null, messageStore = null, invoiceStore = null, prefs = null, origin = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
@@ -305,6 +405,13 @@ else {
     // console.log(res3);
   })();
 }
+if (!import.meta.env.SSR){
+  const fullOrigin = window.location.origin;
+  // console.log(import.meta.env);
+  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(":") + 1);
+  // console.log(origin);
+  // console.log(process.env);
+}
 hydrateForm();
 
 // FUNCTIONS
@@ -330,58 +437,58 @@ function reset() {
   companyLogo.value = null;
   devise.value = null;
   userType.value = null;
+  companyLogoUploader.value.reset();
 };
 async function submit() {
-  console.log('Submit !');
-  console.log(companyLogo.value);
+  // console.log('Submit !');
+  // console.log(companyLogo.value);
   if (validateForm.value) {
-    let ret = true;
+    // let ret = true;
     if (!!companyLogo.value){
-      if (platform.is.desktop){
-        ret = await upload()
-          .then((res) => {
-            // console.log(res);
-            return true;
-          })
-          .catch(async (err) => {
-            if (platform.is.desktop) {
-              messageStore.messages.push({
-                severity: true,
-                content: t('profileComponent.results.ko.upload', {err: err})
-              });
-            }
-            else {
-              await prefs.setPref('message', {
-                messages: [
-                  {
-                    severity: true,
-                    content: t('invoicesComponent.results.ko.upload', { err: err })
-                  }
-                ],
-                messageVisibility: true,
-              });
-            }
-            messageVisibility.value = true;
-            $q.notify({
-              color: 'red-5',
-              textColor: 'white',
-              icon: 'warning',
-              message: t('profileComponent.results.ko.upload', {err: err})
-            });
-            forceMessageItemsRerender();
-            return false;
-          });
-      }
-      else {
-        console.log(`CompanyLogo uploading !`);
-        console.log(companyLogo.value);
-        // ret = await uploadForMobile();
-        ret = false;
-      }
+      // console.log(`CompanyLogo uploading !`);
+      // console.log(companyLogo.value);
+      // ret = await uploadForMobile();
+      companyLogoUploader.value.upload();
+      // if (platform.is.desktop){
+      //   ret = await upload()
+      //     .then((res) => {
+      //       // console.log(res);
+      //       return true;
+      //     })
+      //     .catch(async (err) => {
+      //       if (platform.is.desktop) {
+      //         messageStore.messages.push({
+      //           severity: true,
+      //           content: t('profileComponent.results.ko.upload', {err: err})
+      //         });
+      //       }
+      //       else {
+      //         await prefs.setPref('message', {
+      //           messages: [
+      //             {
+      //               severity: true,
+      //               content: t('invoicesComponent.results.ko.upload', { err: err })
+      //             }
+      //           ],
+      //           messageVisibility: true,
+      //         });
+      //       }
+      //       messageVisibility.value = true;
+      //       $q.notify({
+      //         color: 'red-5',
+      //         textColor: 'white',
+      //         icon: 'warning',
+      //         message: t('profileComponent.results.ko.upload', {err: err})
+      //       });
+      //       forceMessageItemsRerender();
+      //       return false;
+      //     });
+      // }
+      // else {
+      // }
     }
     // console.log(ret);
-    // ret = false;
-    if (ret) {
+    else {
       if (platform.is.desktop){
         const res = await updateUserInDb();
         // console.log(res);
@@ -426,6 +533,14 @@ async function submit() {
       forceMessageItemsRerender();
     }
   }
+  else {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('forms.errors.error.inputs')
+    });
+  }
 };
 async function hydrateForm() {
   if (platform.is.desktop){
@@ -442,9 +557,9 @@ async function hydrateForm() {
           pass.value = null;
           companyName.value = res.companyName;
           companyLogo.value = null;
-          companyLogoURL.value = !!res.companyLogo && res.companyLogo != '' ? `${window.location.origin}/dist/assets/uploads/${res.companyLogo}` : null;
+          companyLogoURL.value = !!res.companyLogo && res.companyLogo != '' ? `${window.location.origin}${process.env.PUBLIC_PATH}/assets/uploads/${res.companyLogo}` : null;
           devise.value = {value: res.devise.deviseId, label: `${res.devise.symbole} - ${res.devise.libelle}`, cannotSelect: false, deviseId: res.devise.deviseId, libelle: res.devise.libelle, symbole: res.devise.symbole};
-          if (!!res.user.user_type) {
+          if (!!res.user_type) {
             let userTypeLabel = res.user_type.regular && !res.user_type.admin ? t('profileComponent.libelles.types.regular') : '';
             userTypeLabel = res.user_type.admin && !res.user_type.regular ? t('profileComponent.libelles.types.admin') : userTypeLabel;
             userTypeLabel = res.user_type.admin && res.user_type.regular ? t('profileComponent.libelles.types.regular')+', '+t('profileComponent.libelles.types.admin') : userTypeLabel;
@@ -671,10 +786,11 @@ async function updateUserInDb() {
     email: email.value,
     pass: pass.value,
     companyName: companyName.value,
-    companyLogo: !!companyLogo.value ? companyLogo.value.name : companyLogo.value,
+    companyLogo: !!companyLogo.value ? companyLogo.value : null,
     deviseId: devise.value.deviseId,
     userTypeId: userType.value.userTypeId,
   };
+  // console.log(obj);
   await transformObject(obj);
   return userAxiosService.update(userId.value, obj)
     .then((res) => {
@@ -704,7 +820,7 @@ async function updateUserInSQLiteDb() {
     email: email.value,
     pass: pass.value,
     companyName: companyName.value,
-    companyLogo: !!companyLogo.value ? companyLogo.value.name : companyLogo.value,
+    companyLogo: !!companyLogo.value ? companyLogo.value.name : null,
     deviseId: devise.value.deviseId,
     userTypeId: userType.value.userTypeId,
   };
@@ -735,7 +851,7 @@ async function updateUserInSQLiteDb() {
       usrCookie.user.email = email.value;
       usrCookie.user.pass = null;
       usrCookie.user.companyName = companyName.value;
-      usrCookie.user.companyLogo = !!companyLogo.value ? companyLogo.value.name : companyLogo.value;
+      usrCookie.user.companyLogo = !!companyLogo.value ? companyLogo.value : null;
       usrCookie.user.devise = devise.value;
       usrCookie.user.user_type = userType.value;
       await prefs.setPref('user', usrCookie);
@@ -770,162 +886,295 @@ async function updateUserInSQLiteDb() {
     return false;
   }
 };
-function upload() {
-  return uploadImageAxiosService
-    .upload(companyLogo.value, (event) => {
-      progress.vale = Math.round((100 * event.loaded) / event.total);
-    });
-};
-async function uploadForMobile(filePath: string): HttpUploadFileResult {
-  let ret = false;
-  let res: HttpUploadFileResult = null;
-  const options: HttpUploadFileOptions = {
-    name: 'companyLogo',
-    // url: `${window.location.origin}/#${t('uploadLinkTarget')}`,
-    url: `${window.location.origin}`,
-    filePath: filePath,
-  };
-  console.log(options);
-  res = await Http.uploadFile(options);
-
-  if(res.status !== 500 && res.status !== 404){
-    ret = true;
-  }
-  else {
-    console.log(res);
-  }
-  return ret;
-};
-async function readFile(path: string): ReadFileResult{
-  let ret: ReadFileResult = null;
-  const options: ReadFileOptions = {
-    path: path
-  };
-  // console.log('Reading filepath --> '+options.path);
-  ret = await Filesystem.readFile(options);
-  return ret;
-};
-async function downloadForMobile(dest: string, path?: string = '', data?: any = undefined): HttpDownloadFileResult {
-  let res: HttpDownloadFileResult = null;
-  let options: HttpDownloadFileOptions = null; 
-  if (!!data){
-    options = {
-      filePath: `${dest}`,
-      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
-      data: data,
-      // fileDirectory: Directory.Documents,
-    };
-  }
-  else {
-    options = {
-      filePath: `${dest}`,
-      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
-      // fileDirectory: Directory.Documents,
-    }; 
-  }
-  console.log(options.url);
-  res = await Http.downloadFile(options);
-  return res;
-};
-async function getRequest(path: string): HttpResponse {
-    let res: HttpResponse = null;
-    const options: HttpOptions = {
-    url: `${window.location.origin}/${path}`,
-    responseType: 'blob',
-  };
-  res = await Http.get(options);
-  return res;
-};
-async function readInternalDir(path: string) {
-  let ret: ReaddirResult = null;
-  const options: ReaddirOptions=  {
-    path: path,
-  };
-
-  ret = await Filesystem.readdir(options);
-  return ret;
-};
-interface HttpOptions {
-  url: string;
-  connectTimeout?: number; // How long to wait for the initial connection.
-  data?: any;
-  headers?: HttpHeaders;
-  method?: string;
-  params?: HttpParams;
-  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
-  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
-  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
-  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
-};
-interface HttpResponse {
-  data: any;
-  headers: HttpHeaders;
-  status: number;
-  url: string;
-};
-interface HttpDownloadFileOptions {
-  filePath: string; //  The path the downloaded file should be moved to
-  url: string;
-  connectTimeout?: number; // How long to wait for the initial connection.
-  data?: any;
-  fileDirectory?: Directory; // Optionally, the directory to put the file in. If this option is used, filePath can be a relative path rather than absolute
-  headers?: HttpHeaders;
-  method?: string;
-  params?: HttpParams;
-  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
-  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
-  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
-  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
-};
-interface HttpDownloadFileResult {
-  blob?: Blob;
-  path?: string;
-};
-interface HttpUploadFileOptions {
-  name: string; //  The field name to upload the file with
-  url: string; // The URL to upload the file to.
-  blob?: Blob; // For uploading a file on the web, a JS Blob to upload
-  connectTimeout?: number; // How long to wait for the initial connection
-  data?: any;
-  fileDirectory?: Directory; // Optionally, the directory to look for the file in. If this option is used, filePath can be a realtive path rather than absolute
-  filePath?: string; // For uploading a file natively, the path to the file on disk to upload
-  headers?: HttpHeaders;
-  method?: string;
-  params?: HttpParams;
-  readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
-  responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is 'json', this value is ingnored
-  shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true
-  webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
-};
-interface HttpUploadFileResult {
-  data: any;
-  headers: HttpHeaders;
-  status: number;
-  url: string;
-};
-
-// WATCHERS
-watch(
-  companyLogo,
-  async (newCompanyLogo) => {
-    // console.log(newCompanyLogo);
-    if (!!newCompanyLogo) {
-      companyLogoURL.value = URL.createObjectURL(newCompanyLogo);
-      // const res1 = await getRequest('assets/uploads/CL_SVG.svg');
-      // console.log(res1);
-      // const res2 = await downloadForMobile('svg_file_16.svg', null, res1.data);
-      // console.log(res2);
-      const res3 = await readInternalDir('file:///Users/mados/Library/Developer/CoreSimulator/Devices/462296F4-8DDC-4F1B-AD30-AAFED6B53D27/data/Containers/Data/Application/1B5AD32A-3A2B-457F-9566-6744B9244E3F/Documents');
-      for (const k in res3.files)
-        console.log(res3.files[k].name);
-      const res = await uploadForMobile('file:///Users/mados/Library/Developer/CoreSimulator/Devices/462296F4-8DDC-4F1B-AD30-AAFED6B53D27/data/Containers/Data/Application/1B5AD32A-3A2B-457F-9566-6744B9244E3F/Documents/svg_file_16.svg');
-      console.log(res);
-    } 
-    else {
-      companyLogoURL.value = null;
+function onInvalidCompanyLogo(entries) {
+  // console.log(entries);
+  for (const k in entries){
+    const filename = entries[k].file.name;
+    const filesize = entries[k].file.size;
+    const ext = filename.lastIndexOf(".") !== -1 
+      ? filename.slice(filename.lastIndexOf(".")) 
+      : filename;
+    if (entries[k].failedPropValidation === 'accept'){
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('profileComponent.errors.error.companyLogo.accept', {ext: ext})
+      });
+    }
+    else if(entries[k].failedPropValidation === 'max-file-size'){
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('profileComponent.errors.error.companyLogo.maxFileSize', {max: maxSize, size: filesize})
+      });
     }
   }
-);
+};
+async function onFailedCompanyLogoUpload({files, xhr}) {
+  const res = JSON.parse(xhr.response);
+  // console.log(res);
+  $q.notify({
+    color: 'red-5',
+    textColor: 'white',
+    icon: 'warning',
+    message: t('profileComponent.results.ko.upload', {err: `Request handling failed !`})
+  });
+  if (platform.is.desktop){
+    messageStore.messages.push({
+      severity: true,
+      content: t('profileComponent.results.ko.upload', {err: `Request handling failed (${res.message}) !`})
+    });
+    messageStore.setMessagesVisibility(true);
+  }
+  else {
+    await prefs.setPref('message', {
+      messages: [
+        {
+          severity: true,
+          content: t('profileComponent.results.ko.upload', { err: `Request handling failed (${res.message}) !` })
+        }
+      ],
+      messageVisibility: true,
+    });
+  }
+  messageVisibility.value = true;
+  forceMessageItemsRerender();
+  companyLogoUploader.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+};
+async function onFileUploaded({files, xhr}){
+  const xhrRes = JSON.parse(xhr.response);
+  let res = false;
+  // console.log(res);
+  companyLogo.value = xhrRes.filename;
+  if (platform.is.desktop){
+    res = await updateUserInDb();
+    // console.log(res);
+  }
+  else {
+    res = await updateUserInSQLiteDb();
+  }
+  if (res) {
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('profileComponent.results.ok.update')
+    });
+    // hydrateForm();
+  }
+  else {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('profileComponent.results.ko.update')
+    });
+  }
+  forceMessageItemsRerender();
+};
+function factoryFn(files) {
+  return new Promise((resolve) => {
+    // console.log(files);
+    resolve({
+      url: `${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/users/upload`,
+      method: "POST",
+      // 'field-name': 'file',
+      // headers: [
+      //   {
+      //     name: 'Content-Type',
+      //     value: 'multipart/form-data'
+      //   }
+      // ]
+    });
+  });
+};
+function addedFile(files) {
+  // console.log(files);
+  // console.log(companyLogoUploader.value);
+  if (!!files && files.length) {
+    companyLogoURL.value = URL.createObjectURL(files[0]);
+    companyLogo.value = URL.createObjectURL(files[0]);
+  }
+  // else {
+  //   companyLogoURL.value = null;
+  // }
+};
+function removedFile(files) {
+  companyLogoURL.value = null;
+  companyLogo.value = null;
+};
+// function upload() {
+//   return uploadImageAxiosService
+//     .upload(companyLogo.value, (event) => {
+//       progress.vale = Math.round((100 * event.loaded) / event.total);
+//     });
+// };
+// async function uploadForMobile(filePath: string): HttpUploadFileResult {
+//   let ret = false;
+//   let res: HttpUploadFileResult = null;
+//   const options: HttpUploadFileOptions = {
+//     name: 'file',
+//     url: `${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/users/upload`,
+//     // url: `${window.location.origin}`,
+//     filePath: filePath,
+//   };
+//   console.log(options);
+//   res = await Http.uploadFile(options);
+
+//   if(res.status !== 500 && res.status !== 404){
+//     ret = true;
+//   }
+//   else {
+//     console.log(res);
+//   }
+//   return ret;
+// };
+// async function readFile(path: string): ReadFileResult{
+//   let ret: ReadFileResult = null;
+//   const options: ReadFileOptions = {
+//     path: path
+//   };
+//   // console.log('Reading filepath --> '+options.path);
+//   ret = await Filesystem.readFile(options);
+//   return ret;
+// };
+// async function downloadForMobile(dest: string, path?: string = '', data?: any = undefined): HttpDownloadFileResult {
+//   let res: HttpDownloadFileResult = null;
+//   let options: HttpDownloadFileOptions = null; 
+//   if (!!data){
+//     options = {
+//       filePath: `${dest}`,
+//       url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+//       data: data,
+//       // fileDirectory: Directory.Documents,
+//     };
+//   }
+//   else {
+//     options = {
+//       filePath: `${dest}`,
+//       url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+//       // fileDirectory: Directory.Documents,
+//     }; 
+//   }
+//   console.log(options.url);
+//   res = await Http.downloadFile(options);
+//   return res;
+// };
+// async function getRequest(path: string): HttpResponse {
+//     let res: HttpResponse = null;
+//     const options: HttpOptions = {
+//     url: `${window.location.origin}/${path}`,
+//     responseType: 'blob',
+//   };
+//   res = await Http.get(options);
+//   return res;
+// };
+// async function readInternalDir(path: string) {
+//   let ret: ReaddirResult = null;
+//   const options: ReaddirOptions=  {
+//     path: path,
+//   };
+
+//   ret = await Filesystem.readdir(options);
+//   return ret;
+// };
+// async function getFileUri(path: string, withFullPath?: boolean = true): GetUriResult{
+//   let ret: GetUriResult = null;
+//   let options: GetUriOptions = null;
+//   if (withFullPath){
+//     options = {
+//       path: `${path}`
+//     };
+//   }
+//   else {
+//     options = {
+//       path: `${path}`,
+//       directory: Directory.Documents,
+//     };
+//   }
+
+//   ret = await Filesystem.getUri(options);
+//   return ret;
+// };
+// interface HttpOptions {
+//   url: string;
+//   connectTimeout?: number; // How long to wait for the initial connection.
+//   data?: any;
+//   headers?: HttpHeaders;
+//   method?: string;
+//   params?: HttpParams;
+//   readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+//   responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
+//   shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
+//   webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+// };
+// interface HttpResponse {
+//   data: any;
+//   headers: HttpHeaders;
+//   status: number;
+//   url: string;
+// };
+// interface HttpDownloadFileOptions {
+//   filePath: string; //  The path the downloaded file should be moved to
+//   url: string;
+//   connectTimeout?: number; // How long to wait for the initial connection.
+//   data?: any;
+//   fileDirectory?: Directory; // Optionally, the directory to put the file in. If this option is used, filePath can be a relative path rather than absolute
+//   headers?: HttpHeaders;
+//   method?: string;
+//   params?: HttpParams;
+//   readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+//   responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is "json", this value is ignored.
+//   shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true.
+//   webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+// };
+// interface HttpDownloadFileResult {
+//   blob?: Blob;
+//   path?: string;
+// };
+// interface HttpUploadFileOptions {
+//   name: string; //  The field name to upload the file with
+//   url: string; // The URL to upload the file to.
+//   blob?: Blob; // For uploading a file on the web, a JS Blob to upload
+//   connectTimeout?: number; // How long to wait for the initial connection
+//   data?: any;
+//   fileDirectory?: Directory; // Optionally, the directory to look for the file in. If this option is used, filePath can be a realtive path rather than absolute
+//   filePath?: string; // For uploading a file natively, the path to the file on disk to upload
+//   headers?: HttpHeaders;
+//   method?: string;
+//   params?: HttpParams;
+//   readTimeout?: number; //  How long to wait to read additional data. Resets each time new data is received
+//   responseType?: HttpResponseType; // This is used to parse the response appropriately before returning it to the requestee. If the response content-type is 'json', this value is ingnored
+//   shouldEncodeUrlParams?: boolean; // Use this option if you need to keep the URL unencoded in certain cases (already encoded, azure/firebase testing, etc.). The default is true
+//   webFetchExtra?: RequestInit; // Extra arguments for fetch when running on the web
+// };
+// interface HttpUploadFileResult {
+//   data: any;
+//   headers: HttpHeaders;
+//   status: number;
+//   url: string;
+// };
+
+// WATCHERS
+// watch(
+//   companyLogo,
+//   async (newCompanyLogo) => {
+//     // console.log(newCompanyLogo);
+//     if (!!newCompanyLogo) {
+//       companyLogoURL.value = URL.createObjectURL(newCompanyLogo);
+//       // console.log(companyLogoURL.value);
+//       // const res1 = await getFileUri('slider-2.jpg', false);
+//       // console.log(res1);
+//       // const res2 = await uploadForMobile(res1.uri);
+//       // console.log(res2);
+//     } 
+//     else {
+//       companyLogoURL.value = null;
+//     }
+//   }
+// );
 
 // LIFECYCLE EVENTS
 

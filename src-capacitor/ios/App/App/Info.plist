@@ -49,5 +49,10 @@
 	<string>YES</string>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<string>YES</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

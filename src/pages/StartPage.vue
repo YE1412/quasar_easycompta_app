@@ -262,6 +262,8 @@ async function submit(){
       }
       else {
         userStore.setConnected(true);
+        messageStore.messages = [];
+        messageStore.setMessagesVisibility(false);
         router.push(t('homeTerLinkTarget'));
       }
     }
@@ -280,7 +282,7 @@ async function submit(){
     if (ret){
       const res = await getSessionForMobile()
         .then((res) => {
-          return true;
+          return res;
         })
         .catch(async (err) => {
           const mess = await prefs.getPref('message');
@@ -309,6 +311,10 @@ async function submit(){
         const usr = await prefs.getPref('user');
         usr.connected = true;
         await prefs.setPref('user', usr);
+        await prefs.setPref('message', {
+          messages: [],
+          messagesVisibility: false,
+        });
         router.push('/');
       }
     }
@@ -465,7 +471,7 @@ function sanitizeQueryResult(obj: any) {
   }
   return ret;
 };
-function getSessionForMobile() {
+async function getSessionForMobile() {
   return new Promise(async (resolve, reject) => {
     // console.log(`Session`);
     const newId = uuidv4();

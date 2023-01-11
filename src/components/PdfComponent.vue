@@ -23,6 +23,8 @@ import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ 
 import { Http } from '@capacitor-community/http';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { FileOpener } from '@capacitor-community/file-opener';
+import write_blob from 'capacitor-blob-writer';
+
 // VARIABLES
 interface PdfComponentProps {
   dbConn: SQLiteDBConnection | null;
@@ -389,6 +391,7 @@ function tableInvoicesVATLibelle(ind: number) {
   ret.tvaValueLibelle = `${tvaValueLibelle} %`;
   ret.tvaBaseLibelle = tvaBaseLibelle.replaceAll(/\s/gi, "");
   ret.tvaMontantLibelle = tvaMontantLibelle.replaceAll(/\s/gi, "");
+  // console.log(ret);
   return ret;
 };
 function tableInvoicesDateLibelle(ind: number) {
@@ -484,19 +487,23 @@ async function buildAndSavePdf(inv: any) {
     .replaceAll("/", "_")
     .replaceAll(" ", "_")
     .replaceAll(":", "_")
-    .replaceAll(",", "")}`;
+    .replaceAll(",", "")
+    .replaceAll("à", "a")}`;
   if (platform.is.desktop){
     doc.save(`${fileName}.pdf`);
     return null;
   }
   else {
-    const output = doc.output(undefined, `${fileName}.pdf`);
+    const output = doc.output('blob', `${fileName}.pdf`);
     // console.log(output);
     // console.log('Downloading file !');
     // const res = await downloadForMobile(`${fileName}.pdf`, null, output);
-    const res = await writeFileForMobile(`${fileName}.pdf`, output);
-    console.log(res);
-    return {uri: res.uri, name: `${fileName}.pdf`};
+    // const res = await writeFileForMobile(`${fileName}.pdf`, output);
+    const res = await writeBlobFileForMobile(`${fileName}.pdf`, output);
+    // console.log(res);
+    // const getUri = await getFileUri(`${fileName}.pdf`);
+    // console.log(getUri);
+    return {uri: res, name: `${fileName}.pdf`};
   }
   // // doc.addPage(format, orientation);
 };
@@ -1115,6 +1122,7 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
     inv.devise === "€"
       ? `${inv.tvaValue.tvaBaseLibelle} ${inv.devise}`
       : `${inv.devise} ${inv.tvaValue.tvaBaseLibelle}`;
+  console.log(vatBaseValueTextCell);
   doc.text(
     vatBaseValueTextCell,
     tableXPos + footerCellTableWidth * 2 + 1.7,
@@ -1901,7 +1909,7 @@ async function downloadForMobile(dest: string, path?: string = '', data?: any = 
   if (!!data){
     options = {
       filePath: `${dest}`,
-      url: `${window.location.origin}/fvdfgdgf`,
+      url: `${window.location.origin}/`,
       data: data,
       // fileDirectory: Directory.Documents,
     };
@@ -1917,20 +1925,46 @@ async function downloadForMobile(dest: string, path?: string = '', data?: any = 
   res = await Http.downloadFile(options);
   return res;
 };
-async function writeFileForMobile(dest: string, data: any){
+async function writeFileForMobile(dest: string, data: any): WriteFileResult{
   let ret: WriteFileResult = null;
   const options: WriteFileOptions = {
     path: `${dest}`,
     data: data,
     directory: Directory.Documents,
-    encoding: Encoding.ASCII,
+    encoding: Encoding.UTF8,
     recursive: false
   };
   // console.log(options);
   ret = await Filesystem.writeFile(options);
   return ret;
 };
-function getMimeType(name: string){
+async function writeBlobFileForMobile(dest: string, data: Blob){
+  let ret = null;
+  const options = {
+    path: `${dest}`,
+    directory: Directory.Documents,
+    blob: data,
+    recursive: false,
+    fast_mode: false,
+    on_fallback: (err) => {
+      console.log(err);
+    }
+  };
+
+  ret = await write_blob(options);
+  return ret;
+};
+async function getFileUri(path: string): GetUriResult{
+  let ret: GetUriResult = null;
+  const options: GetUriOptions = {
+    path: `${path}`,
+    directory: Directory.Documents,
+  };
+
+  ret = await Filesystem.getUri(options);
+  return ret;
+};
+function getMimeType(name: string): string{
   let ret: string = null;
   if (name.indexOf('pdf')){
     ret = 'application/pdf';

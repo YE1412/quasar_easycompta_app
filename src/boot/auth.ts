@@ -63,7 +63,7 @@ function isRealPath(to: string) {
   // console.log(i18n.global.locale.value);
   // console.log(`Obj path : `);
   for (const obj of pathsObj) {
-    console.log(t(obj.target));
+    // console.log(t(obj.target));
     if (to === t(obj.target)) {
       let ret = {};
       ret.path = t(obj.target);
@@ -120,22 +120,22 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
   const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-
-  console.log('-------------------------------------');
-  console.log(`from --> `);
-  console.log(from);
-  console.log(`to --> `);
-  console.log(to);
-  console.log(`has route ? --> ${hasRoute}`);
-  console.log(`accessible ? --> `);
-  console.log(accessiblePath);
-  console.log(`require Auth ? --> ${requireAuth}`);
-  console.log('Cookie Session --> ')
-  console.log(sessionCookie);
-  console.log('Cookie User --> ')
-  console.log(userCookie);
-  console.log(`current Local --> ${i18n.global.locale.value}`);
-  console.log('-------------------------------------');
+  // ROUTE NAVIGATION DEBUG
+  // console.log('-------------------------------------');
+  // console.log(`from --> `);
+  // console.log(from);
+  // console.log(`to --> `);
+  // console.log(to);
+  // console.log(`has route ? --> ${hasRoute}`);
+  // console.log(`accessible ? --> `);
+  // console.log(accessiblePath);
+  // console.log(`require Auth ? --> ${requireAuth}`);
+  // console.log('Cookie Session --> ')
+  // console.log(sessionCookie);
+  // console.log('Cookie User --> ')
+  // console.log(userCookie);
+  // console.log(`current Local --> ${i18n.global.locale.value}`);
+  // console.log('-------------------------------------');
   if (requireAuth) {
     // console.log(`Session Management: ${sessionStore.getSessionId}`);
     await validateSession(sessionCookie, platform)
@@ -149,11 +149,24 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
         }
       )
       .catch((err: any) => {
-        console.log('Err --> ');
+        // console.log('Err --> ');
         // console.log(err);
         userStore.reset();
         cookie.set('user', JSON.stringify({connected: false, user: {}}), {path: '/', sameSite: 'Lax', secure: false});
-        console.log(cookie.getAll());
+        if (sessionCookie && sessionCookie.sessionId != ''){
+          messageStore.messages.push({
+            severity: true,
+            content: t('session.results.ko'),
+          });
+          messageStore.setMessagesVisibility(true);
+          cookie.set('message', JSON.stringify({messages: [{severity: true, content: t('session.results.ko')}], messagesVisibility: true}), {path: '/', sameSite: 'Lax', secure: false});
+        }
+        else {
+          messageStore.messages = [];
+          messageStore.setMessagesVisibility(false);
+          cookie.set('message', JSON.stringify({messages: [], messagesVisibility: false}), {path: '/', sameSite: 'Lax', secure: false});
+        }
+        // console.log(cookie.getAll());
         next(t("startLinkTarget"));
       });
   } 
@@ -184,60 +197,57 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
   const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-  const requireMiddleware = to.meta.middleware;
-  console.log('-------------------------------------');
-  console.log(`from --> `);
-  console.log(from.fullPath);
-  console.log(`to --> `);
-  console.log(to);
-  console.log(`has route ? --> ${hasRoute}`);
-  console.log(`accessible ? --> `);
-  console.log(accessiblePath);
-  console.log(`require Auth ? --> ${requireAuth}`);
-  console.log(`require Middleware ? --> ${requireMiddleware}`);
-  console.log('Cookie Session --> ')
-  console.log(sessionCookie);
-  console.log('Cookie User --> ')
-  console.log(userCookie);
-  console.log(`current Local --> ${i18n.global.locale.value}`);
-  console.log('-------------------------------------');
-  
-  // if (requireMiddleware === 'upload'){
-  //   console.log('uploading middleware !');
-  //   return await upload(to, next);
-  // }
-  // else{
-  //   console.log('downloading middleware !');
-  //   return await download(to, next);
-  // }
+  // ROUTE NAVIGATION DEBUG
+  // console.log('-------------------------------------');
+  // console.log(`from --> `);
+  // console.log(from.fullPath);
+  // console.log(`to --> `);
+  // console.log(to.fullPath);
+  // console.log(`has route ? --> ${hasRoute}`);
+  // console.log(`accessible ? --> `);
+  // console.log(accessiblePath);
+  // console.log(`require Auth ? --> ${requireAuth}`);
+  // console.log('Cookie Session --> ')
+  // console.log(sessionCookie);
+  // console.log('Cookie User --> ')
+  // console.log(userCookie);
+  // console.log(`current Local --> ${i18n.global.locale.value}`);
+  // console.log('-------------------------------------');
   if (requireAuth) {
     // console.log(await validateSession(sessionCookie, platform));
     const res = await validateSession(sessionCookie, platform);
-    console.log(res);
+    // console.log(res);
     if (res){
       // console.log(res);
       if (!!userCookie && userCookie.connected){
-        if (!!requireMiddleware){
-          if (requireMiddleware === 'upload'){
-            console.log('uploading middleware !');
-            return await upload(ctx);
-          }
-          else{
-            console.log('downloading middleware !');
-            return await download(ctx);
-          }
-        }
         next();
       }
       else
         next(t("startLinkTarget"));
     }
     else {
-      console.log('Err --> ');
+      // console.log('Err --> ');
       // console.log(err);
       // userStore.reset();
       await prefs.setPref('user', {connected: false, user: {}});
-      console.log(decodeURIComponent(cookie.getAll().user));
+      if (sessionCookie && sessionCookie.sessionId !== ''){
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('session.results.ko'),
+            },
+          ], 
+          messagesVisibility: true
+        });
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [], 
+          messagesVisibility: false
+        });
+      }
+      // console.log(decodeURIComponent(cookie.getAll().user));
       next(t("startLinkTarget"));
     }
   }

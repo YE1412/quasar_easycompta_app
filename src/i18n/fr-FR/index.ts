@@ -45,8 +45,6 @@ export default {
   pdfLinkName: 'PdfExport',
   pdfLinkTarget: '/pdf/:invoiceIds(\\d+)*',
   pdfPreLinkTarget: '/pdf/',
-  uploadLinkTarget: '/api/users/upload',
-  downloadLinkTarget: '/api/users/download',
   drawer: {
     title: 'Links'
   },
@@ -524,7 +522,7 @@ export default {
       pass: 'Password',
       confirmPass: 'Password confirmation',
       companyName: 'Company name',
-      companyLogo: 'Company logo',
+      companyLogo: 'Company logo restricted to SVG images',
       devise: 'Devise',
       userType: 'Type',
     },
@@ -580,7 +578,10 @@ export default {
         confirmPass: 'Bad password confirmation supplied !',
         passMissmatch: 'Password and confirml missmatch',
         companyName: 'Bad company name supplied !',
-        companyLogo: 'Bad company logo supplied !',
+        companyLogo: {
+          accept: 'Bad image supplied, waiting for (.svg) having ({ext}) !',
+          maxFileSize: 'File size exceeded the maximum size, waiting (<{max}) having ({size}) !',
+        },
         devise: 'Bad devise supplied !',
         userType: 'Bad type supplied !',
       },
@@ -741,11 +742,19 @@ export default {
       empty: {
         filterBodyContentText: 'Sorry... The filter didn\'t uncover any results',
       },
+      error: {
+        inputs: 'Something wrong happened, please check the form fields !',
+      },
     },
     addButtonText: 'Add',
     updateButtonText: 'Update',
     deleteButtonText: 'Delete',
     exportButtonText: 'Export',
     valid: 'Ok !',
+  },
+  session: {
+    results: {
+      ko: 'Your session has expired, please login again !',
+    }
   },
 };
