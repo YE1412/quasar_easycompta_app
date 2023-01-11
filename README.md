@@ -1,4 +1,4 @@
-# Quasar Easy-Compta App (quasar-easy-compta-app)
+<!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
 A Quasar Framework App
 
@@ -39,3 +39,4 @@ quasar build
 
 ### Customize the configuration
 See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+ -->
