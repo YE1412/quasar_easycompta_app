@@ -1,12 +1,12 @@
-import { http } from "app/src/boot/axios_client";
+import { http } from 'app/src/boot/axios_client';
 
 class ActorDataService {
   getAll() {
-    return http.get("/actors");
+    return http.get('/actors');
   }
 
   getAllTypes() {
-    return http.get("/actors/types");
+    return http.get('/actors/types');
   }
 
   get(id: number) {
@@ -18,7 +18,7 @@ class ActorDataService {
   }
 
   getNbActors() {
-    return http.get("/actors/nb");
+    return http.get('/actors/nb');
   }
 
   create(data: any) {

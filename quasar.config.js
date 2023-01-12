@@ -23,8 +23,8 @@ module.exports = configure(function (ctx) {
       // include = [],
       // exclude = [],
       // rawOptions = {},
-      warnings: false,
-      errors: false
+      warnings: true,
+      errors: true
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -36,19 +36,19 @@ module.exports = configure(function (ctx) {
     boot: [
       'i18n',
       'axios',
-      {
-        server: false,
-        path: 'axios_client'
-      },
-      {
-        server: false, // run on client-side only!
-        path: 'hydrate_store' // references /src/boot/hydrate_pinia_store.ts
-      },
-      {
-        server: false, // run on client-side only!
-        path: 'hydrate_store' // references /src/boot/hydrate_pinia_store.ts
-      },
       'auth',
+      {
+        server: false, // run on client-side only!
+        path: 'axios_client' // references /src/boot/axios_client.ts
+      },
+      {
+        server: false, // run on client-side only!
+        path: 'hydrate_store' // references /src/boot/hydrate_store.ts
+      },
+      {
+        server: false, // run on client-side only!
+        path: 'capacitor_http' // references /src/boot/capacitor_http.ts
+      },
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css

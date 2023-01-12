@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const devise = sequelize.define(
-    "devise",
+    'devise',
     {
       deviseId: {
         type: DataTypes.INTEGER,

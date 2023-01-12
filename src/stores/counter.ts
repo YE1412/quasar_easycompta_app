@@ -1,15 +1,16 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { defineStore } from 'pinia';
 // import { ref, computed } from 'vue';
-import { useStorage } from "@vueuse/core";
-import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
-import { i18n } from 'app/src/boot/i18n';
-import userAxiosService from "app/src/db/services/user.service";
-import invoiceAxiosService from "app/src/db/services/invoice.service";
-import orderAxiosService from "app/src/db/services/order.service";
-import actorAxiosService from "app/src/db/services/actor.service";
-import serviceAxiosService from "app/src/db/services/service.service";
+// import { useStorage } from '@vueuse/core';
+// import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
+// import { i18n } from 'app/src/boot/i18n';
+import userAxiosService from 'app/src/db/services/user.service';
+import invoiceAxiosService from 'app/src/db/services/invoice.service';
+import orderAxiosService from 'app/src/db/services/order.service';
+import actorAxiosService from 'app/src/db/services/actor.service';
+import serviceAxiosService from 'app/src/db/services/service.service';
 
-const t = i18n.global.t;
+// const t = i18n.global.t;
 export const useCounterStore = defineStore('counter', {
   state: () => ({
     count: 0,
@@ -110,7 +111,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -153,7 +154,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -191,7 +192,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -229,7 +230,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -267,7 +268,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -305,7 +306,7 @@ export const useCounterStore = defineStore('counter', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

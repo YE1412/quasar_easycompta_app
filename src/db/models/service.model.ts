@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const service = sequelize.define(
-    "produitservice",
+    'produitservice',
     {
       serviceId: {
         type: DataTypes.INTEGER,

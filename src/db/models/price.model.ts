@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const prices = sequelize.define(
-    "stock_prices",
+    'stock_prices',
     {
       stockPricesId: {
         type: DataTypes.INTEGER,

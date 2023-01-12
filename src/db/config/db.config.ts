@@ -1,9 +1,9 @@
-import * as dotenv from "dotenv";
-import path from "path";
-// import { fileURLToPath } from "node:url";
+import * as dotenv from 'dotenv';
+import path from 'path';
+// import { fileURLToPath } from 'node:url';
 
 const __dirname = path.resolve(path.dirname('src/db/config/db.config'), '../../../');
-const destPath = path.join(__dirname, "/envs/.env");
+const destPath = path.join(__dirname, '/envs/.env');
 dotenv.config({ path: destPath });
 
 // console.log(__dirname);

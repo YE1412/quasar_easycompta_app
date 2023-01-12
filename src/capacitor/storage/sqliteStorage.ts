@@ -4,7 +4,7 @@ import { defineCustomElements as jeepSqlite, applyPolyfills } from 'jeep-sqlite/
 import { dataToImport } from './utils/import-from-json';
 
 let sqlite: SQLiteConnection = null;
-let db: SQLiteConnection = null;
+const db: SQLiteConnection = null;
 
 const createSQLiteConnection = () => {
 	sqlite = new SQLiteConnection(CapacitorSQLite);
@@ -49,7 +49,7 @@ const connectionsConsistency = async (): capSQLiteResult | null => {
 const createConnection = async (): SQLiteDBConnection | null => {
 	console.log('createConnection Call !');
 	const ret =  sqlite !== null
-		? await sqlite.createConnection("easy_compta", false, 'no-encryption', 9, false)
+		? await sqlite.createConnection('easy_compta', false, 'no-encryption', 9, false)
 		: null;
 	return ret;
 };
@@ -65,7 +65,7 @@ const retrieveConnection = async (): SQLiteDBConnection | null => {
 const isConnection = async (): capSQLiteResult | null => {
 	console.log('isConnection Call !');
 	const ret =  sqlite !== null
-		? await sqlite.isConnection("easy_compta", false)
+		? await sqlite.isConnection('easy_compta', false)
 		: null;
 	return ret;
 };
@@ -125,8 +125,7 @@ const query = async(db: SQLiteDBConnection, sql: string, values?: any[] | undefi
 
 const run = async(db: SQLiteDBConnection, sql: string, values?: any[] | undefined = undefined, transaction?: boolean | undefined = undefined): capSQLiteChanges | null => {
 	console.log('run Call !');
-	let ret;
-	ret = db !== null 
+	const ret = db !== null 
 		? await db.run(sql, values, transaction)
 			.then((res) => {
 				return res;

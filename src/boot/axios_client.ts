@@ -15,9 +15,9 @@ axios.defaults.withCredentials = true;
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-var port = 3000;
+// let port = 3000;
 // console.log(process.env);
-port = process.env.MODE === 'ssr' ? port : (process.env.MODE === 'capacitor' ? 3200 : port);
+// port = process.env.MODE === 'ssr' ? port : (process.env.MODE === 'capacitor' ? 3200 : port);
 const url = process.env.APP_URL.slice(-1) === '/' 
   ? `${process.env.APP_URL}api`
   : `${process.env.APP_URL}/api`;

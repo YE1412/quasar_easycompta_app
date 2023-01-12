@@ -1,5 +1,6 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { useUserStore } from 'app/src/stores/user';
-import { useSessionStore } from 'app/src/stores/session';
+// import { useSessionStore } from 'app/src/stores/session';
 import sessionAxiosService from 'app/src/db/services/session.service';
 import { useMessageStore } from 'app/src/stores/message';
 import { i18n } from 'app/src/boot/i18n';
@@ -7,7 +8,6 @@ import { i18n } from 'app/src/boot/i18n';
 // import { Capacitor } from '@capacitor/core';
 import { Platform, Cookies } from 'quasar';
 import * as prefs from 'app/src/capacitor/storage/preferences';
-import { upload, download } from 'app/src/middleware/index';
 
 // const plateform = Capacitor.getPlatform();
 const t = i18n.global.t;
@@ -45,7 +45,7 @@ const pathsObj = [
   },
 ];
 
-let router: any = null;
+// let router: any = null;
 
 async function validateSession(cookie: any, platform: any) {
   if (platform.is.desktop)
@@ -65,7 +65,7 @@ function isRealPath(to: string) {
   for (const obj of pathsObj) {
     // console.log(t(obj.target));
     if (to === t(obj.target)) {
-      let ret = {};
+      const ret = {};
       ret.path = t(obj.target);
       ret.component = obj.component;
       ret.name = t(obj.targetName);
@@ -140,15 +140,15 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
     // console.log(`Session Management: ${sessionStore.getSessionId}`);
     await validateSession(sessionCookie, platform)
       .then(
-        (res: any) => {
+        () => {
           // console.log(res);
           if (userCookie!== null && userCookie.connected)
             next();
           else
-            next(t("startLinkTarget"));
+            next(t('startLinkTarget'));
         }
       )
-      .catch((err: any) => {
+      .catch(() => {
         // console.log('Err --> ');
         // console.log(err);
         userStore.reset();
@@ -167,7 +167,7 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
           cookie.set('message', JSON.stringify({messages: [], messagesVisibility: false}), {path: '/', sameSite: 'Lax', secure: false});
         }
         // console.log(cookie.getAll());
-        next(t("startLinkTarget"));
+        next(t('startLinkTarget'));
       });
   } 
   else if (!hasRoute && accessiblePath !== null) {
@@ -223,7 +223,7 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
         next();
       }
       else
-        next(t("startLinkTarget"));
+        next(t('startLinkTarget'));
     }
     else {
       // console.log('Err --> ');
@@ -248,7 +248,7 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
         });
       }
       // console.log(decodeURIComponent(cookie.getAll().user));
-      next(t("startLinkTarget"));
+      next(t('startLinkTarget'));
     }
   }
   else if (!hasRoute && accessiblePath !== null) {
@@ -261,6 +261,7 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
 };
 
 export default ({ store, router, ssrContext }) => {
+  console.log(store);
 	const platform = process.env.SERVER
 		? Platform.parseSSR(ssrContext)
 		: Platform;

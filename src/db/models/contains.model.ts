@@ -1,22 +1,22 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const contains = sequelize.define(
-    "contains",
+    'contains',
     {
       orderId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "commande",
-          key: "orderId",
+          model: 'commande',
+          key: 'orderId',
         },
         allowNull: false,
       },
       serviceId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "produitservice",
-          key: "serviceId",
+          model: 'produitservice',
+          key: 'serviceId',
         },
         allowNull: false,
       },

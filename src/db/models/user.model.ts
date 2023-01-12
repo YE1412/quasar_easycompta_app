@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const user = sequelize.define(
-    "user",
+    'user',
     {
       userId: {
         type: DataTypes.INTEGER,
@@ -41,16 +41,16 @@ const model = (sequelize) => {
       deviseId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "devise",
-          key: "deviseId",
+          model: 'devise',
+          key: 'deviseId',
         },
         allowNull: false,
       },
       userTypeId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "user_type",
-          key: "userTypeId",
+          model: 'user_type',
+          key: 'userTypeId',
         },
         defaultValue: null,
         allowNull: true,

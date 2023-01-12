@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const userType = sequelize.define(
-    "user_type",
+    'user_type',
     {
       userTypeId: {
         type: DataTypes.INTEGER,
@@ -13,12 +13,12 @@ const model = (sequelize) => {
       regular: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "userTypeConstraint",
+        unique: 'userTypeConstraint',
       },
       admin: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "userTypeConstraint",
+        unique: 'userTypeConstraint',
       },
     },
     {

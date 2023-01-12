@@ -60,7 +60,7 @@
 import { useMessageStore } from 'stores/message';
 import { useCounterStore } from 'stores/counter';
 import { useUserStore } from 'stores/user';
-import { useSessionStore } from 'stores/session';
+// import { useSessionStore } from 'stores/session';
 import MessagesItem from 'components/MessagesItem.vue';
 import BarChart from 'components/BarChart.vue';
 import PieChart from 'components/PieChart.vue';
@@ -68,8 +68,8 @@ import HomeTable from 'components/HomeTable.vue';
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // import { Capacitor } from '@capacitor/core';
 
 // VARIABLES
@@ -163,7 +163,7 @@ else {
       messageVisibility.value = true;
     }
 
-    sql = `SELECT COUNT(\`orderId\`) AS \`n_ord\` FROM \`commande\` AS \`commande\`;`;
+    sql = 'SELECT COUNT(\`orderId\`) AS \`n_ord\` FROM \`commande\` AS \`commande\`;';
     values = await newQuery(props.dbConn, sql);
     console.log(values);
     if (values.values.length){
@@ -182,7 +182,7 @@ else {
       messageVisibility.value = true;
     }
 
-    sql = `SELECT COUNT(\`actorId\`) AS \`n_act\` FROM \`personne\` AS \`personne\`;`;
+    sql = 'SELECT COUNT(\`actorId\`) AS \`n_act\` FROM \`personne\` AS \`personne\`;';
     values = await newQuery(props.dbConn, sql);
     console.log(values);
     if (values.values.length){
@@ -201,7 +201,7 @@ else {
       messageVisibility.value = true;
     }
 
-    sql = `SELECT COUNT(\`serviceId\`) AS \`n_srv\` FROM \`produitservice\` AS \`produitservice\`;`;
+    sql = 'SELECT COUNT(\`serviceId\`) AS \`n_srv\` FROM \`produitservice\` AS \`produitservice\`;';
     values = await newQuery(props.dbConn, sql);
     console.log(values);
     if (values.values.length){
@@ -235,11 +235,11 @@ else {
 }
 
 // FUNCTIONS
-async function forceMessageItemsRerender() {
-  renderComponent.value = false;
-  await nextTick();
-  renderComponent.value = true;
-};
+// async function forceMessageItemsRerender() {
+//   renderComponent.value = false;
+//   await nextTick();
+//   renderComponent.value = true;
+// };
 
 // WATCHERS
 

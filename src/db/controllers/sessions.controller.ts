@@ -5,7 +5,7 @@ const langue = db.langue;
 const deleteSession = (req, res) => {
   req.session.destroy();
   res.send({
-    message: `Ok !`,
+    message: 'Ok !',
   });
 };
 

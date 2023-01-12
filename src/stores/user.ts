@@ -1,13 +1,14 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import userAxiosService from "app/src/db/services/user.service";
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import userAxiosService from 'app/src/db/services/user.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
-import { extend, LocalStorage, SessionStorage } from "quasar";
-import { computed, ref } from 'vue';
-import { useLocalStorage } from '@vueuse/core';
+// import { extend, LocalStorage, SessionStorage } from 'quasar';
+// import { computed, ref } from 'vue';
+// import { useLocalStorage } from '@vueuse/core';
 import { cookieStorage } from 'app/src/stores/storage';
 
-const useUserStore = defineStore("user", {
+const useUserStore = defineStore('user', {
   // console.log('All items in storage from User store --> ');
   // console.log(LocalStorage.getAll());
 
@@ -99,7 +100,7 @@ const useUserStore = defineStore("user", {
   //           // Quelque chose s'est passé lors de la construction de
   //           //  la requête et cela a provoqué une erreur
   //           else {
-  //             console.log("Error", err.message);
+  //             console.log('Error', err.message);
   //           }
   //           console.log(err.config);
   //           reject(new Error(err));
@@ -142,7 +143,7 @@ const useUserStore = defineStore("user", {
   //           // Quelque chose s'est passé lors de la construction de
   //           //  la requête et cela a provoqué une erreur
   //           else {
-  //             console.log("Error", err.message);
+  //             console.log('Error', err.message);
   //           }
   //           console.log(err.config);
   //           reject(new Error(err));
@@ -184,7 +185,7 @@ const useUserStore = defineStore("user", {
   //           // Quelque chose s'est passé lors de la construction de
   //           //  la requête et cela a provoqué une erreur
   //           else {
-  //             console.log("Error", err.message);
+  //             console.log('Error', err.message);
   //           }
   //           console.log(err.config);
   //           reject(new Error(err));
@@ -228,7 +229,7 @@ const useUserStore = defineStore("user", {
       this.connected = false;
     },
     loginUser(login: string, password: string) {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         userAxiosService
           .get(login, password)
@@ -263,7 +264,7 @@ const useUserStore = defineStore("user", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -306,7 +307,7 @@ const useUserStore = defineStore("user", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -348,7 +349,7 @@ const useUserStore = defineStore("user", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

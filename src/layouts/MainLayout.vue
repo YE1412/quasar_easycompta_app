@@ -159,19 +159,19 @@
 </template> 
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeMount, onBeforeUnmount, computed } from 'vue';
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useUserStore } from 'stores/user';
 // import { useStore } from 'vuex';
 import ComptaLink, { ComptaLinkProps } from 'components/ComptaLink.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import "/node_modules/flag-icons/css/flag-icons.min.css";
+import '/node_modules/flag-icons/css/flag-icons.min.css';
 // import { Capacitor } from '@capacitor/core';
-import getConnection, { openDbConnection, isDbConnectionOpen, newQuery, newRun, closeDbConnection, closeConnection } from 'cap/storage';
+import getConnection, { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection, closeConnection } from 'cap/storage';
 import { Loading, useQuasar } from 'quasar';
 import { ClassLangAssoc } from 'components/models';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // import { CapacitorHttp } from '@capacitor/core';
 
 // VARIABLES
@@ -184,7 +184,6 @@ const router = useRouter();
 // console.log(typeof route.path);
 const { t, locale } = useI18n({ useScope: 'global' });
 const displayedLanguage = ref({nom: 'en-US'});
-let $store = undefined, drawerState = undefined;
 const classAssoc: ClassLangAssoc = {
   'en-US': {
     class: 'us'
@@ -377,8 +376,8 @@ async function logout(){
 };
 
 // LIFECYCLE EVENTS
-onBeforeMount(() => {
-});
+// onBeforeMount(() => {
+// });
 onBeforeUnmount(() => {
   if (!platform.is.desktop){
     console.log('Close connection !');

@@ -1,20 +1,20 @@
-import { http } from "app/src/boot/axios_client";
+import { http } from 'app/src/boot/axios_client';
 
 class PaymentDataService {
   getAll() {
-    return http.get("/payments");
+    return http.get('/payments');
   }
 
   getAllTypes() {
-    return http.get("/payments/types");
+    return http.get('/payments/types');
   }
 
   // getAllOrders() {
-  //   return http.get("/payments/orders");
+  //   return http.get('/payments/orders');
   // }
 
   getAllInvoices() {
-    return http.get("/payments/invoices");
+    return http.get('/payments/invoices');
   }
 
   get(id: number) {

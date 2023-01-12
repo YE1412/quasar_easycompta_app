@@ -68,7 +68,7 @@
           </div>
         </q-form>
       </div>
-      <template v-slot:error class="flex items-center justify-center">
+      <template v-slot:error>
         <!-- <div class="flex justify-center items-center content-center"> -->
           <div class="text-center bg-secondary text-black flex justify-center column" style="position: relative;">
             <div :class='platform.is.desktop ? headingDesktopClass : headingMobileClass'>
@@ -139,7 +139,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick } from 'vue';
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { ref, computed, nextTick } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useSessionStore } from 'stores/session';
@@ -148,9 +149,9 @@ import MessagesItem from 'components/MessagesItem.vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-import sessionAxiosService from 'db/services/session.service';
+import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+// import sessionAxiosService from 'db/services/session.service';
 import { v4 as uuidv4 } from 'uuid';
 
 // VARIABLES
@@ -188,10 +189,10 @@ if (platform.is.desktop){
   if (messageStore.getMessages.length)
     messageStore.setMessagesVisibility(true);
   messageVisibility.value = messageStore.getMessagesVisibility;
-  imgSrc.value = "dist/assets/imgs/slider-2.jpg";
+  imgSrc.value = 'dist/assets/imgs/slider-2.jpg';
 }
 else {
-  imgSrc.value = `/assets/imgs/slider-2.jpg`;
+  imgSrc.value = '/assets/imgs/slider-2.jpg';
   (async () => {
     prefs = await import('cap/storage/preferences');
     // console.log('Get messages preferences !');
@@ -239,7 +240,7 @@ async function submit(){
   if (platform.is.desktop){
     if (ret) {
       const res = await sessionStore.getSession()
-        .then((res) => {
+        .then(() => {
           return true;
         })
         .catch((err) => {
@@ -345,11 +346,11 @@ async function loginDb() {
   // console.log(obj);
   if (platform.is.desktop) {
     return userStore.loginUser(obj.login, obj.pass)
-      .then((res) => {
+      .then(() => {
         // console.log('Congrats !');
         // console.log(res);
         return true;
-      }, (rej) => {
+      }, () => {
         // console.log(rej);
         messageStore.messages.push({
           severity: true,
@@ -472,7 +473,7 @@ function sanitizeQueryResult(obj: any) {
   return ret;
 };
 async function getSessionForMobile() {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     // console.log(`Session`);
     const newId = uuidv4();
     let session = !!$q.cookies.getAll().session

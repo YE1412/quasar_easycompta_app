@@ -1,4 +1,4 @@
-import db from "app/src/db/models/index";
+import db from 'app/src/db/models/index';
 
 const actor = db.actor;
 const type = db.actorType;
@@ -27,7 +27,7 @@ const create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating actor.",
+        message: err.message || 'Some error occured while creating actor.',
         error: err,
       });
     });
@@ -37,17 +37,17 @@ const findAll = (req, res) => {
   actor
     .findAll({
       attributes: [
-        "actorId",
-        "prenom",
-        "nom",
-        "email",
-        "numRue",
-        "nomRue",
-        "cp",
-        "ville",
-        "tel",
-        "numCommercant",
-        "personne_type.actorTypeId",
+        'actorId',
+        'prenom',
+        'nom',
+        'email',
+        'numRue',
+        'nomRue',
+        'cp',
+        'ville',
+        'tel',
+        'numCommercant',
+        'personne_type.actorTypeId',
       ],
       where: {},
       include: type,
@@ -57,7 +57,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving actors.",
+        message: err.message || 'Some error occured while retieving actors.',
       });
     });
 };
@@ -73,7 +73,7 @@ const findAllTypes = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occured while retieving actor type.",
+          err.message || 'Some error occured while retieving actor type.',
       });
     });
 };
@@ -83,7 +83,7 @@ const findOne = (req, res) => {
   // let whereClause = {};
   if (query.actorId === undefined) {
     res.status(500).send({
-      message: "Some error occured while retrieving actor.",
+      message: 'Some error occured while retrieving actor.',
     });
     return;
   }
@@ -102,7 +102,7 @@ const findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving actor.",
+        message: err.message || 'Some error occured while retieving actor.',
       });
     });
 };
@@ -111,7 +111,7 @@ const getNbActors = (req, res) => {
   actor
     .findAll({
       attributes: [
-        [db.sequelize.fn("COUNT", db.sequelize.col("actorId")), "n_act"],
+        [db.sequelize.fn('COUNT', db.sequelize.col('actorId')), 'n_act'],
       ],
     })
     .then((data) => {
@@ -120,7 +120,7 @@ const getNbActors = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || `Some error occured while retieving number of actors.`,
+          err.message || 'Some error occured while retieving number of actors.',
       });
     });
 };
@@ -138,7 +138,7 @@ const update = (req, res) => {
       // console.log(result);
       if (result[0] === 1) {
         res.send({
-          message: "Actor was updated successfully !",
+          message: 'Actor was updated successfully !',
         });
       } else {
         res.status(500).send({
@@ -148,7 +148,7 @@ const update = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error updating Actor with id=" + params.id,
+        message: err.message || 'Error updating Actor with id=' + params.id,
       });
     });
 };
@@ -166,7 +166,7 @@ const deleteOne = (req, res) => {
       console.log(result);
       if (result === 1) {
         res.send({
-          message: "Actor was deleted successfully !",
+          message: 'Actor was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -176,7 +176,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Actor with id=" + params.id,
+        message: err.message || 'Error deleting Actor with id=' + params.id,
       });
     });
 };
@@ -194,7 +194,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Actors !",
+        message: err.message || 'Error deleting Actors !',
       });
     });
 };
@@ -202,14 +202,14 @@ const deleteAll = (req, res) => {
 const findByTypes = (req, res) => {
   const params = req.params;
 
-  let whereClause = {};
+  const whereClause = {};
   if (params.types !== undefined) {
     whereClause.actorTypeId = {
       [Op.or]: params.types,
     };
   } else {
     res.status(500).send({
-      message: "Some error occured while retrieving actors.",
+      message: 'Some error occured while retrieving actors.',
     });
     return;
   }

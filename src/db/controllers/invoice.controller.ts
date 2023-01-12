@@ -1,4 +1,4 @@
-import db from "app/src/db/models/index";
+import db from 'app/src/db/models/index';
 
 const invoice = db.invoice;
 const language = db.langue;
@@ -11,7 +11,7 @@ const Op = db.Sequelize.Op;
 
 const create = async (req, res) => {
   const body = req.body;
-  let paymentsTab = [],
+  const paymentsTab = [],
     paymentsRow = [],
     ordersTab = [],
     ordersRow = [];
@@ -61,7 +61,7 @@ const create = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching payment with id=" +
+                'Some error occured while fetching payment with id=' +
                   body.payments[key].value,
               error: err,
             });
@@ -78,7 +78,7 @@ const create = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching order with id=" +
+                'Some error occured while fetching order with id=' +
                   body.orders[key].value,
               error: err,
             });
@@ -87,12 +87,12 @@ const create = async (req, res) => {
       // 3. INSERT the association in tables
       await data
         .addPayments(paymentsRow)
-        .then(() => {})
+        // .then(() => {})
         .catch((err) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table payment with invoice id=" +
+              'Some error occured while inserting in associated table payment with invoice id=' +
                 data.factureId,
             error: err,
           });
@@ -106,7 +106,7 @@ const create = async (req, res) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table commande with invoice id=" +
+              'Some error occured while inserting in associated table commande with invoice id=' +
                 data.factureId,
             error: err,
           });
@@ -114,7 +114,7 @@ const create = async (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating invoice.",
+        message: err.message || 'Some error occured while creating invoice.',
         error: err,
       });
     });
@@ -125,17 +125,17 @@ const findAll = (req, res) => {
   invoice
     .findAll({
       attributes: [
-        "factureId",
-        "date",
-        "invoiceHTPrice",
-        "invoiceTTPrice",
-        "tvaValue",
-        "langue.langueId",
-        "devise.deviseId",
-        "buyer.actorId",
-        "seller.actorId",
-        "commandes.orderId",
-        "payments.paymentId",
+        'factureId',
+        'date',
+        'invoiceHTPrice',
+        'invoiceTTPrice',
+        'tvaValue',
+        'langue.langueId',
+        'devise.deviseId',
+        'buyer.actorId',
+        'seller.actorId',
+        'commandes.orderId',
+        'payments.paymentId',
       ],
       where: {
         administratorId: params.userId,
@@ -143,8 +143,8 @@ const findAll = (req, res) => {
       include: [
         invoice.langue,
         invoice.devise,
-        { model: actor, as: "buyer" },
-        { model: actor, as: "seller" },
+        { model: actor, as: 'buyer' },
+        { model: actor, as: 'seller' },
         invoice.orders,
         invoice.payments,
       ],
@@ -154,7 +154,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving invoices.",
+        message: err.message || 'Some error occured while retieving invoices.',
         error: err,
       });
     });
@@ -173,23 +173,23 @@ const findOne = (req, res) => {
   invoice
     .findByPk(query.invoiceId, {
       attributes: [
-        "factureId",
-        "date",
-        "invoiceHTPrice",
-        "invoiceTTPrice",
-        "tvaValue",
-        "langue.langueId",
-        "devise.deviseId",
-        "buyer.actorId",
-        "seller.actorId",
-        "commandes.orderId",
-        "payments.paymentId",
+        'factureId',
+        'date',
+        'invoiceHTPrice',
+        'invoiceTTPrice',
+        'tvaValue',
+        'langue.langueId',
+        'devise.deviseId',
+        'buyer.actorId',
+        'seller.actorId',
+        'commandes.orderId',
+        'payments.paymentId',
       ],
       include: [
         invoice.langue,
         invoice.devise,
-        { model: actor, as: "buyer" },
-        { model: actor, as: "seller" },
+        { model: actor, as: 'buyer' },
+        { model: actor, as: 'seller' },
         invoice.orders,
         invoice.payments,
       ],
@@ -222,7 +222,7 @@ const findOne = (req, res) => {
 //     dateStart = new Date(`${now.getFullYear()}-06-01`);
 //   }
 //   const n_ht = await invoice
-//     .sum("invoiceHTPrice", {
+//     .sum('invoiceHTPrice', {
 //       where: {
 //         administratorId: query.adminId,
 //         date: {
@@ -231,7 +231,7 @@ const findOne = (req, res) => {
 //       },
 //     });
 //   const n_tt = await invoice
-//     .sum("invoiceTTPrice", {
+//     .sum('invoiceTTPrice', {
 //       where: {
 //         administratorId: query.adminId,
 //         date: {
@@ -259,7 +259,7 @@ const findOne = (req, res) => {
 //     dateStart = new Date(`${now.getFullYear()}-06-01`);
 //   }
 //   const pay = await invoice
-//     .sum("payments.paymentValue", {
+//     .sum('payments.paymentValue', {
 //       where: {
 //         administratorId: query.adminId,
 //         date: {
@@ -283,7 +283,7 @@ const getNbInvoices = (req, res) => {
   const query = req.query;
   if (query.adminId === undefined) {
     res.status(500).send({
-      message: `Some error occured while retrieving the number of fiscal year invoices, bad query.`,
+      message: 'Some error occured while retrieving the number of fiscal year invoices, bad query.',
     });
     return;
   }
@@ -297,7 +297,7 @@ const getNbInvoices = (req, res) => {
   invoice
     .findAll({
       attributes: [
-        [db.sequelize.fn("COUNT", db.sequelize.col("factureId")), "n_inv"],
+        [db.sequelize.fn('COUNT', db.sequelize.col('factureId')), 'n_inv'],
       ],
       where: {
         administratorId: query.adminId,
@@ -322,7 +322,7 @@ const getFinancialYearInvoices = (req, res) => {
   const query = req.query;
   if (query.adminId === undefined) {
     res.status(500).send({
-      message: `Some error occured while retrieving financial year invoices, bad query.`,
+      message: 'Some error occured while retrieving financial year invoices, bad query.',
     });
     return;
   }
@@ -336,17 +336,17 @@ const getFinancialYearInvoices = (req, res) => {
   invoice
     .findAll({
       attributes: [
-        "factureId",
-        "date",
-        "invoiceHTPrice",
-        "invoiceTTPrice",
-        "tvaValue",
-        "langue.langueId",
-        "devise.deviseId",
-        "buyer.actorId",
-        "seller.actorId",
-        // "commandes.orderId",
-        "payments.paymentId",
+        'factureId',
+        'date',
+        'invoiceHTPrice',
+        'invoiceTTPrice',
+        'tvaValue',
+        'langue.langueId',
+        'devise.deviseId',
+        'buyer.actorId',
+        'seller.actorId',
+        // 'commandes.orderId',
+        'payments.paymentId',
       ],
       where: {
         administratorId: query.adminId,
@@ -359,8 +359,8 @@ const getFinancialYearInvoices = (req, res) => {
         {
           model: devise,
         },
-        { model: actor, as: "buyer" },
-        { model: actor, as: "seller" },
+        { model: actor, as: 'buyer' },
+        { model: actor, as: 'seller' },
         {
           model: payment,
         },
@@ -383,7 +383,7 @@ const findMore = (req, res) => {
   const params = req.params;
   if (params.ids === undefined) {
     res.status(500).send({
-      message: `Some error occured while retrieving invoices, bad query.`,
+      message: 'Some error occured while retrieving invoices, bad query.',
     });
     return;
   }
@@ -391,29 +391,29 @@ const findMore = (req, res) => {
   invoice
     .findAll({
       attributes: [
-        "factureId",
-        "date",
-        "invoiceHTPrice",
-        "invoiceTTPrice",
-        "tvaValue",
-        "langue.langueId",
-        "devise.deviseId",
-        "buyer.actorId",
-        "seller.actorId",
-        "commandes.orderId",
-        "payments.paymentId",
-        "commandes.Services.serviceId",
+        'factureId',
+        'date',
+        'invoiceHTPrice',
+        'invoiceTTPrice',
+        'tvaValue',
+        'langue.langueId',
+        'devise.deviseId',
+        'buyer.actorId',
+        'seller.actorId',
+        'commandes.orderId',
+        'payments.paymentId',
+        'commandes.Services.serviceId',
       ],
       where: {
         factureId: {
-          [Op.or]: params.ids.split(","),
+          [Op.or]: params.ids.split(','),
         },
       },
       include: [
         invoice.langue,
         invoice.devise,
-        { model: actor, as: "buyer" },
-        { model: actor, as: "seller" },
+        { model: actor, as: 'buyer' },
+        { model: actor, as: 'seller' },
         {
           association: invoice.orders,
           include: order.services,
@@ -426,7 +426,7 @@ const findMore = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Some error occured while retieving invoices.`,
+        message: err.message || 'Some error occured while retieving invoices.',
         error: err,
       });
     });
@@ -435,7 +435,7 @@ const findMore = (req, res) => {
 const update = async (req, res) => {
   const params = req.params;
   const body = req.body;
-  let paymentsTab = [],
+  const paymentsTab = [],
     paymentsRow = [],
     ordersTab = [],
     ordersRow = [];
@@ -492,7 +492,7 @@ const update = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching payment with id=" +
+                'Some error occured while fetching payment with id=' +
                   body.payments[key].value,
               error: err,
             });
@@ -509,7 +509,7 @@ const update = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching order with id=" +
+                'Some error occured while fetching order with id=' +
                   body.orders[key].value,
               error: err,
             });
@@ -521,12 +521,12 @@ const update = async (req, res) => {
       // 4. INSERT the old association in tables
       await invoiceModel
         .addPayments(paymentsRow)
-        .then(() => {})
+        // .then(() => {})
         .catch((err) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table payment with invoice id=" +
+              'Some error occured while inserting in associated table payment with invoice id=' +
                 data.factureId,
             error: err,
           });
@@ -540,7 +540,7 @@ const update = async (req, res) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table commande with invoice id=" +
+              'Some error occured while inserting in associated table commande with invoice id=' +
                 data.factureId,
             error: err,
           });
@@ -569,7 +569,7 @@ const deleteOne = (req, res) => {
     .then((result) => {
       if (result === 1) {
         res.send({
-          message: "Invoice was deleted successfully !",
+          message: 'Invoice was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -579,7 +579,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Invoice with id=" + params.id,
+        message: err.message || 'Error deleting Invoice with id=' + params.id,
       });
     });
 };
@@ -597,7 +597,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting invoices !",
+        message: err.message || 'Error deleting invoices !',
       });
     });
 };
@@ -612,7 +612,7 @@ const findAllLanguages = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving languages.",
+        message: err.message || 'Some error occured while retieving languages.',
       });
     });
 };
@@ -627,7 +627,7 @@ const findAllOrders = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving orders.",
+        message: err.message || 'Some error occured while retieving orders.',
       });
     });
 };
@@ -642,7 +642,7 @@ const findAllDevises = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving devises.",
+        message: err.message || 'Some error occured while retieving devises.',
       });
     });
 };
@@ -657,7 +657,7 @@ const findAllPayments = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving payments.",
+        message: err.message || 'Some error occured while retieving payments.',
       });
     });
 };
@@ -676,7 +676,7 @@ const findAllSellers = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving sellers.",
+        message: err.message || 'Some error occured while retieving sellers.',
       });
     });
 };
@@ -695,7 +695,7 @@ const findAllBuyers = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving buyers.",
+        message: err.message || 'Some error occured while retieving buyers.',
       });
     });
 };
@@ -710,7 +710,7 @@ const findAllBuyers = (req, res) => {
 //     };
 //   } else {
 //     res.status(500).send({
-//       message: "Some error occured while retrieving payments.",
+//       message: 'Some error occured while retrieving payments.',
 //     });
 //     return;
 //   }

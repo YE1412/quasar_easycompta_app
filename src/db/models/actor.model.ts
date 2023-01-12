@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const actor = sequelize.define(
-    "personne",
+    'personne',
     {
       actorId: {
         type: DataTypes.INTEGER,
@@ -46,8 +46,8 @@ const model = (sequelize) => {
       actorTypeId: {
         type: DataTypes.INTEGER,
         reference: {
-          model: "personne_type",
-          key: "actorTypeId",
+          model: 'personne_type',
+          key: 'actorTypeId',
         },
       },
       ville: {

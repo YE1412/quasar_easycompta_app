@@ -1,4 +1,4 @@
-import db from "app/src/db/models/index";
+import db from 'app/src/db/models/index';
 
 const service = db.service;
 // const Op = db.Sequelize.Op;
@@ -18,7 +18,7 @@ const create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating service.",
+        message: err.message || 'Some error occured while creating service.',
       });
     });
 };
@@ -26,7 +26,7 @@ const create = (req, res) => {
 const findAll = (req, res) => {
   service
     .findAll({
-      attributes: ["serviceId", "nom", "montantHt", "quantite"],
+      attributes: ['serviceId', 'nom', 'montantHt', 'quantite'],
       where: {},
     })
     .then((data) => {
@@ -34,7 +34,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving services.",
+        message: err.message || 'Some error occured while retieving services.',
       });
     });
 };
@@ -48,7 +48,7 @@ const findOne = (req, res) => {
     };
   } else {
     res.status(500).send({
-      message: "Some error occured while retrieving service.",
+      message: 'Some error occured while retrieving service.',
     });
     return;
   }
@@ -62,7 +62,7 @@ const findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving service.",
+        message: err.message || 'Some error occured while retieving service.',
       });
     });
 };
@@ -71,7 +71,7 @@ const getNbServices = (req, res) => {
   service
     .findAll({
       attributes: [
-        [db.sequelize.fn("COUNT", db.sequelize.col("serviceId")), "n_srv"],
+        [db.sequelize.fn('COUNT', db.sequelize.col('serviceId')), 'n_srv'],
       ],
     })
     .then((data) => {
@@ -81,7 +81,7 @@ const getNbServices = (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          `Some error occured while retieving number of services.`,
+          'Some error occured while retieving number of services.',
       });
     });
 };
@@ -98,7 +98,7 @@ const update = (req, res) => {
     .then((result) => {
       if (result[0] === 1) {
         res.send({
-          message: "Service was updated successfully !",
+          message: 'Service was updated successfully !',
         });
       } else {
         res.status(500).send({
@@ -108,7 +108,7 @@ const update = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error updating Service with id=" + params.id,
+        message: err.message || 'Error updating Service with id=' + params.id,
       });
     });
 };
@@ -125,7 +125,7 @@ const deleteOne = (req, res) => {
     .then((result) => {
       if (result === 1) {
         res.send({
-          message: "Service was deleted successfully !",
+          message: 'Service was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -135,7 +135,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Servive with id=" + params.id,
+        message: err.message || 'Error deleting Servive with id=' + params.id,
       });
     });
 };
@@ -153,7 +153,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Services !",
+        message: err.message || 'Error deleting Services !',
       });
     });
 };
@@ -161,16 +161,16 @@ const deleteAll = (req, res) => {
 const findAllOfAmountComp = (req, res) => {
   const params = req.params;
 
-  let whereClause = {};
+  const whereClause = {};
   if (params.montantHt !== undefined && params.type) {
     whereClause.montantHt = {};
     let valid = false;
     switch (params.type) {
-      case "lte":
-      case "gte":
-      case "lt":
-      case "gt":
-      case "eq":
+      case 'lte':
+      case 'gte':
+      case 'lt':
+      case 'gt':
+      case 'eq':
         valid = true;
         break;
       default:
@@ -179,14 +179,14 @@ const findAllOfAmountComp = (req, res) => {
     if (!valid) {
       res.status(500).send({
         message:
-          "Some error occured while retrieving services in type where clause.",
+          'Some error occured while retrieving services in type where clause.',
       });
       return;
     }
     whereClause.montantHt[`Op.${params.type}`] = params.montantHt;
   } else {
     res.status(500).send({
-      message: "Some error occured while retrieving services.",
+      message: 'Some error occured while retrieving services.',
     });
     return;
   }

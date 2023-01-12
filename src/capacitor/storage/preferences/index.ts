@@ -3,7 +3,7 @@ import { Cookies } from 'quasar';
 
 const cookie = Cookies;
 
-const setPref = async (key: string, val: any, withCookie?: boolean = true) => {
+const setPref = async (key: string, val: any, withCookie = true) => {
 	// console.log(`Preferences setting !`);
 	await Preferences.set({
 		key: key,

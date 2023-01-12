@@ -36,15 +36,15 @@ import { useUserStore } from 'stores/user';
 import { useCounterStore } from 'stores/counter';
 import { useSessionStore } from 'stores/session';
 import { useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
+import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
 // VARIABLES
 interface HomeTableProps {
   headTableObj?: [];
   contentTableObj?: [];
-  cssClasses: String;
+  cssClasses: string;
   dbConn: SQLiteDBConnection | null;
 };
 const $q = useQuasar();
@@ -58,33 +58,33 @@ const props = withDefaults(defineProps<HomeTableProps>(), {
   dbConn: null,
 });
 const defaultHeadTableObj = [{
-  name: "totalFiscalYearHTIncomes",
-  label: t("homeComponent.headTable.totalFiscalYearHTIncomes"),
-  field: "totalFiscalYearHTIncomes",
-  align: "center",
+  name: 'totalFiscalYearHTIncomes',
+  label: t('homeComponent.headTable.totalFiscalYearHTIncomes'),
+  field: 'totalFiscalYearHTIncomes',
+  align: 'center',
   sortable: false,
-  headerStyle: "text-align: center",
+  headerStyle: 'text-align: center',
 },
 {
-  name: "totalFiscalYearTTIncomes",
-  label: t("homeComponent.headTable.totalFiscalYearTTIncomes"),
-  field: "totalFiscalYearTTIncomes",
-  align: "center",
+  name: 'totalFiscalYearTTIncomes',
+  label: t('homeComponent.headTable.totalFiscalYearTTIncomes'),
+  field: 'totalFiscalYearTTIncomes',
+  align: 'center',
   sortable: false,
-  headerStyle: "text-align: center",
+  headerStyle: 'text-align: center',
 },
 {
-  name: "totalFiscalYearPaymentsIncomes",
-  label: t("homeComponent.headTable.totalFiscalYearPaymentsIncomes"),
-  field: "totalFiscalYearPaymentsIncomes",
-  align: "center",
+  name: 'totalFiscalYearPaymentsIncomes',
+  label: t('homeComponent.headTable.totalFiscalYearPaymentsIncomes'),
+  field: 'totalFiscalYearPaymentsIncomes',
+  align: 'center',
   sortable: false,
-  headerStyle: "text-align: center",
+  headerStyle: 'text-align: center',
 }];
 
 const headTable = ref(props.headTableObj.length ? props.headTableObj : defaultHeadTableObj);
 const contentTable = ref(props.contentTableObj.length ? props.contentTable : []);
-// console.log("main !");
+// console.log('main !');
 // console.log(headTable.value);
 // console.log(contentTable.value);
 let userStore = null, devise = null, counterStore = null, locale = null, sessionStore = null, prefs = null;
@@ -102,17 +102,17 @@ if (platform.is.desktop) {
       if (devise.deviseId == 3) {
         contentTable.value.push(
           {
-            "totalFiscalYearHTIncomes": `${await getHtFYI()} ${devise.symbole}`,
-            "totalFiscalYearTTIncomes": `${await getTtFYI()} ${devise.symbole}`,
-            "totalFiscalYearPaymentsIncomes": `${await getPayFYI()} ${devise.symbole}`
+            'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
+            'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
+            'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
           }
         );
       } else {
         contentTable.value.push(
           {
-            "totalFiscalYearHTIncomes": `${devise.symbole} ${await getHtFYI()}`,
-            "totalFiscalYearTTIncomes": `${devise.symbole} ${await getTtFYI()}`,
-            "totalFiscalYearPaymentsIncomes": `${devise.symbole} ${await getPayFYI()}`
+            'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
+            'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
+            'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
           }
         );
       }
@@ -212,17 +212,17 @@ else {
   if (devise.deviseId == 3) {
     contentTable.value.push(
       {
-        "totalFiscalYearHTIncomes": `${await getHtFYI()} ${devise.symbole}`,
-        "totalFiscalYearTTIncomes": `${await getTtFYI()} ${devise.symbole}`,
-        "totalFiscalYearPaymentsIncomes": `${await getPayFYI()} ${devise.symbole}`
+        'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
+        'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
+        'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
       }
     );
   } else {
     contentTable.value.push(
       {
-        "totalFiscalYearHTIncomes": `${devise.symbole} ${await getHtFYI()}`,
-        "totalFiscalYearTTIncomes": `${devise.symbole} ${await getTtFYI()}`,
-        "totalFiscalYearPaymentsIncomes": `${devise.symbole} ${await getPayFYI()}`
+        'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
+        'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
+        'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
       }
     );
   }
@@ -279,10 +279,10 @@ async function getPayFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
     for (const k in counterStore.getInvoicesFY) {
-      for (const l in counterStore.getInvoicesFY[k]["payments"]) {
-        if (counterStore.getInvoicesFY[k]["payments"][l].etat === 1) {
+      for (const l in counterStore.getInvoicesFY[k]['payments']) {
+        if (counterStore.getInvoicesFY[k]['payments'][l].etat === 1) {
           ret +=
-            counterStore.getInvoicesFY[k]["payments"][l].paymentValue;
+            counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
         }
       }
     }
@@ -809,7 +809,7 @@ function sanitizeQueryResult(obj: any) {
 watch(
   () => [props.contentTableObj, props.headTableObj],
   ([content, head]) => {
-    // console.log("changes !");
+    // console.log('changes !');
     // console.log(head);
     // console.log(content);
     headTable.value = head;

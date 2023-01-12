@@ -1,5 +1,5 @@
-import db from "app/src/db/models/index";
-import { upload, MAX_SIZE } from "app/src/db/upload";
+import db from 'app/src/db/models/index';
+import { upload } from 'app/src/db/upload';
 
 const user = db.user;
 const userType = db.userType;
@@ -34,7 +34,7 @@ const create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating user.",
+        message: err.message || 'Some error occured while creating user.',
       });
     });
 };
@@ -49,7 +49,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving users.",
+        message: err.message || 'Some error occured while retieving users.',
       });
     });
 };
@@ -64,7 +64,7 @@ const findAllDevises = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving devises.",
+        message: err.message || 'Some error occured while retieving devises.',
       });
     });
 };
@@ -79,7 +79,7 @@ const findAllPrices = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving prices.",
+        message: err.message || 'Some error occured while retieving prices.',
       });
     });
 };
@@ -106,7 +106,7 @@ const findOne = (req, res) => {
     };
   } else {
     res.status(500).send({
-      message: "Some error occured while retrieving user.",
+      message: 'Some error occured while retrieving user.',
     });
     return;
   }
@@ -114,15 +114,15 @@ const findOne = (req, res) => {
   user
     .findAll({
       attributes: [
-        "userId",
-        "firstName",
-        "lastName",
-        "login",
-        "email",
-        "companyName",
-        "companyLogo",
-        "devise.deviseId",
-        "user_type.userTypeId",
+        'userId',
+        'firstName',
+        'lastName',
+        'login',
+        'email',
+        'companyName',
+        'companyLogo',
+        'devise.deviseId',
+        'user_type.userTypeId',
       ],
       where: whereClause,
       include: [
@@ -135,14 +135,14 @@ const findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving user.",
+        message: err.message || 'Some error occured while retieving user.',
       });
     });
 };
 
 const retrieveOne = (req, res) => {
   const params = req.params;
-  // console.log("retrieveOne");
+  // console.log('retrieveOne');
   // const body = req.body;
   // const query = req.query;
   // console.log(params);
@@ -163,15 +163,15 @@ const retrieveOne = (req, res) => {
   user
     .findAll({
       attributes: [
-        "userId",
-        "firstName",
-        "lastName",
-        "login",
-        "email",
-        "companyName",
-        "companyLogo",
-        "devise.deviseId",
-        "user_type.userTypeId",
+        'userId',
+        'firstName',
+        'lastName',
+        'login',
+        'email',
+        'companyName',
+        'companyLogo',
+        'devise.deviseId',
+        'user_type.userTypeId',
       ],
       where: whereClause,
       include: [
@@ -184,7 +184,7 @@ const retrieveOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving user.",
+        message: err.message || 'Some error occured while retieving user.',
       });
     });
 };
@@ -198,15 +198,15 @@ const checkOne = (req, res) => {
   user
     .findAll({
       attributes: [
-        "userId",
-        "firstName",
-        "lastName",
-        "login",
-        "email",
-        "companyName",
-        "companyLogo",
-        "deviseId",
-        "userTypeId",
+        'userId',
+        'firstName',
+        'lastName',
+        'login',
+        'email',
+        'companyName',
+        'companyLogo',
+        'deviseId',
+        'userTypeId',
       ],
       where: {
         [Op.or]: [
@@ -224,7 +224,7 @@ const checkOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving user.",
+        message: err.message || 'Some error occured while retieving user.',
       });
     });
 };
@@ -242,7 +242,7 @@ const update = (req, res) => {
       console.log(result);
       if (result[0] === 1) {
         res.send({
-          message: "User was updated successfully !",
+          message: 'User was updated successfully !',
         });
       } else {
         res.status(500).send({
@@ -253,7 +253,7 @@ const update = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error updating User with id=" + params.id,
+        message: err.message || 'Error updating User with id=' + params.id,
         severity: true,
       });
     });
@@ -271,7 +271,7 @@ const deleteOne = (req, res) => {
     .then((result) => {
       if (result === 1) {
         res.send({
-          message: "User was deleted successfully !",
+          message: 'User was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -281,7 +281,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting User with id=" + params.id,
+        message: err.message || 'Error deleting User with id=' + params.id,
       });
     });
 };
@@ -299,7 +299,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Users !",
+        message: err.message || 'Error deleting Users !',
       });
     });
 };
@@ -321,7 +321,7 @@ const findAllOfType = (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          "Some error occured while retieving users with type=" + params.type,
+          'Some error occured while retieving users with type=' + params.type,
       });
     });
 };
@@ -330,9 +330,9 @@ const getAllTypes = function (req, res) {
   userType
     .findAll({
       attributes: [
-        "userTypeId",
-        "regular",
-        "admin",
+        'userTypeId',
+        'regular',
+        'admin',
       ],
     })
     .then((data) => {
@@ -340,7 +340,7 @@ const getAllTypes = function (req, res) {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving user types."
+        message: err.message || 'Some error occured while retieving user types.'
       });
     });
 };
@@ -354,7 +354,7 @@ const uploadImg = function (req, res) {
     .then((val) => {
       // console.log(result);
       // if (req.file == undefined) {
-      //   return res.status(400).send({ message: "Please upload a file!" });
+      //   return res.status(400).send({ message: 'Please upload a file!' });
       // }
       // console.log(val); 
       res.status(200).send({
@@ -364,7 +364,7 @@ const uploadImg = function (req, res) {
     })
     .catch((err) => {
       // console.log(err);
-      // if (err.code == "LIMIT_FILE_SIZE") {
+      // if (err.code == 'LIMIT_FILE_SIZE') {
       //   return res.status(500).send({
       //     message: `File size cannot be larger than ${MAX_SIZE}MB!`,
       //     errFileSize: true,

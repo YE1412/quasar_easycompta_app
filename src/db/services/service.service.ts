@@ -1,8 +1,8 @@
-import { http } from "app/src/boot/axios_client";
+import { http } from 'app/src/boot/axios_client';
 
 class ServiceDataService {
   getAll() {
-    return http.get("/services");
+    return http.get('/services');
   }
 
   get(id: number) {
@@ -14,7 +14,7 @@ class ServiceDataService {
   }
 
   getNbServices() {
-    return http.get("/services/nb");
+    return http.get('/services/nb');
   }
 
   create(data: any) {

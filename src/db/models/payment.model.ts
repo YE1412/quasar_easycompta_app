@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const payment = sequelize.define(
-    "payment",
+    'payment',
     {
       paymentId: {
         type: DataTypes.INTEGER,
@@ -22,23 +22,23 @@ const model = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         reference: {
-          model: "payment_type",
-          key: "paymentTypeId",
+          model: 'payment_type',
+          key: 'paymentTypeId',
         },
       },
       // orderId: {
       //   type: DataTypes.INTEGER,
       //   allowNull: false,
       //   reference: {
-      //     model: "commande",
-      //     key: "orderId",
+      //     model: 'commande',
+      //     key: 'orderId',
       //   },
       // },
       factureId: {
         type: DataTypes.INTEGER,
         reference: {
-          model: "facture",
-          key: "factureId",
+          model: 'facture',
+          key: 'factureId',
         },
         allowNull: true,
       },

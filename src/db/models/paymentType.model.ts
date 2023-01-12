@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const paymentType = sequelize.define(
-    "payment_type",
+    'payment_type',
     {
       paymentTypeId: {
         type: DataTypes.INTEGER,
@@ -13,17 +13,17 @@ const model = (sequelize) => {
       cb: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "paymentTypeConstraint",
+        unique: 'paymentTypeConstraint',
       },
       esp: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "paymentTypeConstraint",
+        unique: 'paymentTypeConstraint',
       },
       chq: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "paymentTypeConstraint",
+        unique: 'paymentTypeConstraint',
       },
     },
     {

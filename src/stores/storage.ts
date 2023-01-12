@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { StorageLike } from 'pinia-plugin-persistedstate';
 
 function discard(ctx: unknow){

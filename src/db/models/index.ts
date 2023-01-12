@@ -1,18 +1,18 @@
-import dbConfig from "app/src/db/config/db.config";
-import { Sequelize } from "sequelize";
-import actor from "./actor.model";
-import actorType from "./actorType.model";
-import contains from "./contains.model";
-import devise from "./devise.model";
-import invoice from "./invoice.model";
-import langue from "./langue.model";
-import order from "./order.model";
-import payment from "./payment.model";
-import paymentType from "./paymentType.model";
-import price from "./price.model";
-import service from "./service.model";
-import user from "./user.model";
-import userType from "./userType.model";
+import dbConfig from 'app/src/db/config/db.config';
+import { Sequelize } from 'sequelize';
+import actor from './actor.model';
+import actorType from './actorType.model';
+import contains from './contains.model';
+import devise from './devise.model';
+import invoice from './invoice.model';
+import langue from './langue.model';
+import order from './order.model';
+import payment from './payment.model';
+import paymentType from './paymentType.model';
+import price from './price.model';
+import service from './service.model';
+import user from './user.model';
+import userType from './userType.model';
 
 // console.log(dbConfig);
 
@@ -47,143 +47,143 @@ const userTypeModelObj = userType(sequelize);
 
 // ASSOCIATIONS
 userTypeModelObj.users = userTypeModelObj.hasMany(userModelObj, {
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  foreignKey: "userTypeId",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  foreignKey: 'userTypeId',
 });
 userModelObj.type = userModelObj.belongsTo(userTypeModelObj, {
-  foreignKey: "userTypeId",
+  foreignKey: 'userTypeId',
 });
 
 userModelObj.invoices = userModelObj.hasMany(invoiceModelObj, {
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  foreignKey: "administratorId",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  foreignKey: 'administratorId',
 });
 invoiceModelObj.admin = invoiceModelObj.belongsTo(userModelObj, {
-  foreignKey: "administratorId",
+  foreignKey: 'administratorId',
 });
 
 actorTypeModelObj.actors = actorTypeModelObj.hasMany(actorModelObj, {
-  foreignKey: "actorTypeId",
-  onUpdate: "CASCADE",
-  onDelete: "SET NULL",
+  foreignKey: 'actorTypeId',
+  onUpdate: 'CASCADE',
+  onDelete: 'SET NULL',
 });
 actorModelObj.type = actorModelObj.belongsTo(actorTypeModelObj, {
-  foreignKey: "actorTypeId",
+  foreignKey: 'actorTypeId',
 });
 
 // actorModelObj.types = actorModelObj.belongsToMany(actorTypeModelObj, {
-//   through: "personne_activite",
-//   foreignKey: "actorTypeId",
-//   onUpdate: "CASCADE",
-//   onDelete: "CASCADE",
-//   as: "types"
+//   through: 'personne_activite',
+//   foreignKey: 'actorTypeId',
+//   onUpdate: 'CASCADE',
+//   onDelete: 'CASCADE',
+//   as: 'types'
 // });
 // actorTypeModelObj.actors = actorTypeModelObj.belongsToMany(actorModelObj, {
-//   through: "personne_activite",
-//   foreignKey: "actorId",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-//   as: "actors"
+//   through: 'personne_activite',
+//   foreignKey: 'actorId',
+//   onDelete: 'CASCADE',
+//   onUpdate: 'CASCADE',
+//   as: 'actors'
 // });
 
 paymentTypeModelObj.payments = paymentTypeModelObj.hasMany(paymentModelObj, {
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  foreignKey: "paymentType",
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+  foreignKey: 'paymentType',
 });
 paymentModelObj.paymentType = paymentModelObj.belongsTo(paymentTypeModelObj, {
-  foreignKey: "paymentType",
+  foreignKey: 'paymentType',
 });
 
 invoiceModelObj.payments = invoiceModelObj.hasMany(paymentModelObj, {
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  foreignKey: "factureId",
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+  foreignKey: 'factureId',
 });
 paymentModelObj.invoice = paymentModelObj.belongsTo(invoiceModelObj, {
-  foreignKey: "factureId",
+  foreignKey: 'factureId',
 });
 
 actorModelObj.invoicesReceived = actorModelObj.hasMany(invoiceModelObj, {
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  foreignKey: "buyerId",
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+  foreignKey: 'buyerId',
 });
 invoiceModelObj.buyer = invoiceModelObj.belongsTo(actorModelObj, {
-  foreignKey: "buyerId",
-  as: "buyer",
+  foreignKey: 'buyerId',
+  as: 'buyer',
 });
 
 actorModelObj.invoicesSent = actorModelObj.hasMany(invoiceModelObj, {
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  foreignKey: "sellerId",
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+  foreignKey: 'sellerId',
 });
 invoiceModelObj.seller = invoiceModelObj.belongsTo(actorModelObj, {
-  foreignKey: "sellerId",
-  as: "seller",
+  foreignKey: 'sellerId',
+  as: 'seller',
 });
 
 invoiceModelObj.orders = invoiceModelObj.hasMany(orderModelObj, {
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  foreignKey: "factureId",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  foreignKey: 'factureId',
 });
 orderModelObj.invoice = orderModelObj.belongsTo(invoiceModelObj, {
-  foreignKey: "factureId",
+  foreignKey: 'factureId',
 });
 
 deviseModelObj.invoices = deviseModelObj.hasMany(invoiceModelObj, {
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  foreignKey: "deviseId",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  foreignKey: 'deviseId',
 });
 invoiceModelObj.devise = invoiceModelObj.belongsTo(deviseModelObj, {
-  foreignKey: "deviseId",
+  foreignKey: 'deviseId',
 });
 
 orderModelObj.services = orderModelObj.belongsToMany(serviceModelObj, {
-  through: "contains",
-  foreignKey: "orderId",
-  onUpdate: "CASCADE",
-  onDelete: "CASCADE",
-  as: "Services",
+  through: 'contains',
+  foreignKey: 'orderId',
+  onUpdate: 'CASCADE',
+  onDelete: 'CASCADE',
+  as: 'Services',
 });
 serviceModelObj.orders = serviceModelObj.belongsToMany(orderModelObj, {
-  through: "contains",
-  foreignKey: "serviceId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  as: "Orders",
+  through: 'contains',
+  foreignKey: 'serviceId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+  as: 'Orders',
 });
 
 // orderModelObj.payments = orderModelObj.hasMany(paymentModelObj, {
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-//   foreignKey: "orderId",
+//   onDelete: 'CASCADE',
+//   onUpdate: 'CASCADE',
+//   foreignKey: 'orderId',
 // });
 // paymentModelObj.order = paymentModelObj.belongsTo(orderModelObj, {
-//   foreignKey: "orderId",
+//   foreignKey: 'orderId',
 // });
 
 langueModelObj.invoices = langueModelObj.hasMany(invoiceModelObj, {
-  onDelete: "SET NULL",
-  onUpdate: "CASCADE",
-  foreignKey: "languageId",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  foreignKey: 'languageId',
 });
 invoiceModelObj.langue = invoiceModelObj.belongsTo(langueModelObj, {
-  foreignKey: "languageId",
+  foreignKey: 'languageId',
 });
 
 deviseModelObj.users = deviseModelObj.hasMany(userModelObj, {
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-  foreignKey: "deviseId",
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+  foreignKey: 'deviseId',
 });
 userModelObj.devise = userModelObj.belongsTo(deviseModelObj, {
-  foreignKey: "deviseId",
+  foreignKey: 'deviseId',
 });
 // -------------
 

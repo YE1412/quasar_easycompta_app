@@ -209,7 +209,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, getCurrentInstance } from 'vue';
 import MessagesItem from './MessagesItem.vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
@@ -402,6 +402,7 @@ const validateForm = async () => {
 };
 
 let userStore = null, messageStore = null, invoiceStore = null, prefs = null, origin = null;
+let app = null, get = null, post = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
@@ -411,6 +412,9 @@ if (platform.is.desktop) {
   messageVisibility.value = messageStore.getMessagesVisibility;
 }
 else {
+  app = getCurrentInstance()
+  get = app.appContext.config.globalProperties.$get;
+  post = app.appContext.config.globalProperties.$get;
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -642,6 +646,7 @@ async function hydrateForm() {
     }    
   } 
   else if(platform.is.mobile) {
+    // console.log(await get(`${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/invoices/devises`));
     let isOpen = await isDbConnectionOpen(props.dbConn);
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {

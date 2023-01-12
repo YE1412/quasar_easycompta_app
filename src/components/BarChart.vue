@@ -21,8 +21,9 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import {
-  Chart as ChartJS,
+  // Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
@@ -39,18 +40,18 @@ import { useUserStore } from 'stores/user';
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
+import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
 // VARIABLES
 interface BarChartProps {
-  chartId?: String;
-  datasetIdKey?: String;
-  width?: Number;
-  height?: Number;
-  cssClasses?: String;
-  styles?: Object;
+  chartId?: string;
+  datasetIdKey?: string;
+  width?: number;
+  height?: number;
+  cssClasses?: string;
+  styles?: unknow;
   plugins?: [];
   dbConn: SQLiteDBConnection | null;
 };
@@ -62,8 +63,8 @@ const props = withDefaults(defineProps<BarChartProps>(), {
   width: 400,
   height: 400,
   cssClasses: '',
-  styles: () => {},
-  plugins: () => [],
+  styles: () => ({}),
+  plugins: () => ([]),
   dbConn: null,
 });
 const platform = $q.platform;
@@ -77,30 +78,30 @@ const yearLabel = computed(() => {
   }
 });
 const chartLabels = [
-  t("homeComponent.barChart.juneLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.julyLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.augustLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.septemberLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.octoberLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.novemberLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.decemberLabel", { year: yearLabel.value }),
-  t("homeComponent.barChart.januaryLabel", { year: yearLabel.value + 1 }),
-  t("homeComponent.barChart.februaryLabel", { year: yearLabel.value + 1 }),
-  t("homeComponent.barChart.marchLabel", { year: yearLabel.value + 1 }),
-  t("homeComponent.barChart.aprilLabel", { year: yearLabel.value + 1 }),
-  t("homeComponent.barChart.mayLabel", { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.juneLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.julyLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.augustLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.septemberLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.octoberLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.novemberLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.decemberLabel', { year: yearLabel.value }),
+  t('homeComponent.barChart.januaryLabel', { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.februaryLabel', { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.marchLabel', { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.aprilLabel', { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.mayLabel', { year: yearLabel.value + 1 }),
 ];
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
+// const chartOptions = {
+//   responsive: true,
+//   maintainAspectRatio: false,
+// };
 const datas = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 const chartData = ref({
   labels: chartLabels,
   datasets: [
     {
-      label: t("homeComponent.barChart.datasetLabel"),
-      backgroundColor: "#f87979",
+      label: t('homeComponent.barChart.datasetLabel'),
+      backgroundColor: '#f87979',
       data: datas.value,
     },
   ],
@@ -128,7 +129,7 @@ else {
     // console.log('BarChart init !');
     prefs = await import('cap/storage/preferences');
     const usr = await prefs.getPref('user');
-    const session = await prefs.getPref('session');
+    // const session = await prefs.getPref('session');
     // devise = usr.user.devise;
     // locale = !!session ? session.langDisplayed.nom : 'en-US' ;
     let dateStart = null;;
@@ -242,8 +243,8 @@ else {
     labels: chartLabels,
     datasets: [
       {
-        label: t("homeComponent.barChart.datasetLabel"),
-        backgroundColor: "#f87979",
+        label: t('homeComponent.barChart.datasetLabel'),
+        backgroundColor: '#f87979',
         data: datas.value,
       },
     ],

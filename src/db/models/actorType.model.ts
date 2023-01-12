@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const actorType = sequelize.define(
-    "personne_type",
+    'personne_type',
     {
       actorTypeId: {
         type: DataTypes.INTEGER,
@@ -13,12 +13,12 @@ const model = (sequelize) => {
       seller: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "actorTypeConstraint",
+        unique: 'actorTypeConstraint',
       },
       buyer: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        unique: "actorTypeConstraint",
+        unique: 'actorTypeConstraint',
       },
     },
     {

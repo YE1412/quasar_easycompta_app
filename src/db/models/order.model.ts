@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const order = sequelize.define(
-    "commande",
+    'commande',
     {
       orderId: {
         type: DataTypes.INTEGER,
@@ -19,8 +19,8 @@ const model = (sequelize) => {
       factureId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "facture",
-          key: "factureId",
+          model: 'facture',
+          key: 'factureId',
         },
         defaultValue: null,
       },

@@ -1,14 +1,14 @@
-import sessions from "app/src/db/controllers/sessions.controller.js";
+import sessions from 'app/src/db/controllers/sessions.controller.js';
 export default (express) => {
-  var router = express.Router();
+  const router = express.Router();
 
   // console.log('routing to sessions route !');
 
   // Delete session
-  router.post("/logout", sessions.delete);
+  router.post('/logout', sessions.delete);
 
   // Get all languages
-  router.get("/languages", sessions.getAllLanguages);
+  router.get('/languages', sessions.getAllLanguages);
 
   // app.use('/api/sessions', router);
 

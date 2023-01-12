@@ -1,4 +1,4 @@
-import db from "app/src/db/models/index";
+import db from 'app/src/db/models/index';
 
 const payment = db.payment;
 const paymentType = db.paymentType;
@@ -23,7 +23,7 @@ const create = async (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating payment.",
+        message: err.message || 'Some error occured while creating payment.',
         error: err,
       });
     });
@@ -33,11 +33,11 @@ const findAll = (req, res) => {
   payment
     .findAll({
       attributes: [
-        "paymentId",
-        "etat",
-        "paymentValue",
-        "payment_type.paymentTypeId",
-        "facture.factureId",
+        'paymentId',
+        'etat',
+        'paymentValue',
+        'payment_type.paymentTypeId',
+        'facture.factureId',
       ],
       where: {},
       include: [payment.paymentType, payment.invoice],
@@ -47,7 +47,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving payments.",
+        message: err.message || 'Some error occured while retieving payments.',
       });
     });
 };
@@ -57,7 +57,7 @@ const findOne = (req, res) => {
   // let whereClause = {};
   if (query.paymentId === undefined) {
     res.status(500).send({
-      message: "Some error occured while retrieving payment.",
+      message: 'Some error occured while retrieving payment.',
     });
     return;
   }
@@ -97,7 +97,7 @@ const update = async (req, res) => {
     .then(async (data) => {
       if (data[0] === 1)
         res.send({
-          message: "Payment was updated successfully !",
+          message: 'Payment was updated successfully !',
         });
       else {
         res.status(500).send({
@@ -130,7 +130,7 @@ const deleteOne = (req, res) => {
     .then((result) => {
       if (result === 1) {
         res.send({
-          message: "Payment was deleted successfully !",
+          message: 'Payment was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -140,7 +140,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Payment with id=" + params.id,
+        message: err.message || 'Error deleting Payment with id=' + params.id,
       });
     });
 };
@@ -158,7 +158,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting payments !",
+        message: err.message || 'Error deleting payments !',
       });
     });
 };
@@ -174,7 +174,7 @@ const findAllTypes = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occured while retieving payment types.",
+          err.message || 'Some error occured while retieving payment types.',
       });
     });
 };
@@ -189,7 +189,7 @@ const findAllInvoices = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving invoices.",
+        message: err.message || 'Some error occured while retieving invoices.',
       });
     });
 };
@@ -204,7 +204,7 @@ const findAllInvoices = (req, res) => {
 //     })
 //     .catch((err) => {
 //       res.status(500).send({
-//         message: err.message || "Some error occured while retieving invoices.",
+//         message: err.message || 'Some error occured while retieving invoices.',
 //       });
 //     });
 // };
@@ -212,14 +212,14 @@ const findAllInvoices = (req, res) => {
 const findByTypes = (req, res) => {
   const params = req.params;
 
-  let whereClause = {};
+  const whereClause = {};
   if (params.paymentTypesId !== undefined) {
     whereClause.paymentTypeId = {
       [Op.or]: params.paymentTypesId,
     };
   } else {
     res.status(500).send({
-      message: "Some error occured while retrieving payments.",
+      message: 'Some error occured while retrieving payments.',
     });
     return;
   }

@@ -1,6 +1,5 @@
-import { polyfills,
-  createSQLiteConnection,
-  createJeepSQLiteElem,
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { createSQLiteConnection,
   importFromJSON,
   connectionsConsistency,
   createConnection,
@@ -13,9 +12,9 @@ import { polyfills,
   run,
   closeConnection,
   closeDBConnection } from './sqliteStorage';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection, capSQLiteChanges, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection, capSQLiteChanges, DBSQLiteValues } from '@capacitor-community/sqlite';
 
-export default async(importJson?: boolean = false): SQLiteDBConnection | null => {
+export default async(importJson = false): SQLiteDBConnection | null => {
   // console.log('running through capacitor !');
   createSQLiteConnection();
   // if (platform == 'web'){
@@ -73,11 +72,11 @@ export async function isDbConnectionOpen(db: SQLiteDBConnection): boolean {
     return false;
 };
 
-export async function newQuery(db: SQLiteDBConnection, q: string, val?: any[] | undefined = undefined): DBSQLiteValues | null {
+export async function newQuery(db: SQLiteDBConnection, q: string, val: any[] | undefined = undefined): DBSQLiteValues | null {
   return await query(db, q, val);
 };
 
-export async function newRun(db: SQLiteDBConnection, q: string, val?: any[] | undefined = undefined, transac?: boolean | undefined = undefined): capSQLiteChanges | null {
+export async function newRun(db: SQLiteDBConnection, q: string, val: any[] | undefined = undefined, transac: boolean | undefined = undefined): capSQLiteChanges | null {
   return await run(db, q, val, transac)
     // .catch((err) => {
     //   console.log(err);

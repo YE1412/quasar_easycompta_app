@@ -1,9 +1,9 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import { useStorage } from "@vueuse/core";
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+// import { useStorage } from '@vueuse/core';
 import { cookieStorage } from 'app/src/stores/storage';
 
-const useMessageStore = defineStore("message", {
+const useMessageStore = defineStore('message', {
   state: () => ({
     messages: [],
     messagesVisibility: false,

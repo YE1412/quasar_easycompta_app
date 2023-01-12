@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const model = (sequelize) => {
   const invoice = sequelize.define(
-    "facture",
+    'facture',
     {
       factureId: {
         type: DataTypes.INTEGER,
@@ -22,15 +22,15 @@ const model = (sequelize) => {
       languageId: {
         type: DataTypes.INTEGER,
         reference: {
-          model: "langue",
-          key: "langueId",
+          model: 'langue',
+          key: 'langueId',
         },
       },
       deviseId: {
         type: DataTypes.INTEGER,
         reference: {
-          model: "devise",
-          key: "deviseId",
+          model: 'devise',
+          key: 'deviseId',
         },
       },
       tvaValue: {
@@ -41,24 +41,24 @@ const model = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         reference: {
-          model: "personne",
-          key: "actorId",
+          model: 'personne',
+          key: 'actorId',
         },
       },
       sellerId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         reference: {
-          model: "personne",
-          key: "actorId",
+          model: 'personne',
+          key: 'actorId',
         },
       },
       administratorId: {
         type: DataTypes.INTEGER,
         allowNull: true,
         reference: {
-          model: "user",
-          key: "userId",
+          model: 'user',
+          key: 'userId',
         },
       },
     },

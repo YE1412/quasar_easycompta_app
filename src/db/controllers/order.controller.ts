@@ -1,4 +1,4 @@
-import db from "app/src/db/models/index";
+import db from 'app/src/db/models/index';
 
 const order = db.order;
 // const invoice = db.invoice;
@@ -8,8 +8,8 @@ const contains = db.contains;
 
 const create = async (req, res) => {
   const body = req.body;
-  let serviceTab = [];
-  let serviceRow = [];
+  const serviceTab = [];
+  const serviceRow = [];
   for (const key in body.services) {
     serviceTab.push({
       serviceId: body.services[key].value,
@@ -30,7 +30,7 @@ const create = async (req, res) => {
       include: [
         {
           association: order.services,
-          as: "Services",
+          as: 'Services',
         },
       ],
     })
@@ -46,7 +46,7 @@ const create = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching service with id=" +
+                'Some error occured while fetching service with id=' +
                   body.services[key].value,
               error: err,
             });
@@ -63,7 +63,7 @@ const create = async (req, res) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table contains with order id=" +
+              'Some error occured while inserting in associated table contains with order id=' +
                 data.orderId,
             error: err,
           });
@@ -71,7 +71,7 @@ const create = async (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while creating order.",
+        message: err.message || 'Some error occured while creating order.',
         error: err,
       });
     });
@@ -81,10 +81,10 @@ const findAll = (req, res) => {
   order
     .findAll({
       attributes: [
-        "orderId",
-        "contenuAdditionnel",
-        "priceHt",
-        "Services.serviceId",
+        'orderId',
+        'contenuAdditionnel',
+        'priceHt',
+        'Services.serviceId',
       ],
       where: {},
       include: [order.services, order.invoice],
@@ -94,7 +94,7 @@ const findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving orders.",
+        message: err.message || 'Some error occured while retieving orders.',
       });
     });
 };
@@ -104,7 +104,7 @@ const findOne = (req, res) => {
   // let whereClause = {};
   if (query.orderId === undefined) {
     res.status(500).send({
-      message: "Some error occured while retrieving order.",
+      message: 'Some error occured while retrieving order.',
     });
     return;
   }
@@ -118,7 +118,7 @@ const findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while retieving order.",
+        message: err.message || 'Some error occured while retieving order.',
       });
     });
 };
@@ -127,7 +127,7 @@ const getNbOrders = (req, res) => {
   order
     .findAll({
       attributes: [
-        [db.sequelize.fn("COUNT", db.sequelize.col("orderId")), "n_ord"],
+        [db.sequelize.fn('COUNT', db.sequelize.col('orderId')), 'n_ord'],
       ],
     })
     .then((data) => {
@@ -136,7 +136,7 @@ const getNbOrders = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || `Some error occured while retieving number of orders.`,
+          err.message || 'Some error occured while retieving number of orders.',
       });
     });
 };
@@ -145,8 +145,8 @@ const update = async (req, res) => {
   const params = req.params;
   const body = req.body;
 
-  let serviceTab = [];
-  let serviceRow = [];
+  const serviceTab = [];
+  const serviceRow = [];
   for (const key in body.services) {
     serviceTab.push({
       serviceId: body.services[key].value,
@@ -177,7 +177,7 @@ const update = async (req, res) => {
         include: [
           {
             association: order.services,
-            as: "Services",
+            as: 'Services',
           },
         ],
       }
@@ -194,7 +194,7 @@ const update = async (req, res) => {
             res.status(500).send({
               message:
                 err.message ||
-                "Some error occured while fetching service with id=" +
+                'Some error occured while fetching service with id=' +
                   body.services[key].value,
               error: err,
             });
@@ -213,7 +213,7 @@ const update = async (req, res) => {
           res.status(500).send({
             message:
               err.message ||
-              "Some error occured while inserting in associated table contains with order id=" +
+              'Some error occured while inserting in associated table contains with order id=' +
                 data.orderId,
             error: err,
           });
@@ -222,7 +222,7 @@ const update = async (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occured while updating order.",
+        message: err.message || 'Some error occured while updating order.',
         error: err,
       });
     });
@@ -240,7 +240,7 @@ const deleteOne = (req, res) => {
     .then((result) => {
       if (result === 1) {
         res.send({
-          message: "Order was deleted successfully !",
+          message: 'Order was deleted successfully !',
         });
       } else {
         res.status(500).send({
@@ -250,7 +250,7 @@ const deleteOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Order with id=" + params.id,
+        message: err.message || 'Error deleting Order with id=' + params.id,
       });
     });
 };
@@ -268,7 +268,7 @@ const deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error deleting Orders !",
+        message: err.message || 'Error deleting Orders !',
       });
     });
 };

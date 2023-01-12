@@ -1,16 +1,16 @@
-import { http } from "app/src/boot/axios_client";
+import { http } from 'app/src/boot/axios_client';
 
 class UserDataService {
   getAll() {
-    return http.get("/users");
+    return http.get('/users');
   }
 
   getAllDevises() {
-    return http.get("/users/devises");
+    return http.get('/users/devises');
   }
 
   getAllPrices() {
-    return http.get("/users/prices");
+    return http.get('/users/prices');
   }
 
   get(login: string, password: string) {

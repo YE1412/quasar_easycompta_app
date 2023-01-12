@@ -1,4 +1,5 @@
-import { http } from "app/src/boot/axios_client";
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { http } from 'app/src/boot/axios_client';
 
 class InvoiceDataService {
   getAll(id: number) {
@@ -6,31 +7,31 @@ class InvoiceDataService {
   }
 
   getAllSellers() {
-    return http.get("/invoices/sellers");
+    return http.get('/invoices/sellers');
   }
 
   getAllBuyers() {
-    return http.get("/invoices/buyers");
+    return http.get('/invoices/buyers');
   }
 
   getAllDevises() {
-    return http.get("/invoices/devises");
+    return http.get('/invoices/devises');
   }
 
   getAllOrders() {
-    return http.get("/invoices/orders");
+    return http.get('/invoices/orders');
   }
 
   getAllLanguages() {
-    return http.get("/invoices/languages");
+    return http.get('/invoices/languages');
   }
 
   getAllPayments() {
-    return http.get("/invoices/payments");
+    return http.get('/invoices/payments');
   }
 
   get(id: number) {
-    return http.get(`/invoices/find`, {
+    return http.get('/invoices/find', {
       params: {
         actorId: id,
       },
@@ -54,7 +55,7 @@ class InvoiceDataService {
   // }
 
   getFinancialYearNbInvoices(id: number) {
-    return http.get(`/invoices/financialYearNbInvoices`, {
+    return http.get('/invoices/financialYearNbInvoices', {
       params: {
         adminId: id,
       },
@@ -62,7 +63,7 @@ class InvoiceDataService {
   }
 
   getFinancialYearInvoices(id: number) {
-    return http.get(`/invoices/financialYearInvoices`, {
+    return http.get('/invoices/financialYearInvoices', {
       params: {
         adminId: id,
       },
@@ -74,7 +75,7 @@ class InvoiceDataService {
   }
 
   create(data: any) {
-    return http.post(`/invoices`, data);
+    return http.post('/invoices', data);
   }
 
   update(id: number, data: any) {
@@ -86,7 +87,7 @@ class InvoiceDataService {
   }
 
   deleteAll() {
-    return http.delete(`/invoices`);
+    return http.delete('/invoices');
   }
 
   // findByTypes(types: any) {

@@ -12,34 +12,35 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { Pie } from 'vue-chartjs';
 import {
   Chart as ChartJS,
-  Title,
+  // Title,
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale,
+  // CategoryScale,
 } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend)
 import { useCounterStore } from 'stores/counter';
 import { useUserStore } from 'stores/user';
 // import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
+import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
 // VARIABLES
 interface PieChartProps {
-  chartId?: String;
-  datasetIdKey?: String;
-  width?: Number;
-  height?: Number;
-  cssClasses?: String;
-  styles?: Object;
+  chartId?: string;
+  datasetIdKey?: string;
+  width?: number;
+  height?: number;
+  cssClasses?: string;
+  styles?: unknow;
   plugins?: [];
   dbConn: SQLiteDBConnection | null;
 };
@@ -52,8 +53,8 @@ const props = withDefaults(defineProps<PieChartProps>(), {
   width: 400,
   height: 400,
   cssClasses: '',
-  styles: () => {},
-  plugins: () => [],
+  styles: () => ({}),
+  plugins: () => ([]),
   dbConn: null,
 });
 const counter = ref(null);
@@ -63,13 +64,13 @@ let payStats = null,
   chqVal = null, 
   chartData = ref({
       labels: [
-        t("homeComponent.pieChart.cbLabel"),
-        t("homeComponent.pieChart.cashLabel"),
-        t("homeComponent.pieChart.chqLabel"),
+        t('homeComponent.pieChart.cbLabel'),
+        t('homeComponent.pieChart.cashLabel'),
+        t('homeComponent.pieChart.chqLabel'),
       ],
       datasets: [
         {
-          backgroundColor: ["#41B883", "#E46651", "#00D8FF"],
+          backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
           data: [0, 0, 0],
         },
       ],
@@ -162,13 +163,13 @@ else {
 
   chartData.value = {
     labels: [
-      t("homeComponent.pieChart.cbLabel"),
-      t("homeComponent.pieChart.cashLabel"),
-      t("homeComponent.pieChart.chqLabel"),
+      t('homeComponent.pieChart.cbLabel'),
+      t('homeComponent.pieChart.cashLabel'),
+      t('homeComponent.pieChart.chqLabel'),
     ],
     datasets: [
       {
-        backgroundColor: ["#41B883", "#E46651", "#00D8FF"],
+        backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
         data: [cbVal, cashVal, chqVal],
       },
     ],
@@ -176,30 +177,30 @@ else {
   // console.log(chartData.value);
 })();
 
-const data = {
-labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-  datasets: [
-    {
-      backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-      data: [40, 20, 80, 10]
-    }
-  ]
-};
+// const data = {
+// labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+//   datasets: [
+//     {
+//       backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+//       data: [40, 20, 80, 10]
+//     }
+//   ]
+// };
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
+// const chartOptions = {
+//   responsive: true,
+//   maintainAspectRatio: false,
+// };
 
 // FUNCTIONS
 async function getPaymentsStats() {
   let ret = { cb: 0, cash: 0, chq: 0, all: 0 };
   if (platform.is.desktop){
     for (const k in counterStore.getInvoicesFY) {
-      for (const l in counterStore.getInvoicesFY[k]["payments"]) {
-        if (counterStore.getInvoicesFY[k]["payments"][l].etat) {
+      for (const l in counterStore.getInvoicesFY[k]['payments']) {
+        if (counterStore.getInvoicesFY[k]['payments'][l].etat) {
           switch (
-            counterStore.getInvoicesFY[k]["payments"][l].paymentType
+            counterStore.getInvoicesFY[k]['payments'][l].paymentType
           ) {
             case 1:
               ret.cb += 1;
@@ -223,10 +224,10 @@ async function getPaymentsStats() {
   else {
     const invoices = !!counter.value ? counter.value.invoicesFY : [];
     for (const k in invoices) {
-      for (const l in invoices[k]["payments"]) {
-        if (invoices[k]["payments"][l].etat) {
+      for (const l in invoices[k]['payments']) {
+        if (invoices[k]['payments'][l].etat) {
           switch (
-            invoices[k]["payments"][l].paymentType
+            invoices[k]['payments'][l].paymentType
           ) {
             case 1:
               ret.cb += 1;

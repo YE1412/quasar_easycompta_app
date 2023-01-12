@@ -1,8 +1,8 @@
-import { http } from "app/src/boot/axios_client";
+import { http } from 'app/src/boot/axios_client';
 
 class OrderDataService {
   getAll() {
-    return http.get("/orders");
+    return http.get('/orders');
   }
 
   get(id: number) {
