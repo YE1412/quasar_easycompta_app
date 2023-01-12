@@ -23,7 +23,7 @@
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import {
-  // Chart as ChartJS,
+  Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
@@ -33,7 +33,7 @@ import {
 } from 'chart.js'
 import { Bar } from 'vue-chartjs';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-import Chart from 'chart.js/auto';
+// import Chart from 'chart.js/auto';
 import { useCounterStore } from 'stores/counter';
 import { useUserStore } from 'stores/user';
 // import { Capacitor } from '@capacitor/core';

@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import sessionAxiosService from 'app/src/db/services/session.service';
-// import { extend } from 'quasar';
+import { extend } from 'quasar';
 // import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 // import { computed, ref } from 'vue';
 // import { useLocalStorage } from '@vueuse/core';
@@ -260,8 +260,8 @@ const useSessionStore = defineStore('session', {
             if (res.data.id) {
               // Insertion session en BDD
               this.setSessionId(res.data.id);
-              console.log('Session ID from Session !');
-              console.log(this.sessionId);
+              // console.log('Session ID from Session !');
+              // console.log(this.sessionId);
               resolve(res.data.id);
             } else {
               reject(false);

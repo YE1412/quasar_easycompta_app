@@ -1,9 +1,9 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import paymentAxiosService from "app/src/db/services/payment.service";
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import paymentAxiosService from 'app/src/db/services/payment.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 
-const usePaymentStore = defineStore("payment", {
+const usePaymentStore = defineStore('payment', {
   state: () => ({
     payments: [],
     types: [],
@@ -22,7 +22,7 @@ const usePaymentStore = defineStore("payment", {
   },
   actions: {
     getAllPayments() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         paymentAxiosService
           .getAll()
@@ -56,7 +56,7 @@ const usePaymentStore = defineStore("payment", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -64,7 +64,7 @@ const usePaymentStore = defineStore("payment", {
       });
     },
     getAllPaymentTypes() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         paymentAxiosService
           .getAllTypes()
@@ -96,7 +96,7 @@ const usePaymentStore = defineStore("payment", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -104,7 +104,7 @@ const usePaymentStore = defineStore("payment", {
       });
     },
     getAllInvoices() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         paymentAxiosService
           .getAllInvoices()
@@ -138,7 +138,7 @@ const usePaymentStore = defineStore("payment", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

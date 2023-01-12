@@ -1,9 +1,9 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import serviceAxiosService from "app/src/db/services/service.service";
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import serviceAxiosService from 'app/src/db/services/service.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 
-const useServiceStore = defineStore("service", {
+const useServiceStore = defineStore('service', {
   state: () => ({
     services: [],
   }),
@@ -14,7 +14,7 @@ const useServiceStore = defineStore("service", {
   },
   actions: {
     getAllServices() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         serviceAxiosService
           .getAll()
@@ -48,7 +48,7 @@ const useServiceStore = defineStore("service", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

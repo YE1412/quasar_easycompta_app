@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { http } from 'app/src/boot/axios_client';
 
 class OrderDataService {
@@ -6,7 +7,7 @@ class OrderDataService {
   }
 
   get(id: number) {
-    return http.get(`/orders/find`, {
+    return http.get('/orders/find', {
       params: {
         actorId: id,
       },
@@ -14,11 +15,11 @@ class OrderDataService {
   }
 
   getNbOrders() {
-    return http.get(`/orders/nb`);
+    return http.get('/orders/nb');
   }
 
   create(data: any) {
-    return http.post(`/orders`, data);
+    return http.post('/orders', data);
   }
 
   update(id: number, data: any) {
@@ -30,7 +31,7 @@ class OrderDataService {
   }
 
   deleteAll() {
-    return http.delete(`/orders`);
+    return http.delete('/orders');
   }
 }
 

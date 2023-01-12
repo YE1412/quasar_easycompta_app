@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { useI18n } from 'vue-i18n';
 import { ref, watch } from 'vue';
 // import { Capacitor } from '@capacitor/core';

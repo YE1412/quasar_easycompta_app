@@ -3,7 +3,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import userAxiosService from 'app/src/db/services/user.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
-// import { extend, LocalStorage, SessionStorage } from 'quasar';
+import { extend } from 'quasar';
 // import { computed, ref } from 'vue';
 // import { useLocalStorage } from '@vueuse/core';
 import { cookieStorage } from 'app/src/stores/storage';

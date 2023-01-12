@@ -109,25 +109,26 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { nextTick, ref, provide, computed, watch } from 'vue';
-import { useServiceStore } from 'stores/service';
+// import { useServiceStore } from 'stores/service';
 import { useMessageStore } from 'stores/message';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import serviceAxiosService from 'db/services/service.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 // import 'src/globals';
-import { useRouter } from 'vue-router';
-import { Loading, useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, closeDbConnection, closeConnection } from 'cap/storage';
+// import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import { openDbConnection, isDbConnectionOpen, newRun, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 const $q = useQuasar();
-const router = useRouter();
+// const router = useRouter();
 const platform = $q.platform;
 const renderComponent = ref(true);
 interface ServiceProps {
@@ -161,14 +162,14 @@ const displayInputObject: InputObjectCollection = {
   montantHt: {
     label: t('servicesComponent.inputLabels.amount'),
     head: t('servicesComponent.headTable.amount'),
-    name: "montantHt",
+    name: 'montantHt',
     placeholder: t('servicesComponent.placeholders.amount'),
     disabled: false,
   },
   quantite: {
     label: t('servicesComponent.inputLabels.quantity'),
     head: t('servicesComponent.headTable.quantity'),
-    name: "quantite",
+    name: 'quantite',
     placeholder: t('servicesComponent.placeholders.quantity'),
     disabled: false,
   },
@@ -179,9 +180,9 @@ const addInputObject: InputObjectCollection = {
   quantite: displayInputObject.quantite,
   actions: {
     label: t('forms.headTable.action'),
-    name: "actions",
+    name: 'actions',
     head: t('forms.headTable.action'),
-    placeholder: "",
+    placeholder: '',
     disabled: false,
   }
 };
@@ -226,12 +227,14 @@ const nonEmptyQuantite = computed(() => {
   return !!quantite.value && parseInt(quantite.value) != 0;
 });
 
-let messageStore = null, serviceStore = null, prefs = null;
+let messageStore = null, 
+  // serviceStore = null, 
+  prefs = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
   messageStore = useMessageStore();
-  serviceStore = useServiceStore();
+  // serviceStore = useServiceStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
   (async () => {
@@ -347,7 +350,7 @@ async function addClickFromChild(e: Event, db: boolean) {
     }
   }
 };
-async function updateClickFromChild(e: Event, db: boolean, id?: number = 0, obj?: any = null) {
+async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
     serviceId.value = obj.serviceId;
@@ -476,7 +479,7 @@ async function insertServiceInSQLiteDb() {
   let isOpen = await isDbConnectionOpen(props.dbConn);
   isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    const sql = `INSERT INTO \`produitservice\` (\`montantHt\`, \`nom\`, \`quantite\`) VALUES (?, ?, ?);`;
+    const sql = 'INSERT INTO \`produitservice\` (\`montantHt\`, \`nom\`, \`quantite\`) VALUES (?, ?, ?);';
     // console.log(sql);
     const values = await newRun(props.dbConn, sql, [obj.montantHt, obj.nom, obj.quantite]);
     // console.log('Query results -->');
@@ -484,7 +487,7 @@ async function insertServiceInSQLiteDb() {
     let ret = false;
     if (values.changes.changes)
     {
-      await prefs.setPref("message", { 
+      await prefs.setPref('message', { 
         messages: [
           {
             severity: false, content: t('servicesComponent.results.ok.add')
@@ -494,7 +497,7 @@ async function insertServiceInSQLiteDb() {
       });
       ret = true;
     } else {
-      await prefs.setPref("message", {
+      await prefs.setPref('message', {
         messages: [
           {
             severity: true, 
@@ -508,7 +511,7 @@ async function insertServiceInSQLiteDb() {
     closeDbConnection(props.dbConn);
     return ret;
   }
-  await prefs.setPref("message", {
+  await prefs.setPref('message', {
     messages: [
       {
         severity: true, 
@@ -531,14 +534,14 @@ async function updateServiceInSQLiteDb() {
   isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   let ret = false;
   if (isOpen) {
-    const sql = `UPDATE \`produitservice\` SET \`montantHt\`=?, \`nom\`=?, \`quantite\`=? WHERE \`serviceId\` = ?;`;
+    const sql = 'UPDATE \`produitservice\` SET \`montantHt\`=?, \`nom\`=?, \`quantite\`=? WHERE \`serviceId\` = ?;';
     // console.log(sql);
     const values = await newRun(props.dbConn, sql, [obj.montantHt, obj.nom, obj.quantite, serviceId.value]);
     // console.log('Query values -->')
     // console.log(values);
     if (values.changes.changes)
     {
-      await prefs.setPref("message", {
+      await prefs.setPref('message', {
         messages: [
           {
             severity: false, 
@@ -549,7 +552,7 @@ async function updateServiceInSQLiteDb() {
       });
       ret = true;
     } else {
-      await prefs.setPref("message", {
+      await prefs.setPref('message', {
         messages: [
           {
             severity: true, 
@@ -563,7 +566,7 @@ async function updateServiceInSQLiteDb() {
     closeDbConnection(props.dbConn);
     return ret;
   }
-  await prefs.setPref("message", {
+  await prefs.setPref('message', {
     messages: [
       {
         severity: true, 
@@ -586,7 +589,7 @@ async function deleteServiceFromSQLiteDb() {
     // console.log(values);
     if (values.changes.changes)
     {
-      await prefs.setPref("message", {
+      await prefs.setPref('message', {
         messages: [
           {
             severity: false, 
@@ -597,7 +600,7 @@ async function deleteServiceFromSQLiteDb() {
       });
       messageVisibility.value = true;
     } else {
-      await prefs.setPref("message", {
+      await prefs.setPref('message', {
         messages: [
           {
             severity: true, 
@@ -611,7 +614,7 @@ async function deleteServiceFromSQLiteDb() {
     closeDbConnection(props.dbConn);
     return true;
   }
-  await prefs.setPref("message", {
+  await prefs.setPref('message', {
     messages: [
       {
         severity: true, 
@@ -632,7 +635,7 @@ async function insertServiceInDb() {
   await transformObject(obj);
   return serviceAxiosService
     .create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('servicesComponent.results.ok.add')
@@ -654,7 +657,7 @@ async function insertServiceInDb() {
 function deleteServiceFromDb() {
   return serviceAxiosService
     .delete(serviceId.value)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('servicesComponent.results.ok.delete'),
@@ -666,7 +669,7 @@ function deleteServiceFromDb() {
     .catch((err) => {
       messageStore.messages.push({
         severity: true,
-        content: t('servicesComponent.results.ko.delete'),
+        content: t('servicesComponent.results.ko.delete', {err: err}),
       });
       messageVisibility.value = true;
       messageStore.setMessagesVisibility(true);
@@ -682,7 +685,7 @@ async function updateServiceInDb() {
   await transformObject(obj);
   return serviceAxiosService
     .update(serviceId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('servicesComponent.results.ok.update'),
@@ -694,7 +697,7 @@ async function updateServiceInDb() {
     .catch((err) => {
       messageStore.messages.push({
         severity: true,
-        content: t('servicesComponent.results.ko.update'),
+        content: t('servicesComponent.results.ko.update', {err: err}),
       });
       messageVisibility.value = true;
       messageStore.setMessagesVisibility(true);

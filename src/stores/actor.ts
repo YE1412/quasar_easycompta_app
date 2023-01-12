@@ -1,9 +1,10 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import actorAxiosService from "app/src/db/services/actor.service";
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import actorAxiosService from 'app/src/db/services/actor.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 
-const useActorStore = defineStore("actor", {
+const useActorStore = defineStore('actor', {
   state: () => ({
     actors: [],
     types: [],
@@ -18,7 +19,7 @@ const useActorStore = defineStore("actor", {
   },
   actions: {
     getAllActors() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         actorAxiosService
           .getAll()
@@ -52,7 +53,7 @@ const useActorStore = defineStore("actor", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -90,7 +91,7 @@ const useActorStore = defineStore("actor", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

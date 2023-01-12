@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { http } from 'app/src/boot/axios_client';
 
 class PaymentDataService {
@@ -18,7 +19,7 @@ class PaymentDataService {
   }
 
   get(id: number) {
-    return http.get(`/payments/find`, {
+    return http.get('/payments/find', {
       params: {
         actorId: id,
       },
@@ -26,7 +27,7 @@ class PaymentDataService {
   }
 
   create(data: any) {
-    return http.post(`/payments`, data);
+    return http.post('/payments', data);
   }
 
   update(id: number, data: any) {
@@ -38,7 +39,7 @@ class PaymentDataService {
   }
 
   deleteAll() {
-    return http.delete(`/payments`);
+    return http.delete('/payments');
   }
 
   findByTypes(types: any) {

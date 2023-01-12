@@ -12,7 +12,7 @@
       :no-results-label="t('forms.errors.empty.filterBodyContentText')"
       separator="horizontal"
       :dense="platform.is.desktop ? false : true">
-      <template v-slot:no-data="{icon, message, filter}">
+      <template v-slot:no-data="{icon, message}">
         <div class="full-width row flex-center text-accent q-gutter-sm">
           <q-icon size="2em" name="sentiment_dissatisfied"/>
           <span>{{ message }}</span>
@@ -30,7 +30,7 @@
           <q-td v-if="admin">
             <div style="text-align: center;display: flex;justify-content: space-around;">
               <q-btn color="primary" icon="add_circle" :label="t('forms.addButtonText')" glossy unelevated @click="$emit(addActionName, $event, false)"></q-btn>
-              <q-btn color="secondary" icon="update" :label="t('forms.updateButtonText')" glossy unelevated @click="$emit(updateActionName, $event, false, propos.row[ident], contents[propos.rowIndex])"></q-btn>
+              <q-btn color="secondary" icon="update" :label="t('forms.updateButtonText')" glossy unelevated @click="$emit(updateActionName, $event, false, contents[propos.rowIndex])"></q-btn>
               <q-btn color="negative" icon="cancel" :label="t('forms.deleteButtonText')" glossy unelevated @click="$emit(deleteActionName, $event, propos.row[ident])"></q-btn>
             </div>
           </q-td>
@@ -46,7 +46,7 @@
       :row-key="ident"
       separator="horizontal"
       :dense="platform.is.desktop ? false : true">
-      <template v-slot:body="props">
+      <template v-slot:body>
         <q-tr>
           <slot
             :name="addForm">
@@ -58,7 +58,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject, reactive, computed, onMounted, ref, watch } from 'vue';
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+/*eslint @typescript-eslint/no-unused-vars: 'off'*/
+import { inject, computed, onMounted, ref, watch } from 'vue';
 import { InputObjectCollection } from './models';
 import { useUserStore } from 'stores/user';
 import { useServiceStore } from 'stores/service';
@@ -69,8 +71,8 @@ import { useInvoiceStore } from 'stores/invoice';
 import { useSessionStore } from 'stores/session';
 // import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
-import { Loading, useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
+import { useQuasar } from 'quasar';
+import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
 // VARIABLES
@@ -78,7 +80,7 @@ const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 const platform = $q.platform;
 const src = inject('src');
-const isFullscreen = ref(false);
+// const isFullscreen = ref(false);
 interface TableItemProps {
   tableTitle: string;
   isForm?: boolean;
@@ -139,12 +141,12 @@ const props = withDefaults(defineProps<TableItemProps>(), {
   no_data_button_text: '',
 });
 const objContents = ref([]);
-const idents = ref([]);
+// const idents = ref([]);
 const contents = ref([]);
-const contentVal = ref('');
-const objLength = computed(() => {
-  return objContents.length;
-});
+// const contentVal = ref('');
+// const objLength = computed(() => {
+//   return objContents.value.length;
+// });
 const tableActorsTypeLibelle = computed(() => {
   let ret = [];
   if (src === 'actors') {
@@ -168,47 +170,47 @@ const contentsForDisp = computed(() => {
   for (const key in objContents.value) {
       ret[key] = {};
       for (const key2 in objContents.value[key]) {
-        if (key2 === "personne_type") {
+        if (key2 === 'personne_type') {
           ret[key][key2] = tableActorsTypeLibelle.value[key];
         }
-        else if (key2 === "numCommercant") {
+        else if (key2 === 'numCommercant') {
           ret[key][key2] = tableActorsSellNumLibelle(key);
         }
-        else if (key2 === "facture") {
+        else if (key2 === 'facture') {
           ret[key][key2] = tableOrdersInvoiceLibelle(key);
         } 
-        else if (key2 === "Services") {
+        else if (key2 === 'Services') {
           ret[key]['services'] = tableOrdersServicesLibelle(key);
         }
-         else if (key2 === "contenuAdditionnel") {
+         else if (key2 === 'contenuAdditionnel') {
           ret[key][key2] = tableOrdersAddContentLibelle(key);
         }
-        else if (key2 === "payment_type") {
+        else if (key2 === 'payment_type') {
           ret[key][key2] = tablePaymentsTypeLibelle(key);
-        } else if (key2 === "etat") {
+        } else if (key2 === 'etat') {
           ret[key][key2] = tablePaymentsStateLibelle(key);
         } 
-        else if (key2 === "buyer") {
+        else if (key2 === 'buyer') {
           ret[key][key2] = tableInvoicesBuyerLibelle(key);
         } 
-        else if (key2 === "seller") {
+        else if (key2 === 'seller') {
           ret[key][key2] = tableInvoicesSellerLibelle(key);
         } 
-        else if (key2 === "commandes") {
+        else if (key2 === 'commandes') {
           ret[key][key2] = tableInvoicesOrdersLibelle(key);
         } 
-        else if (key2 === "devise") {
+        else if (key2 === 'devise') {
           ret[key][key2] = tableInvoicesDeviseLibelle(key);
         } 
-        else if (key2 === "langue") {
+        else if (key2 === 'langue') {
           ret[key][key2] = tableInvoicesLangueLibelle(key);
         } 
-        else if (key2 === "payments") {
+        else if (key2 === 'payments') {
           ret[key][key2] = tableInvoicesPaymentsLibelle(key);
-        } else if (key2 === "tvaValue") {
+        } else if (key2 === 'tvaValue') {
           ret[key][key2] = tableInvoicesVATLibelle(key);
         } 
-        else if (key2 === "date") {
+        else if (key2 === 'date') {
           ret[key][key2] = tableInvoicesDateLibelle(key);
         }
         else {
@@ -247,10 +249,10 @@ async function hydrateObjContentFromStore() {
     return (contentTab = await serviceStore.getAllServices()
       .then((res) => {
         return res;
-      }, (rej) => {
+      }, () => {
         return [];
       })
-      .catch((err) => {
+      .catch(() => {
         return [];
       })
     );
@@ -258,10 +260,10 @@ async function hydrateObjContentFromStore() {
     return (contentTab = await actorStore.getAllActors()
       .then((res) => {
         return res;
-      }, (rej) => {
+      }, () => {
         return [];
       })
-      .catch((err) => {
+      .catch(() => {
         return [];
       })
     );
@@ -269,10 +271,10 @@ async function hydrateObjContentFromStore() {
     return (contentTab = await orderStore.getAllOrders()
       .then((res) => {
         return res;
-      }, (rej) => {
+      }, () => {
         return [];
       })
-      .catch((err) => {
+      .catch(() => {
         return [];
       })
     );
@@ -280,10 +282,10 @@ async function hydrateObjContentFromStore() {
     return (contentTab = await paymentStore.getAllPayments()
       .then((res) => {
         return res;
-      }, (rej) => {
+      }, () => {
         return [];
       })
-      .catch((err) => {
+      .catch(() => {
         return [];
       })
     );
@@ -292,10 +294,10 @@ async function hydrateObjContentFromStore() {
     return (contentTab = await invoiceStore.getAllInvoices(userStore.getUser.userId)
       .then((res) => {
         return res;
-      }, (rej) => {
+      }, () => {
         return [];
       })
-      .catch((err) => {
+      .catch(() => {
         return [];
       })
     );
@@ -1254,7 +1256,7 @@ function tableInvoicesVATLibelle(ind: number) {
   return ret;
 };
 function tableInvoicesDateLibelle(ind: number) {
-  const options = {day: "2-digit", month: '2-digit', year: 'numeric'};
+  const options = {day: '2-digit', month: '2-digit', year: 'numeric'};
   let ret = '', libelle = '', date = '', locale='en-US';
   if (!!objContents.value[ind]['date'] && objContents.value[ind]['date'] !== '') {
     date = new Date(objContents.value[ind]['date']);
@@ -1267,7 +1269,7 @@ function tableInvoicesDateLibelle(ind: number) {
   }
   libelle = !!date ? `${date.toLocaleDateString(locale, options)}` : t('invoicesComponent.libelles.no_date');
   ret = libelle;
-  return libelle;
+  return ret;
 };
 async function hydrateAll() {
   if (platform.is.desktop) {
@@ -1300,7 +1302,7 @@ async function hydrateAll() {
 //   }, that);
 // };
 function shiftedContents() {
-  var that = this;
+  // var that = this;
   return objContents.value.map((val) => {
     let ret = val;
     // for (const key in val) {
@@ -1309,7 +1311,7 @@ function shiftedContents() {
     //   }
     // }
     return ret;
-  }, that);
+  });
 };
 function fetchColumn() {
   let tableHead = [];
@@ -1335,7 +1337,7 @@ function fetchColumn() {
 
 // WATCHERS
 watch(() => props.tableObj,
-  (newProp) => {
+  () => {
     // console.log(`newProp -> ${newProp.actions}/oldProp -> ${again.actions}`);
     // tableHeadForDisplay.value = newProp;
     tableHeadForDisplay.value = fetchColumn();

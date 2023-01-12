@@ -12,11 +12,12 @@
 </template>
 
 <script setup lang="ts">
+/*eslint  @typescript-eslint/no-unused-vars: 'off'*/
 // import { Todo, Meta } from 'components/models';
 // import ExampleComponent from 'components/ExampleComponent.vue';
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import ProfileComponent from 'components/ProfileComponent.vue';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface ProfilePageProps {

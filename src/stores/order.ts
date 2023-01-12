@@ -1,8 +1,9 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
-import orderAxiosService from "app/src/db/services/order.service";
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import orderAxiosService from 'app/src/db/services/order.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 
-const useOrderStore = defineStore("order", {
+const useOrderStore = defineStore('order', {
   state: () => ({
     orders: [],
   }),
@@ -16,7 +17,7 @@ const useOrderStore = defineStore("order", {
   },
   actions: {
     getAllOrders() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         orderAxiosService
           .getAll()
@@ -50,7 +51,7 @@ const useOrderStore = defineStore("order", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

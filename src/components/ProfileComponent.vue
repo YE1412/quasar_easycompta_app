@@ -180,19 +180,20 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { useQuasar } from 'quasar';
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import MessagesItem from './MessagesItem.vue';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
 import { useMessageStore } from 'stores/message';
 import userAxiosService from 'db/services/user.service';
-import uploadImageAxiosService from 'db/services/upload_image.service';
+// import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { Http } from '@capacitor-community/http';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
+import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
+// import { Http } from '@capacitor-community/http';
+// import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 // import * as dotenv from "dotenv";
 // dotenv.config({ path: "../../envs/.env" });
 
@@ -231,12 +232,12 @@ const platform = $q.platform;
 const messageVisibility = ref(false);
 const renderComponent = ref(true);
 const { t } = useI18n();
-const progress = ref(0);
+// const progress = ref(0);
 const validFirstName = computed(() => {
   const re = /^(([a-zA-Z])([-])*){2,30}$/;
   const ret = re.test(firstName.value);
   if (!ret){
-    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    firstNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
 
   return ret;
@@ -244,7 +245,7 @@ const validFirstName = computed(() => {
 const nonEmptyFirstName = computed(() => {
   const ret = !!firstName.value && firstName.value !== '';
   if (!ret){
-    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    firstNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -252,14 +253,14 @@ const validLastName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
   const ret = re.test(lastName.value);
   if (!ret){
-    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    lastNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyLastName = computed(() => {
   const ret = !!lastName.value && lastName.value !== '';
   if (!ret){
-    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    lastNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -267,28 +268,28 @@ const validLogin = computed(() => {
   const re = /^(([a-zA-Z])([_])*){2,15}$/;
   const ret = re.test(firstName.value);
   if (!ret){
-    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    loginRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyLogin = computed(() => {
   const ret = !!login.value && login.value !== '';
   if (!ret){
-    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    loginRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const validEmail = computed(() => {
   const ret = true;
   if (!ret){
-    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    emailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyEmail = computed(() => {
   const ret = !!email.value && email.value !== '';
   if (!ret){
-    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    emailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -296,14 +297,14 @@ const validPass = computed(() => {
   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-_(\[\])@$!%*#?&{}])[A-Za-z\d\-_(\[\])@$!%*#?&{}]{8,30}$/;
   const ret = re.test(pass.value);
   if (!ret){
-    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    passRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyPass = computed(() => {
   const ret = !!pass.value && pass.value !== '';
   if (!ret){
-    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    passRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -311,14 +312,14 @@ const validCompanyName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
   const ret = re.test(companyName.value);
   if (!ret){
-    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    companyNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyCompanyName = computed(() => {
   const ret = !!companyName.value && companyName.value !== '';
   if (!ret){
-    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    companyNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -332,14 +333,14 @@ const nonEmptyCompanyName = computed(() => {
 const nonEmptyDevise = computed(() => {
   const ret = !!devise.value && devise.value.value != 0;
   if (!ret){
-    deviseRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    deviseRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyUserType = computed(() => {
   const ret = !!userType.value && userType.value.value != 0;
   if (!ret){
-    userTypeRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    userTypeRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -683,7 +684,7 @@ async function hydrateForm() {
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
 
-      let sql = `SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;`;
+      let sql = 'SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;';
       let values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length) {
@@ -721,7 +722,7 @@ async function hydrateForm() {
         messageVisibility.value = true;
       }
 
-      sql = `SELECT \`user_type\`.\`userTypeId\`, \`user_type\`.\`regular\`, \`user_type\`.\`admin\` FROM \`user_type\`;`;
+      sql = 'SELECT \`user_type\`.\`userTypeId\`, \`user_type\`.\`regular\`, \`user_type\`.\`admin\` FROM \`user_type\`;';
       // console.log(sql);
       values = await newQuery(props.dbConn, sql);
       // console.log(values);
@@ -793,7 +794,7 @@ async function updateUserInDb() {
   // console.log(obj);
   await transformObject(obj);
   return userAxiosService.update(userId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('profileComponent.results.ok.update')
@@ -830,7 +831,7 @@ async function updateUserInSQLiteDb() {
   let isOpen =  await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    const sql = `UPDATE \`user\` SET \`firstName\`=?, \`lastName\`=?, \`login\`=?, \`email\`=?, \`pass\`=?, \`companyName\`=?, \`companyLogo\`=?, \`deviseId\`=?, \`userTypeId\`=? WHERE \`userId\`=?;`;
+    const sql = 'UPDATE \`user\` SET \`firstName\`=?, \`lastName\`=?, \`login\`=?, \`email\`=?, \`pass\`=?, \`companyName\`=?, \`companyLogo\`=?, \`deviseId\`=?, \`userTypeId\`=? WHERE \`userId\`=?;';
 
     const values = await newRun(props.dbConn, sql, [obj.firstName, obj.lastName, obj.login, obj.email, obj.pass, obj.companyName, obj.companyLogo, obj.deviseId, obj.userTypeId, userId.value]);
     let ret = false;
@@ -912,7 +913,7 @@ function onInvalidCompanyLogo(entries) {
     }
   }
 };
-async function onFailedCompanyLogoUpload({files, xhr}) {
+async function onFailedCompanyLogoUpload({xhr}) {
   const res = JSON.parse(xhr.response);
   // console.log(res);
   $q.notify({
@@ -941,9 +942,9 @@ async function onFailedCompanyLogoUpload({files, xhr}) {
   }
   messageVisibility.value = true;
   forceMessageItemsRerender();
-  companyLogoUploader.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  companyLogoUploader.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
 };
-async function onFileUploaded({files, xhr}){
+async function onFileUploaded({xhr}){
   const xhrRes = JSON.parse(xhr.response);
   let res = false;
   // console.log(res);
@@ -974,12 +975,12 @@ async function onFileUploaded({files, xhr}){
   }
   forceMessageItemsRerender();
 };
-function factoryFn(files) {
+function factoryFn() {
   return new Promise((resolve) => {
     // console.log(files);
     resolve({
       url: `${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/users/upload`,
-      method: "POST",
+      method: 'POST',
       // 'field-name': 'file',
       // headers: [
       //   {
@@ -1001,7 +1002,7 @@ function addedFile(files) {
   //   companyLogoURL.value = null;
   // }
 };
-function removedFile(files) {
+function removedFile() {
   companyLogoURL.value = null;
   companyLogo.value = null;
 };
