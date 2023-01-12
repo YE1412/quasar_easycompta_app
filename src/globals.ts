@@ -1,7 +1,8 @@
-import { genMod, cryptMod, decryptMod } from "./modules/WasmModules";
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { genMod, cryptMod, decryptMod } from './modules/WasmModules';
 
 const isServer = import.meta.env.SSR;
-const __SECRET__ = "myLittleSecret";
+const __SECRET__ = 'myLittleSecret';
 // if (!isServer){
 //   window.__KEY__ = null;
 // }
@@ -9,7 +10,7 @@ const __FORMATOBJ__ = (obj: any): any => {
   // console.log(window.__KEY__);
   // if (!isServer){
     for (const k in obj) {
-      if (typeof obj[k] === 'string' && obj[k] !== '' && k !== "date" && k !== "date_format") {
+      if (typeof obj[k] === 'string' && obj[k] !== '' && k !== 'date' && k !== 'date_format') {
         obj[k] = window.__CRYPTAPI__.crypt(obj[k], window.__KEY__);
       }
     }
@@ -17,9 +18,9 @@ const __FORMATOBJ__ = (obj: any): any => {
 };
 const __TRANSFORMOBJ__ = async (obj: any): any => {
   let ret: any;
-  if (typeof obj === "string" && obj !== "") {
-    ret = "";
-  } else if (typeof obj === "object" && !Array.isArray(obj)) {
+  if (typeof obj === 'string' && obj !== '') {
+    ret = '';
+  } else if (typeof obj === 'object' && !Array.isArray(obj)) {
     ret = {};
   } else {
     ret = [];
@@ -27,18 +28,18 @@ const __TRANSFORMOBJ__ = async (obj: any): any => {
   if (!isServer){
     for (const k in obj) {
       if (
-        typeof obj[k] === "string" &&
-        k !== "date" &&
-        k !== "date_format" &&
-        k !== "langue" &&
-        k !== "devise" && obj[k] !== ""
+        typeof obj[k] === 'string' &&
+        k !== 'date' &&
+        k !== 'date_format' &&
+        k !== 'langue' &&
+        k !== 'devise' && obj[k] !== ''
       ) {
         ret[k] = window.__DECRYPTAPI__.decrypt(obj[k]);
       } else if (
-        typeof obj[k] === "object" &&
+        typeof obj[k] === 'object' &&
         !Array.isArray(obj[k]) &&
-        k !== "langue" &&
-        k !== "devise"
+        k !== 'langue' &&
+        k !== 'devise'
       ) {
         if (obj[k] === null) ret[k] = null;
         else ret[k] = await __TRANSFORMOBJ__(obj[k]);
@@ -75,11 +76,11 @@ async function setDecryptApi() {
   return ret;
 };
 // if (isServer) {
-  // global.__SECRET__ = "myLittleSecret";
+  // global.__SECRET__ = 'myLittleSecret';
   // global.__GENKEYAPI__;
   // global.__CRYPTAPI__;
   // global.__DECRYPTAPI__;
-  // global.__KEY__ = "";
+  // global.__KEY__ = '';
   // genMod.then((e: any) => {
   //   global.__GENKEYAPI__ = e;
   //   global.__KEY__ = global.__GENKEYAPI__.generate_key(global.__SECRET__);

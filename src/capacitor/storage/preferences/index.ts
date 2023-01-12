@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { Preferences } from '@capacitor/preferences';
 import { Cookies } from 'quasar';
 

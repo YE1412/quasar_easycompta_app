@@ -8,7 +8,7 @@ class SessionDataService {
   }
 
   get() {
-    return http.get(`/session`);
+    return http.get('/session');
   }
 
   delete() {

@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { http } from 'app/src/boot/axios_client';
 
 class UserDataService {
@@ -14,7 +15,7 @@ class UserDataService {
   }
 
   get(login: string, password: string) {
-    return http.get(`/users/login`, {
+    return http.get('/users/login', {
       params: {
         login: login,
         password: password,
@@ -27,11 +28,11 @@ class UserDataService {
   }
 
   getTypes() {
-    return http.get(`/users/types`);
+    return http.get('/users/types');
   }
 
   checkEmail(email: string) {
-    return http.get(`/users/email`, {
+    return http.get('/users/email', {
       params: {
         login: email,
       },
@@ -39,7 +40,7 @@ class UserDataService {
   }
 
   checkLogin(login: string) {
-    return http.get(`/users/email`, {
+    return http.get('/users/email', {
       params: {
         login: login,
       },
@@ -47,7 +48,7 @@ class UserDataService {
   }
 
   create(data: any) {
-    return http.post(`/users`, data);
+    return http.post('/users', data);
   }
 
   update(id: any, data: any) {
@@ -59,7 +60,7 @@ class UserDataService {
   }
 
   deleteAll() {
-    return http.delete(`/users`);
+    return http.delete('/users');
   }
 
   findByType(type: any) {

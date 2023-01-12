@@ -119,7 +119,7 @@ const useSessionStore = defineStore('session', {
   //           // Quelque chose s'est passé lors de la construction de
   //           //  la requête et cela a provoqué une erreur
   //           else {
-  //             console.log("Error", err.message);
+  //             console.log('Error', err.message);
   //           }
   //           console.log(err.config);
   //           reject(new Error(err));
@@ -162,7 +162,7 @@ const useSessionStore = defineStore('session', {
   //           // Quelque chose s'est passé lors de la construction de
   //           //  la requête et cela a provoqué une erreur
   //           else {
-  //             console.log("Error", err.message);
+  //             console.log('Error', err.message);
   //           }
   //           console.log(err.config);
   //           reject(new Error(err));
@@ -285,7 +285,7 @@ const useSessionStore = defineStore('session', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -327,7 +327,7 @@ const useSessionStore = defineStore('session', {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

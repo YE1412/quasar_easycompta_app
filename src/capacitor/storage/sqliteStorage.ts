@@ -4,7 +4,7 @@ import { defineCustomElements as jeepSqlite, applyPolyfills } from 'jeep-sqlite/
 import { dataToImport } from './utils/import-from-json';
 
 let sqlite: SQLiteConnection = null;
-const db: SQLiteConnection = null;
+// const db: SQLiteConnection = null;
 
 const createSQLiteConnection = () => {
 	sqlite = new SQLiteConnection(CapacitorSQLite);
