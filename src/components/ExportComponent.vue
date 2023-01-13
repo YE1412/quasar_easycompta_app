@@ -13,7 +13,7 @@
         :no-results-label="t('forms.errors.empty.filterBodyContentText')"
         separator="horizontal"
         :dense="platform === 'web' ? false : true">
-        <template v-slot:no-data="{icon, message, filter}">
+        <template v-slot:no-data="{icon, message}">
           <div class="full-width row flex-center text-accent q-gutter-sm">
             <q-icon size="2em" name="sentiment_dissatisfied"/>
             <span>{{ message }}</span>
@@ -46,7 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, provide, computed, watch } from 'vue';
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { ref, computed } from 'vue';
 // import { useOrderStore } from 'stores/order';
 import { useMessageStore } from 'stores/message';
 // import { usePaymentStore } from 'stores/payment';
@@ -55,14 +56,14 @@ import { useSessionStore } from 'stores/session';
 import { useUserStore } from 'stores/user';
 // import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
-import invoiceAxiosService from 'db/services/invoice.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+// import invoiceAxiosService from 'db/services/invoice.service';
+// import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useRouter } from 'vue-router';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
+import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { useQuasar } from 'quasar';
 
 // VARIABLES
@@ -196,7 +197,13 @@ const contentsForDisp = computed(() => {
 });
 const selectedIds = ref([]);
 
-let messageStore = null, messages: Ref<Message> = ref([]), invoiceStore = null, sessionStore = null, prefs = null, userStore = null, session = null;
+let messageStore = null, 
+  // messages: Ref<Message> = ref([]), 
+  invoiceStore = null, 
+  sessionStore = null, 
+  prefs = null, 
+  userStore = null, 
+  session = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
@@ -234,11 +241,11 @@ else {
 }
 
 // FUNCTIONS
-async function forceTableRerender() {
-  renderComponent.value = false;
-  await nextTick();
-  renderComponent.value = true;
-};
+// async function forceTableRerender() {
+//   renderComponent.value = false;
+//   await nextTick();
+//   renderComponent.value = true;
+// };
 // async function transformObject(obj: any) {
 //   if (__KEY__ === null) {
 //     await setGenApi();
@@ -297,6 +304,7 @@ async function fetchDatasForTable() {
           payments.value[`${res[k].factureId}`] = res[k].payments;
         }
       }
+      closeDbConnection(props.dbConn);
     }
     else {
       await prefs.setPref('message', {
@@ -363,7 +371,7 @@ function tableInvoicesVATLibelle(ind: number) {
   return ret;
 };
 function tableInvoicesDateLibelle(ind: number) {
-  const options = {day: "2-digit", month: '2-digit', year: 'numeric'};
+  const options = {day: '2-digit', month: '2-digit', year: 'numeric'};
   let ret = '', libelle = '', date = '', locale='en-US';
   if (!!dates.value[ind] && dates.value[ind] !== '') {
     date = new Date(dates.value[ind]);
@@ -376,7 +384,7 @@ function tableInvoicesDateLibelle(ind: number) {
   }
   libelle = !!date ? `${date.toLocaleDateString(locale, options)}` : t('invoicesComponent.libelles.no_date');
   ret = libelle;
-  return libelle;
+  return ret;
 };
 function addClick(e: Event){
   e.preventDefault();
@@ -385,8 +393,8 @@ function addClick(e: Event){
 function exportClick(e: Event){
   e.preventDefault();
   const ids = selectedIds.value;
-  console.log('destination --> ');
-  console.log(t('pdfPreLinkTarget')+ids.join('/'));
+  // console.log('destination --> ');
+  // console.log(t('pdfPreLinkTarget')+ids.join('/'));
   router.push({
     path: t('pdfPreLinkTarget')+ids.join('/'), 
     // params: { invoiceIds: selectedIds.value}

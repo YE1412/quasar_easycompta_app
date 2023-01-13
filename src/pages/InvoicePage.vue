@@ -11,10 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import { Suspense, ref, nextTick, watch, onMounted } from 'vue';
+import { ref, nextTick, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import InvoiceComponent from 'components/InvoiceComponent.vue';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface PageProps {

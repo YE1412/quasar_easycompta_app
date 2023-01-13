@@ -118,22 +118,23 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { nextTick, ref, provide, computed, watch } from 'vue';
-import { useOrderStore } from 'stores/order';
+// import { useOrderStore } from 'stores/order';
 import { useMessageStore } from 'stores/message';
 import { useServiceStore } from 'stores/service';
 // import { useInvoiceStore } from 'stores/invoice';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import orderAxiosService from 'db/services/order.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
+// import { useRouter } from 'vue-router';
+import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface OrderProps {
@@ -157,7 +158,7 @@ const props = withDefaults(defineProps<OrderProps>(), {
   dbConn: null,
 });
 const $q = useQuasar();
-const router = useRouter();
+// const router = useRouter();
 const platform = $q.platform;
 const renderComponent = ref(true);
 const { t } = useI18n({ useScope: 'global' });
@@ -219,7 +220,7 @@ const priceHt = computed(() => {
   }
   return ret;
 });
-const facture = ref('');
+// const facture = ref('');
 const formState: Ref<FormState> = ({
   update: false,
   add: true,
@@ -243,14 +244,17 @@ const formSubmitButtonState = computed(() => {
   return ret1 || ret2;
 });
 
-let messageStore = null, orderStore = null, serviceStore = null, prefs = null;
+let messageStore = null, 
+  // orderStore = null, 
+  serviceStore = null, 
+  prefs = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
   messageStore = useMessageStore();
   serviceStore = useServiceStore();
   // invoiceStore = useInvoiceStore();
-  orderStore = useOrderStore();
+  // orderStore = useOrderStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
   (async () => {
@@ -308,9 +312,6 @@ async function fetchDatasForForms() {
           obj.cannotSelect = false;
           selectServicesOption.value.push(obj);
         }
-      },
-      () => {
-
       })
       .catch((err) => {
         messageStore.messages.push({
@@ -453,7 +454,7 @@ async function addClickFromChild(e: Event, db: boolean) {
     }
   }
 };
-async function updateClickFromChild(e: Event, db: boolean, id?: number = 0, obj?: any = null) {
+async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   // console.log(obj);
   // console.log(id);
@@ -584,7 +585,7 @@ async function insertOrderInDb() {
   };
   await transformObject(obj);
   return orderAxiosService.create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('ordersComponent.results.ok.add')
@@ -613,11 +614,11 @@ async function insertOrderInSQLiteDb() {
   let isOpen = await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    let sql = `INSERT INTO \`commande\` (\`contenuAdditionnel\`, \`priceHt\`) VALUES (?, ?);`;
+    let sql = 'INSERT INTO \`commande\` (\`contenuAdditionnel\`, \`priceHt\`) VALUES (?, ?);';
     let values = await newRun(props.dbConn, sql, [obj.contenuAdditionnel, obj.priceHt]);
     let ret = false;
     if (values.changes.changes) {
-      sql = `INSERT INTO \`contains\` (\`orderId\`, \`serviceId\`) VALUES `;
+      sql = 'INSERT INTO \`contains\` (\`orderId\`, \`serviceId\`) VALUES ';
       for (const k in obj.services) {
         sql += k != obj.services.length - 1 ? `(${values.changes.lastId},${obj.services[k].serviceId}),` : `(${values.changes.lastId},${obj.services[k].serviceId});`;
       }
@@ -680,7 +681,7 @@ async function updateOrderInDb() {
   };
   await transformObject(obj);
   return orderAxiosService.update(orderId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('ordersComponent.results.ok.update')
@@ -710,7 +711,7 @@ async function updateOrderInSQLiteDb() {
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
     let ret = false;
-    let sql = `UPDATE \`commande\` SET \`contenuAdditionnel\`=?, \`priceHt\`=? WHERE \`orderId\` = ?;`;
+    let sql = 'UPDATE \`commande\` SET \`contenuAdditionnel\`=?, \`priceHt\`=? WHERE \`orderId\` = ?;';
     // console.log(sql);
     const values = await newRun(props.dbConn, sql, [obj.contenuAdditionnel, obj.priceHt, orderId.value]);
     if (values.changes.changes) {
@@ -736,7 +737,7 @@ async function updateOrderInSQLiteDb() {
           });
         }
       } 
-      sql = `INSERT INTO \`contains\` (\`orderId\`, \`serviceId\`) VALUES `;
+      sql = 'INSERT INTO \`contains\` (\`orderId\`, \`serviceId\`) VALUES ';
       for (const k in obj.services) {
         sql += k != obj.services.length - 1 ? `(${orderId.value},${obj.services[k].serviceId}),` : `(${orderId.value},${obj.services[k].serviceId});`;
       }
@@ -794,7 +795,7 @@ async function updateOrderInSQLiteDb() {
 };
 function deleteOrderFromDb() {
   return orderAxiosService.delete(orderId.value)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('ordersComponent.results.ok.delete')

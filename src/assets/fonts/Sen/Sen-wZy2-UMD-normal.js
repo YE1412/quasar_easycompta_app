@@ -1,4 +1,5 @@
-﻿(function (global, factory) {
+﻿/* eslint-disable */
+(function (global, factory) {
   typeof exports === "object" && typeof module !== "undefined"
     ? factory(require("jspdf"))
     : typeof define === "function" && define.amd

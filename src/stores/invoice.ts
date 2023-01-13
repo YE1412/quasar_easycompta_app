@@ -1,9 +1,9 @@
-// import { ref, computed } from "vue";
-import { defineStore, acceptHMRUpdate } from "pinia";
-import invoiceAxiosService from "app/src/db/services/invoice.service";
+// import { ref, computed } from 'vue';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import invoiceAxiosService from 'app/src/db/services/invoice.service';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'app/src/globals';
 
-const useInvoiceStore = defineStore("invoice", {
+const useInvoiceStore = defineStore('invoice', {
   state: () => ({
     invoices: [],
     languages: [],
@@ -38,7 +38,7 @@ const useInvoiceStore = defineStore("invoice", {
   },
   actions: {
     getAllInvoices(userId: number) {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAll(userId)
@@ -72,7 +72,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -113,7 +113,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -121,7 +121,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllLanguages() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllLanguages()
@@ -154,7 +154,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -162,7 +162,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllDevises() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllDevises()
@@ -195,7 +195,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -203,7 +203,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllOrders() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllOrders()
@@ -237,7 +237,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -245,7 +245,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllSellers() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllSellers()
@@ -279,7 +279,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -287,7 +287,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllBuyers() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllBuyers()
@@ -321,7 +321,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));
@@ -329,7 +329,7 @@ const useInvoiceStore = defineStore("invoice", {
       });
     },
     getAllPayments() {
-      // console.log("Login...");
+      // console.log('Login...');
       return new Promise((resolve, reject) => {
         invoiceAxiosService
           .getAllPayments()
@@ -362,7 +362,7 @@ const useInvoiceStore = defineStore("invoice", {
             // Quelque chose s'est passé lors de la construction de
             //  la requête et cela a provoqué une erreur
             else {
-              console.log("Error", err.message);
+              console.log('Error', err.message);
             }
             console.log(err.config);
             reject(new Error(err));

@@ -322,22 +322,23 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { nextTick, ref, provide, computed, watch } from 'vue';
-import { useOrderStore } from 'stores/order';
+// import { useOrderStore } from 'stores/order';
 import { useMessageStore } from 'stores/message';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import invoiceAxiosService from 'db/services/invoice.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
+// import { useRouter } from 'vue-router';
+import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface InvoiceProps {
@@ -367,7 +368,7 @@ const props = withDefaults(defineProps<InvoiceProps>(), {
   dbConn: null,
 });
 const $q = useQuasar();
-const router = useRouter();
+// const router = useRouter();
 const platform = $q.platform;
 const renderComponent = ref(true);
 const { t } = useI18n({ useScope: 'global' });
@@ -503,10 +504,13 @@ const selectBuyersOption = computed(() => {
   if (seller.value !== null && allBuyers.value.length) {
     for (const k in allBuyers.value) {
       if (allBuyers.value[k].actorId === seller.value.actorId && allBuyers.value[k].actorId) {
-        allBuyers.value[k].cannotSelect = true;
+        updateSelect(k, true, 'buyer');
+        // allBuyers.value[k].cannotSelect = true;
       } else {
-        if (allBuyers.value[k].actorId)
-          allBuyers.value[k].cannotSelect = false;
+        if (allBuyers.value[k].actorId){
+          // allBuyers.value[k].cannotSelect = false;
+          updateSelect(k, false, 'buyer');
+        }
       }
     }
   }
@@ -518,10 +522,13 @@ const selectSellersOption = computed(() => {
   if (buyer.value !== null && allSellers.value.length) {
     for (const k in allSellers.value) {
       if (allSellers.value[k].actorId === buyer.value.actorId && allSellers.value[k].actorId) {
-        allSellers.value[k].cannotSelect = true;
+        updateSelect(k, true, 'seller');
+        // allSellers.value[k].cannotSelect = true;
       } else {
-        if (allSellers.value[k].actorId)
-          allSellers.value[k].cannotSelect = false;
+        if (allSellers.value[k].actorId){
+          updateSelect(k, false, 'seller');
+          // allSellers.value[k].cannotSelect = false;
+        }
       }
     }
   }
@@ -574,7 +581,7 @@ const nonEmptyCommandes = computed(() => {
 });
 const validPayments = computed(() => {
   let val = 0;
-  if (payments.vale !== null){  
+  if (payments.value !== null){  
     for (const k in payments.value) {
       val += payments.value[k].paymentValue;
     }
@@ -618,6 +625,18 @@ if (platform.is.desktop) {
 }
 
 // FUNCTIONS
+function updateSelect(ind: number, val: boolean, type: string){
+  switch(type){
+    case 'buyer':
+      allBuyers.value[ind].cannotSelect = val;
+      break;
+    case 'seller':
+      allSellers.value[ind].cannotSelect = val;
+      break;
+    default:
+      break;
+  }
+};
 async function forceTableRerender() {
   renderComponent.value = false;
   await nextTick();
@@ -895,7 +914,7 @@ async function fetchDatasForForms() {
     let isOpen = await isDbConnectionOpen(props.dbConn);
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
-      let sql = `SELECT \`langue\`.\`langueId\`, \`langue\`.\`libelle\`, \`langue\`.\`nom\` FROM \`langue\`;`;
+      let sql = 'SELECT \`langue\`.\`langueId\`, \`langue\`.\`libelle\`, \`langue\`.\`nom\` FROM \`langue\`;';
       let values = await newQuery(props.dbConn, sql);
       if (values.values) {
         // await setDecryptApi();
@@ -933,7 +952,7 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       }
 
-      sql = `SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;`;
+      sql = 'SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;';
       values = await newQuery(props.dbConn, sql);
       if (values.values) {
         // await setDecryptApi();
@@ -1266,7 +1285,7 @@ async function addClickFromChild(e: Event, db: boolean) {
     }
   }
 };
-async function updateClickFromChild(e: Event, db: boolean, id?: number = 0, obj?: any = null) {
+async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
     // console.log(obj);
@@ -1429,7 +1448,7 @@ async function insertInvoiceInDb() {
   await transformObject(obj);
   // console.log(obj);
   return invoiceAxiosService.create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('invoicesComponent.results.ok.add')
@@ -1467,18 +1486,18 @@ async function insertInvoiceInSQLiteDb() {
   let isOpen =  await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    let sql = `INSERT INTO \`facture\` (\`date\`, \`invoiceHTPrice\`, \`invoiceTTPrice\`, \`languageId\`, \`deviseId\`, \`tvaValue\`, \`buyerId\`, \`sellerId\`, \`administratorId\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
-    console.log(sql);
+    let sql = 'INSERT INTO \`facture\` (\`date\`, \`invoiceHTPrice\`, \`invoiceTTPrice\`, \`languageId\`, \`deviseId\`, \`tvaValue\`, \`buyerId\`, \`sellerId\`, \`administratorId\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    // console.log(sql);
     let values = await newRun(props.dbConn, sql, [obj.date, obj.invoiceHTPrice, obj.invoiceTTPrice, obj.languageId, obj.deviseId, obj.tvaValue, obj.buyerId, obj.sellerId, obj.adminId]);
     let val = '';
     let ret = false;
     if (values.changes.changes && values.changes.lastId) {
       if (obj.orders.length) {
-        sql = `UPDATE \`commande\` SET \`factureId\`=? WHERE \`orderId\` IN (`;
+        sql = 'UPDATE \`commande\` SET \`factureId\`=? WHERE \`orderId\` IN (';
         for (const k in obj.orders) {
           sql += k < obj.orders.length - 1 ? `${obj.orders[k].orderId}, ` : `${obj.orders[k].orderId});`;
         }
-        console.log(sql);
+        // console.log(sql);
         val = await newRun(props.dbConn, sql, [values.changes.lastId]);
         if (!val.changes.changes) {
           await prefs.setPref('message', {
@@ -1496,11 +1515,11 @@ async function insertInvoiceInSQLiteDb() {
         }
       }
       if (obj.payments.length) {
-        sql = `UPDATE \`payment\` SET \`factureId\`=? WHERE \`paymentId\` IN (`;
+        sql = 'UPDATE \`payment\` SET \`factureId\`=? WHERE \`paymentId\` IN (';
         for (const k in obj.payments) {
           sql += k < obj.payments.length - 1 ? `${obj.payments[k].paymentId}, ` : `${obj.payments[k].paymentId});`;
         }
-        console.log(sql);
+        // console.log(sql);
         val = await newRun(props.dbConn, sql, [values.changes.lastId]);
         if (!val.changes.changes) {
           await prefs.setPref('message', {
@@ -1583,7 +1602,7 @@ async function updateInvoiceInDb() {
   };
   await transformObject(obj);
   return invoiceAxiosService.update(invoiceId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('invoicesComponent.results.ok.update')
@@ -1620,14 +1639,14 @@ async function updateInvoiceInSQLiteDb() {
   let isOpen = await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    let sql = `UPDATE \`facture\` SET \`date\`=?, \`invoiceHTPrice\`=?, \`invoiceTTPrice\`=?, \`languageId\`=?, \`deviseId\`=?, \`tvaValue\`=?, \`buyerId\`=?, \`sellerId\`=? WHERE \`factureId\` = ?;`;
+    let sql = 'UPDATE \`facture\` SET \`date\`=?, \`invoiceHTPrice\`=?, \`invoiceTTPrice\`=?, \`languageId\`=?, \`deviseId\`=?, \`tvaValue\`=?, \`buyerId\`=?, \`sellerId\`=? WHERE \`factureId\` = ?;';
     let ret = false;
     // console.log(sql);
     let values = await newRun(props.dbConn, sql, [obj.date, obj.invoiceHTPrice, obj.invoiceTTPrice, obj.languageId, obj.deviseId, obj.tvaValue, obj.buyerId, obj.sellerId, invoiceId.value]);
     let val = '';
     if (values.changes.changes) {
       if (obj.orders.length) {
-        sql = `UPDATE \`commande\` SET \`factureId\`=? WHERE \`orderId\` IN (`;
+        sql = 'UPDATE \`commande\` SET \`factureId\`=? WHERE \`orderId\` IN (';
         for (const k in obj.orders) {
           sql += k < obj.orders.length - 1 ? `${obj.orders[k].orderId}, ` : `${obj.orders[k].orderId});`;
         }
@@ -1648,7 +1667,7 @@ async function updateInvoiceInSQLiteDb() {
           return ret;
         }
       } else {
-        sql = `UPDATE \`commande\` SET \`factureId\`=NULL WHERE \`factureId\` = ?;`;
+        sql = 'UPDATE \`commande\` SET \`factureId\`=NULL WHERE \`factureId\` = ?;';
         // console.log(sql);
         val = await newRun(props.dbConn, sql, [invoiceId.value]);
         // if (!val.changes.changes) {
@@ -1665,7 +1684,7 @@ async function updateInvoiceInSQLiteDb() {
         // }
       }
       if (obj.payments.length) {
-        sql = `UPDATE \`payment\` SET \`factureId\`=? WHERE \`paymentId\` IN (`;
+        sql = 'UPDATE \`payment\` SET \`factureId\`=? WHERE \`paymentId\` IN (';
         for (const k in obj.payments) {
           sql += k < obj.payments.length - 1 ? `${obj.payments[k].paymentId}, ` : `${obj.payments[k].paymentId});`;
         }
@@ -1684,7 +1703,7 @@ async function updateInvoiceInSQLiteDb() {
         }
       }
       else {
-        sql = `UPDATE \`payment\` SET \`factureId\`=NULL WHERE \`factureId\` = ?;`;
+        sql = 'UPDATE \`payment\` SET \`factureId\`=NULL WHERE \`factureId\` = ?;';
         // console.log(sql);
         val = await newRun(props.dbConn, sql, [invoiceId.value]);
         // if (!val.changes.changes) {
@@ -1739,7 +1758,7 @@ async function updateInvoiceInSQLiteDb() {
 };
 function deleteInvoiceFromDb() {
   return invoiceAxiosService.delete(invoiceId.value)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('invoicesComponent.results.ok.delete')

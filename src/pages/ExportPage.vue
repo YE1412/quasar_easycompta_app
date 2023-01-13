@@ -9,9 +9,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch } from 'vue';
+/*eslint @typescript-eslint/no-unused-vars: 'off'*/
+import { ref, onMounted } from 'vue';
 import ExportComponent from 'components/ExportComponent.vue';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface PageProps {

@@ -162,6 +162,7 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { nextTick, ref, provide, computed, watch } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
@@ -170,14 +171,14 @@ import { useInvoiceStore } from 'stores/invoice';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import paymentAxiosService from 'db/services/payment.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
+// import { useRouter } from 'vue-router';
+import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface PaymentProps {
@@ -201,7 +202,7 @@ const props = withDefaults(defineProps<PaymentProps>(), {
   dbConn: null,
 });
 const $q = useQuasar();
-const router = useRouter();
+// const router = useRouter();
 const platform = $q.platform;
 const renderComponent = ref(true);
 const { t } = useI18n({ useScope: 'global' });
@@ -469,19 +470,19 @@ async function fetchDatasForForms() {
         selectInvoicesOption.value.push(obj);
         for (const k in values.values) {
           obj = {};
-          obj.label = `${values.values[k].factureId} - ${values.values[k].invoiceTTPrice}`;
-          obj.value = values.values[k].factureId;
+          obj.label = `${res[k].factureId} - ${res[k].invoiceTTPrice}`;
+          obj.value = res[k].factureId;
           obj.cannotSelect = false;
-          obj.factureId = values.values[k].factureId;
-          obj.date = values.values[k].date;
-          obj.invoiceHTPrice = values.values[k].invoiceHTPrice;
-          obj.invoiceTTPrice = values.values[k].invoiceTTPrice;
-          obj.languageId = values.values[k].languageId;
-          obj.deviseId = values.values[k].deviseId;
-          obj.tvaValue = values.values[k].tvaValue;
-          obj.buyerId = values.values[k].buyerId;
-          obj.sellerId = values.values[k].sellerId;
-          obj.administratorId = values.values[k].administratorId;
+          obj.factureId = res[k].factureId;
+          obj.date = res[k].date;
+          obj.invoiceHTPrice = res[k].invoiceHTPrice;
+          obj.invoiceTTPrice = res[k].invoiceTTPrice;
+          obj.languageId = res[k].languageId;
+          obj.deviseId = res[k].deviseId;
+          obj.tvaValue = res[k].tvaValue;
+          obj.buyerId = res[k].buyerId;
+          obj.sellerId = res[k].sellerId;
+          obj.administratorId = res[k].administratorId;
           selectInvoicesOption.value.push(obj);          
         }
         // console.log(`fetched`);
@@ -496,13 +497,13 @@ async function fetchDatasForForms() {
         }); 
         messageVisibility.value = true;
       }
-      sql = `SELECT \`payment_type\`.\`paymentTypeId\`, \`payment_type\`.\`cb\`, \`payment_type\`.\`esp\`, \`payment_type\`.\`chq\` FROM \`payment_type\`;`;
+      sql = 'SELECT \`payment_type\`.\`paymentTypeId\`, \`payment_type\`.\`cb\`, \`payment_type\`.\`esp\`, \`payment_type\`.\`chq\` FROM \`payment_type\`;';
       // console.log(sql);
       values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values) {
-        await setDecryptApi();
-        const res = await __TRANSFORMOBJ__(values.values);
+        // await setDecryptApi();
+        // const res = await __TRANSFORMOBJ__(values.values);
         let obj = {};
         selectTypesOption.value = [];
         obj.label = t('paymentsComponent.placeholders.paymentType');
@@ -629,7 +630,7 @@ async function addClickFromChild(e: Event, db: boolean) {
     }
   }
 };
-async function updateClickFromChild(e: Event, db: boolean, id?: number = 0, obj?: any = null) {
+async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
     isForm.value = true;
@@ -742,7 +743,7 @@ async function insertPaymentInDb() {
   };
   await transformObject(obj);
   return paymentAxiosService.create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('paymentsComponent.results.ok.add')
@@ -772,7 +773,7 @@ async function insertPaymentInSQLiteDb() {
   let isOpen =  await isDbConnectionOpen(props.dbConn);
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    let sql = `INSERT INTO \`payment\` (\`etat\`, \`paymentValue\`, \`paymentType\`, \`factureId\`) VALUES (?, ?, ?, ?);`;
+    let sql = 'INSERT INTO \`payment\` (\`etat\`, \`paymentValue\`, \`paymentType\`, \`factureId\`) VALUES (?, ?, ?, ?);';
     let values = await newRun(props.dbConn, sql, [obj.etat, obj.paymentValue, obj.paymentType, obj.factureId]);
     let ret = false;
     if (values.changes.changes) {
@@ -822,7 +823,7 @@ async function updatePaymentInDb() {
   };
   await transformObject(obj);
   return paymentAxiosService.update(paymentId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('paymentsComponent.results.ok.update')
@@ -853,7 +854,7 @@ async function updatePaymentInSQLiteDb() {
   isOpen = !!isOpen || !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
     let ret = false;
-    let sql = `UPDATE \`payment\` SET \`etat\`=?, \`paymentValue\`=?, \`paymentType\`=?, \`factureId\`=? WHERE \`paymentId\` = ?;`;
+    let sql = 'UPDATE \`payment\` SET \`etat\`=?, \`paymentValue\`=?, \`paymentType\`=?, \`factureId\`=? WHERE \`paymentId\` = ?;';
     const values = await newRun(props.dbConn, sql, [obj.etat, obj.paymentValue, obj.paymentType, obj.factureId, paymentId.value]);
     if (values.changes.changes) {
       await prefs.setPref('message', {
@@ -895,7 +896,7 @@ async function updatePaymentInSQLiteDb() {
 };
 function deletePaymentFromDb() {
   return paymentAxiosService.delete(paymentId.value)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('paymentsComponent.results.ok.delete')

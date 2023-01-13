@@ -1,11 +1,12 @@
 <template>
-  <!-- <div>My component</div> -->
-</template>
+    <div></div>
+  </template>
 
-<script setup lang="ts">
-import { Suspense, ref, nextTick, watch, onMounted, computed } from 'vue';
+<script setup lang='ts'>
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
 import { useCounterStore } from 'stores/counter';
@@ -18,10 +19,10 @@ import _ from 'lodash';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { Http } from '@capacitor-community/http';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
+import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
+// import { Http } from '@capacitor-community/http';
+import { Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capacitor-community/file-opener';
 import write_blob from 'capacitor-blob-writer';
 
@@ -52,29 +53,29 @@ const contentsForPrint = computed(() => {
     ret[key] = {};
     // console.log(invoicesDetails[key]);
     for (const key2 in invoicesDetails.value[key]) {
-      if (key2 === "buyer") {
+      if (key2 === 'buyer') {
         ret[key][key2] = tableInvoicesBuyerLibelle(key);
-      } else if (key2 === "seller") {
+      } else if (key2 === 'seller') {
         ret[key][key2] = tableInvoicesSellerLibelle(key);
-      } else if (key2 === "commandes") {
+      } else if (key2 === 'commandes') {
         ret[key][key2] = tableInvoicesOrdersLibelle(key);
-      } else if (key2 === "devise") {
+      } else if (key2 === 'devise') {
         ret[key][key2] = tableInvoicesDeviseLibelle(key);
-      } else if (key2 === "langue") {
+      } else if (key2 === 'langue') {
         ret[key][key2] = tableInvoicesLangueLibelle(key);
-      } else if (key2 === "payments") {
+      } else if (key2 === 'payments') {
         ret[key][key2] = tableInvoicesPaymentsLibelle(key);
-      } else if (key2 === "tvaValue") {
+      } else if (key2 === 'tvaValue') {
         ret[key][key2] = tableInvoicesVATLibelle(key);
-      } else if (key2 === "date") {
+      } else if (key2 === 'date') {
         ret[key][key2] = tableInvoicesDateLibelle(key);
-      } else if (key2 === "invoiceTTPrice") {
+      } else if (key2 === 'invoiceTTPrice') {
         ret[key][key2] = tableInvoicesTTPriceLibelle(key);
       } else {
         ret[key][key2] = invoicesDetails.value[key][key2];
       }
     }
-    ret[key]["billingAddress"] = tableInvoicesBillingLibelle(key);
+    ret[key]['billingAddress'] = tableInvoicesBillingLibelle(key);
   }
   return ret;
 });
@@ -111,10 +112,10 @@ if (platform.is.desktop) {
       .getMoreInvoices(invoiceIds.value)
       .then(
         (res) => {
-          console.log(res);
+          // console.log(res);
           return res;
         },
-        (ret) => {
+        () => {
           return [];
         }
       )
@@ -128,7 +129,7 @@ if (platform.is.desktop) {
     prefs = await import('cap/storage/preferences');
     const usr = await prefs.getPref('user');
     user = !!usr ? usr.user : {};
-    const session = await prefs.getPref('session');
+    // const session = await prefs.getPref('session');
     const ctr = await prefs.getPref('counter');
     counter = !!ctr ? ctr : {};
     const invs = await prefs.getPref('invoice');
@@ -138,7 +139,7 @@ if (platform.is.desktop) {
     let newCounter = null, newInvoices = null;
     // console.log(isOpen);
     if (isOpen) {
-      let sql = `SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;`;
+      let sql = 'SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;';
       let values = await newQuery(props.dbConn, sql);
       if (!!values && values.values.length) {
         newCounter = !!ctr ? ctr : {};
@@ -149,7 +150,7 @@ if (platform.is.desktop) {
         newCounter.prices = [];
       }
 
-      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\`, \`commandes->Services\`.\`serviceId\` AS \`commandes.Services.serviceId\`, \`commandes->Services\`.\`montantHt\` AS \`commandes.Services.montantHt\`, \`commandes->Services\`.\`nom\` AS \`commandes.Services.nom\`, \`commandes->Services\`.\`quantite\` AS \`commandes.Services.quantite\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` LEFT OUTER JOIN ( \`contains\` AS \`commandes->Services->contains\` INNER JOIN \`produitservice\` AS \`commandes->Services\` ON \`commandes->Services\`.\`serviceId\` = \`commandes->Services->contains\`.\`serviceId\`) ON \`commandes\`.\`orderId\` = \`commandes->Services->contains\`.\`orderId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE (`;
+      sql = 'SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\`, \`commandes->Services\`.\`serviceId\` AS \`commandes.Services.serviceId\`, \`commandes->Services\`.\`montantHt\` AS \`commandes.Services.montantHt\`, \`commandes->Services\`.\`nom\` AS \`commandes.Services.nom\`, \`commandes->Services\`.\`quantite\` AS \`commandes.Services.quantite\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` LEFT OUTER JOIN ( \`contains\` AS \`commandes->Services->contains\` INNER JOIN \`produitservice\` AS \`commandes->Services\` ON \`commandes->Services\`.\`serviceId\` = \`commandes->Services->contains\`.\`serviceId\`) ON \`commandes\`.\`orderId\` = \`commandes->Services->contains\`.\`orderId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE (';
       for (const k in invoiceIds.value){
         sql += k < (invoiceIds.value.length - 1) 
           ? `\`facture\`.\`factureId\` = '${invoiceIds.value[k]}' OR `
@@ -171,6 +172,7 @@ if (platform.is.desktop) {
         newInvoices = !!invs ? invs : {};
         newInvoices.invoices = [];
       }
+      closeDbConnection(props.dbConn);
     }
     else {
       newCounter = !!ctr ? ctr : {};
@@ -205,13 +207,13 @@ function getConvertFunc() {
   let ret = undefined;
   if (platform.is.desktop){
     switch (userStore.getUser.devise.libelle) {
-      case "euro":
+      case 'euro':
         ret = fromEuroToOther;
         break;
-      case "dollar":
+      case 'dollar':
         ret = fromDollarToOther;
         break;
-      case "livre":
+      case 'livre':
         ret = fromLivreToOther;
         break;
       default:
@@ -221,13 +223,13 @@ function getConvertFunc() {
   }
   else {
     switch (user.devise.libelle) {
-      case "euro":
+      case 'euro':
         ret = fromEuroToOther;
         break;
-      case "dollar":
+      case 'dollar':
         ret = fromDollarToOther;
         break;
-      case "livre":
+      case 'livre':
         ret = fromLivreToOther;
         break;
       default:
@@ -242,17 +244,17 @@ function tableInvoicesOrdersLibelle(ind: number) {
     tvaValue = 0.0,
     totalHT = 0.0,
     totalTT = 0.0,
-    totalTTLibelle = "",
-    destDevise = invoicesDetails.value[ind]["devise"];
+    totalTTLibelle = '',
+    destDevise = invoicesDetails.value[ind]['devise'];
   let loc =
-    invoicesDetails.value[ind]["langue"].nom;
+    invoicesDetails.value[ind]['langue'].nom;
   // loc =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
-  tvaValue = invoicesDetails.value[ind]["tvaValue"];
-  for (const m in invoicesDetails.value[ind]["commandes"]) {
+  //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
+  tvaValue = invoicesDetails.value[ind]['tvaValue'];
+  for (const m in invoicesDetails.value[ind]['commandes']) {
     ret[m] = {};
     totalHT = convertAmount(
-      invoicesDetails.value[ind]["commandes"][m].priceHt,
+      invoicesDetails.value[ind]['commandes'][m].priceHt,
       destDevise.libelle,
       getConvertFunc()
     );
@@ -260,22 +262,22 @@ function tableInvoicesOrdersLibelle(ind: number) {
     totalTTLibelle = new Intl.NumberFormat(loc, {
       minimumFractionDigits: 2,
     }).format(totalTT.toFixed(2));
-    ret[m]["orderId"] = invoicesDetails.value[ind]["commandes"][m].orderId;
-    ret[m]["contenuAdditionnel"] =
-      invoicesDetails.value[ind]["commandes"][m].contenuAdditionnel;
-    ret[m]["totalTTLibelle"] = totalTTLibelle.replaceAll(/\s/gi, "");
-    ret[m]["Services"] = [];
-    for (const n in invoicesDetails.value[ind]["commandes"][m]["Services"]) {
-      let priceUnitTTLibelle = "",
-        montantNetTTLibelle = "",
+    ret[m]['orderId'] = invoicesDetails.value[ind]['commandes'][m].orderId;
+    ret[m]['contenuAdditionnel'] =
+      invoicesDetails.value[ind]['commandes'][m].contenuAdditionnel;
+    ret[m]['totalTTLibelle'] = totalTTLibelle.replaceAll(/\s/gi, '');
+    ret[m]['Services'] = [];
+    for (const n in invoicesDetails.value[ind]['commandes'][m]['Services']) {
+      let priceUnitTTLibelle = '',
+        montantNetTTLibelle = '',
         montantNetTT = 0.0,
         priceUnitTT = 0.0,
         priceUnitHT = 0.0,
         quantity = 0;
       quantity =
-        invoicesDetails.value[ind]["commandes"][m]["Services"][n].quantite;
+        invoicesDetails.value[ind]['commandes'][m]['Services'][n].quantite;
       priceUnitHT = convertAmount(
-        invoicesDetails.value[ind]["commandes"][m]["Services"][n].montantHt,
+        invoicesDetails.value[ind]['commandes'][m]['Services'][n].montantHt,
         destDevise.libelle,
         getConvertFunc()
       );
@@ -287,71 +289,71 @@ function tableInvoicesOrdersLibelle(ind: number) {
       montantNetTTLibelle = new Intl.NumberFormat(loc, {
         minimumFractionDigits: 2,
       }).format(montantNetTT.toFixed(2));
-      ret[m]["Services"][n] = {};
-      ret[m]["Services"][n].serviceId =
-        invoicesDetails.value[ind]["commandes"][m]["Services"][n].serviceId;
-      ret[m]["Services"][n].quantite = quantity;
-      ret[m]["Services"][n].nom =
-        invoicesDetails.value[ind]["commandes"][m]["Services"][n].nom;
-      ret[m]["Services"][n].montantNetTTLibelle =
-        montantNetTTLibelle.replaceAll(/\s/gi, "");
-      ret[m]["Services"][n].priceUnitTTLibelle =
-        priceUnitTTLibelle.replaceAll(/\s/gi, "");
+      ret[m]['Services'][n] = {};
+      ret[m]['Services'][n].serviceId =
+        invoicesDetails.value[ind]['commandes'][m]['Services'][n].serviceId;
+      ret[m]['Services'][n].quantite = quantity;
+      ret[m]['Services'][n].nom =
+        invoicesDetails.value[ind]['commandes'][m]['Services'][n].nom;
+      ret[m]['Services'][n].montantNetTTLibelle =
+        montantNetTTLibelle.replaceAll(/\s/gi, '');
+      ret[m]['Services'][n].priceUnitTTLibelle =
+        priceUnitTTLibelle.replaceAll(/\s/gi, '');
     }
   }
   return ret;
 };
 function tableInvoicesBuyerLibelle(ind: number) {
-  let ret = "";
-  let prenom = _.capitalize(invoicesDetails.value[ind]["buyer"].prenom);
-  let nom = _.capitalize(invoicesDetails.value[ind]["buyer"].nom);
+  let ret = '';
+  let prenom = _.capitalize(invoicesDetails.value[ind]['buyer'].prenom);
+  let nom = _.capitalize(invoicesDetails.value[ind]['buyer'].nom);
   let libelle = `${prenom} ${nom}`;
   ret = libelle;
   return ret;
 };
 function tableInvoicesSellerLibelle(ind: number) {
-  let ret = "";
-  let prenom = _.capitalize(invoicesDetails.value[ind]["seller"].prenom);
-  let nom = _.capitalize(invoicesDetails.value[ind]["seller"].nom);
+  let ret = '';
+  let prenom = _.capitalize(invoicesDetails.value[ind]['seller'].prenom);
+  let nom = _.capitalize(invoicesDetails.value[ind]['seller'].nom);
   let libelle = `${prenom} ${nom}`;
   ret = libelle;
   return ret;
 };
 function tableInvoicesDeviseLibelle(ind: number) {
-  let ret = "";
-  let libelle = `${invoicesDetails.value[ind]["devise"].symbole}`;
+  let ret = '';
+  let libelle = `${invoicesDetails.value[ind]['devise'].symbole}`;
   ret = libelle;
   return ret;
 };
 function tableInvoicesLangueLibelle(ind: number) {
-  let ret = "";
-  let libelle = `${invoicesDetails.value[ind]["langue"].nom}`;
+  let ret = '';
+  let libelle = `${invoicesDetails.value[ind]['langue'].nom}`;
   ret = libelle;
   return ret;
 };
 function tableInvoicesPaymentsLibelle(ind: number) {
-  let ret = "";
-  let destDevise = invoicesDetails.value[ind]["devise"];
-  for (const m in invoicesDetails.value[ind]["payments"]) {
-    let libelle = "";
-    let state = "",
+  let ret = '';
+  let destDevise = invoicesDetails.value[ind]['devise'];
+  for (const m in invoicesDetails.value[ind]['payments']) {
+    let libelle = '';
+    let state = '',
       paymentVal = 0.0;
     state =
-      invoicesDetails.value[ind]["payments"][m].etat === 0
-        ? t("paymentsComponent.libelles.etats.not_paid")
-        : "";
+      invoicesDetails.value[ind]['payments'][m].etat === 0
+        ? t('paymentsComponent.libelles.etats.not_paid')
+        : '';
     state =
-      invoicesDetails.value[ind]["payments"][m].etat === 1
-        ? t("paymentsComponent.libelles.etats.paid")
-        : "";
+      invoicesDetails.value[ind]['payments'][m].etat === 1
+        ? t('paymentsComponent.libelles.etats.paid')
+        : '';
     paymentVal = convertAmount(
-      invoicesDetails.value[ind]["payments"][m].paymentValue,
+      invoicesDetails.value[ind]['payments'][m].paymentValue,
       destDevise.libelle,
       getConvertFunc()
     );
-    libelle = `${invoicesDetails.value[ind]["payments"][m].paymentId} - ${state} - ${paymentVal}`;
+    libelle = `${invoicesDetails.value[ind]['payments'][m].paymentId} - ${state} - ${paymentVal}`;
     ret +=
-      m != invoicesDetails.value[ind]["payments"].length - 1
+      m != invoicesDetails.value[ind]['payments'].length - 1
         ? `${libelle}, `
         : libelle;
   }
@@ -359,66 +361,66 @@ function tableInvoicesPaymentsLibelle(ind: number) {
 };
 function tableInvoicesVATLibelle(ind: number) {
   let ret = {};
-  let tvaValueLibelle = "",
+  let tvaValueLibelle = '',
     tvaValue = 0.0,
     tvaBase = 0.0,
     tvaMontant = 0.0,
-    tvaBaseLibelle = "",
-    tvaMontantLibelle = "",
-    destDevise = invoicesDetails.value[ind]["devise"],
+    tvaBaseLibelle = '',
+    tvaMontantLibelle = '',
+    destDevise = invoicesDetails.value[ind]['devise'],
     invTTPrice = 0.0;
   let loc =
-    invoicesDetails.value[ind]["langue"].nom;
+    invoicesDetails.value[ind]['langue'].nom;
   // loc =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
+  //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
   invTTPrice = convertAmount(
     invoicesDetails.value[ind].invoiceTTPrice,
     destDevise.libelle,
     getConvertFunc()
   );
-  tvaValue = invoicesDetails.value[ind]["tvaValue"] * 100;
+  tvaValue = invoicesDetails.value[ind]['tvaValue'] * 100;
   tvaValueLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaValue.toFixed(2));
-  tvaMontant = invTTPrice * invoicesDetails.value[ind]["tvaValue"];
+  tvaMontant = invTTPrice * invoicesDetails.value[ind]['tvaValue'];
   tvaMontantLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaMontant.toFixed(2));
-  tvaBase = invTTPrice - tvaMontant;
+  tvaBase = invTTPrice - tvaMontant.toFixed(2);
   tvaBaseLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
-  }).format(tvaBase.toFixed(2));
+  }).format(tvaBase);
+  console.log(`tvaValue --> ${tvaValueLibelle}/tvaMontant --> ${tvaMontantLibelle}/tvaBase --> ${tvaBaseLibelle}/invTTPrice --> ${invTTPrice}`);
   ret.tvaValueLibelle = `${tvaValueLibelle} %`;
-  ret.tvaBaseLibelle = tvaBaseLibelle.replaceAll(/\s/gi, "");
-  ret.tvaMontantLibelle = tvaMontantLibelle.replaceAll(/\s/gi, "");
+  ret.tvaBaseLibelle = tvaBaseLibelle.replaceAll(/\s/gi, '');
+  ret.tvaMontantLibelle = tvaMontantLibelle.replaceAll(/\s/gi, '');
   // console.log(ret);
   return ret;
 };
 function tableInvoicesDateLibelle(ind: number) {
-  let ret = "",
-    libelle = "";
-  let date = new Date(invoicesDetails.value[ind]["date"]);
+  let ret = '',
+    libelle = '';
+  let date = new Date(invoicesDetails.value[ind]['date']);
   let loc =
-    invoicesDetails.value[ind]["langue"].nom;
+    invoicesDetails.value[ind]['langue'].nom;
   // loc =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
+  //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
   // console.log(loc);
-  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
   libelle = `${date.toLocaleDateString(loc, options)}`;
   ret = libelle;
   return ret;
 };
 function tableInvoicesTTPriceLibelle(ind: number) {
-  let ret = "";
-  let libelle = "",
-    ttPriceLibelle = "",
+  let ret = '';
+  let ttPriceLibelle = '',
     ttPrice = 0.0,
-    destDevise = invoicesDetails.value[ind]["devise"],
+    destDevise = invoicesDetails.value[ind]['devise'],
     invTTPrice = 0.0;
   let loc =
-    invoicesDetails.value[ind]["langue"].nom;
+    invoicesDetails.value[ind]['langue'].nom;
   // loc =
-  //   invoicesDetails.value[ind]["langue"].nom === "us" ? "en-US" : loc;
+  //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
   invTTPrice = convertAmount(
     invoicesDetails.value[ind].invoiceTTPrice,
     destDevise.libelle,
@@ -428,32 +430,32 @@ function tableInvoicesTTPriceLibelle(ind: number) {
   ttPriceLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(ttPrice.toFixed(2));
-  ret = ttPriceLibelle.replaceAll(/\s/gi, "");
+  ret = ttPriceLibelle.replaceAll(/\s/gi, '');
   return ret;
 };
 function tableInvoicesBillingLibelle(ind: number) {
   let ret = {};
   let prenomLibelle = _.capitalize(
-    invoicesDetails.value[ind]["buyer"].prenom
+    invoicesDetails.value[ind]['buyer'].prenom
   );
-  let nomLibelle = _.capitalize(invoicesDetails.value[ind]["buyer"].nom);
+  let nomLibelle = _.capitalize(invoicesDetails.value[ind]['buyer'].nom);
   let nomRueLibelle = _.capitalize(
-    invoicesDetails.value[ind]["buyer"].nomRue
+    invoicesDetails.value[ind]['buyer'].nomRue
   );
-  let villeLibelle = invoicesDetails.value[ind]["buyer"].ville.toUpperCase();
+  let villeLibelle = invoicesDetails.value[ind]['buyer'].ville.toUpperCase();
   ret.firstLine = `${prenomLibelle} ${nomLibelle}`;
-  ret.secondLine = `${invoicesDetails.value[ind]["buyer"].numRue} ${nomRueLibelle}`;
-  ret.thirdLine = `${invoicesDetails.value[ind]["buyer"].cp} ${villeLibelle}`;
+  ret.secondLine = `${invoicesDetails.value[ind]['buyer'].numRue} ${nomRueLibelle}`;
+  ret.thirdLine = `${invoicesDetails.value[ind]['buyer'].cp} ${villeLibelle}`;
   return ret;
 };
 async function buildAndSavePdf(inv: any) {
-  languageVal = inv.langue === "fr-FR" ? "fr" : "";
-  languageVal = inv.langue === "en-US" ? "en" : languageVal;
+  languageVal = inv.langue === 'fr-FR' ? 'fr' : '';
+  languageVal = inv.langue === 'en-US' ? 'en' : languageVal;
   locale.value = inv.langue;
   doc = new jsPDF({
-    orientation: "p",
-    unit: "px",
-    format: "a4",
+    orientation: 'p',
+    unit: 'px',
+    format: 'a4',
   });
   let yPos = insertHead(inv);
   if (platform.is.desktop){
@@ -471,24 +473,24 @@ async function buildAndSavePdf(inv: any) {
   }
   yPos = insertInvoiceFoot(inv, yPos);
   const date = new Date();
-  let loc = inv["langue"];
+  let loc = inv['langue'];
   const options = {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
   };
   const dateLibelle = date.toLocaleDateString(loc, options);
-  const fileName = `${t("exportsComponent.libelles.invoice")}_${
+  const fileName = `${t('exportsComponent.libelles.invoice')}_${
     inv.factureId
   }_${dateLibelle
-    .replaceAll("/", "_")
-    .replaceAll(" ", "_")
-    .replaceAll(":", "_")
-    .replaceAll(",", "")
-    .replaceAll("à", "a")}`;
+    .replaceAll('/', '_')
+    .replaceAll(' ', '_')
+    .replaceAll(':', '_')
+    .replaceAll(',', '')
+    .replaceAll('à', 'a')}`;
   if (platform.is.desktop){
     doc.save(`${fileName}.pdf`);
     return null;
@@ -517,15 +519,15 @@ function insertHead(inv: any): number {
     heading = user.companyName.toUpperCase();
   }
   doc.setLanguage(languageVal);
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(14).text(heading, tableXPos, ret);
-  doc.setFont("helvetica", "bold");
-  // doc.setFontType("italic");
+  doc.setFont('helvetica', 'bold');
+  // doc.setFontType('italic');
   ret += 18.7;
   doc
     .setFontSize(18)
     .text(
-      t("exportsComponent.libelles.invoice", languageVal).toUpperCase(),
+      t('exportsComponent.libelles.invoice', languageVal).toUpperCase(),
       contentXPos + 35.8,
       ret
     );
@@ -540,11 +542,11 @@ function insertHead(inv: any): number {
   doc
     .setFontSize(14)
     .text(
-      t("exportsComponent.libelles.billingAddressLibelle", languageVal),
+      t('exportsComponent.libelles.billingAddressLibelle', languageVal),
       contentXPos,
       107
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   doc
     .setFontSize(10)
     .text(
@@ -572,8 +574,8 @@ function insertHead(inv: any): number {
 async function insertLogo() {
   let canvas = null, context = null;
   if (!import.meta.env.SSR){
-    canvas = document.createElement("canvas");
-    context = canvas.getContext("2d");
+    canvas = document.createElement('canvas');
+    context = canvas.getContext('2d');
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     let companyLogoURL = null, v = null;
@@ -581,7 +583,7 @@ async function insertLogo() {
       companyLogoURL = userStore.getUser.companyLogo;
       v = await Canvg.from(
         context,
-        `${window.location.origin}/dist/assets/uploads/${companyLogoURL}`
+        `${window.location.origin}${process.env.PUBLIC_PATH}/assets/uploads/${companyLogoURL}`
       );
     }
     else {
@@ -597,23 +599,23 @@ async function insertLogo() {
       v.start();
   }
 
-  var imgData = canvas.toDataURL("image/png");
+  var imgData = canvas.toDataURL('image/png');
   doc.addImage(
     imgData,
-    "PNG",
+    'PNG',
     tableXPos + footerCellTableWidth * 4,
     headerYPos * (1 - 1 / 2),
     footerCellTableWidth,
     48,
-    "CompanyLogo",
-    "MEDIUM",
+    'CompanyLogo',
+    'MEDIUM',
     0
   );
 };
 function insertOrder(inv: any, yPos: number, ind: number): number {
   let ret = yPos;
   // Additional content
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos,
     yPos,
@@ -621,8 +623,8 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
     orderHeaderTableHeight
   );
   const addContentTextCell = [
-    t("exportsComponent.libelles.addContentLibelle", languageVal),
-    inv["commandes"][ind].contenuAdditionnel,
+    t('exportsComponent.libelles.addContentLibelle', languageVal),
+    inv['commandes'][ind].contenuAdditionnel,
   ];
   // this.contentXPos + 54.6
   doc
@@ -631,22 +633,22 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       addContentTextCell[0],
       tableXPos + contentCellTableWidth,
       ret + 10,
-      { align: "center" }
+      { align: 'center' }
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   doc
     .setFontSize(10)
     .text(
-      addContentTextCell[1] !== null ? addContentTextCell[1] : "",
+      addContentTextCell[1] !== null ? addContentTextCell[1] : '',
       contentXPos + 5,
       ret + 20,
       {
-        align: "left",
+        align: 'left',
         maxWidth: (contentCellTableWidth * 2 - 3.4).toString(),
       }
     );
   // Buyer
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos + contentCellTableWidth * 2,
     yPos,
@@ -654,8 +656,8 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
     orderHeaderTableHeight
   );
   const buyerTextCell = [
-    t("exportsComponent.libelles.buyerLibelle", languageVal),
-    inv["buyer"],
+    t('exportsComponent.libelles.buyerLibelle', languageVal),
+    inv['buyer'],
   ];
   doc
     .setFontSize(9)
@@ -663,9 +665,9 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       buyerTextCell[0],
       tableXPos + contentCellTableWidth * (1 + 1 + 1 / 2),
       ret + 10,
-      { align: "center" }
+      { align: 'center' }
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   doc
     .setFontSize(10)
     .text(
@@ -673,12 +675,12 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       tableXPos + contentCellTableWidth * 2 + 6.7,
       ret + orderHeaderTableHeight - 10,
       {
-        align: "left",
+        align: 'left',
         maxWidth: (contentCellTableWidth - 8.4).toString(),
       }
     );
   // Seller
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos + contentCellTableWidth * 3,
     yPos,
@@ -686,8 +688,8 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
     orderHeaderTableHeight
   );
   const sellerTextCell = [
-    t("exportsComponent.libelles.sellerLibelle", languageVal),
-    inv["seller"],
+    t('exportsComponent.libelles.sellerLibelle', languageVal),
+    inv['seller'],
   ];
   doc
     .setFontSize(9)
@@ -695,9 +697,9 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       sellerTextCell[0],
       tableXPos + contentCellTableWidth * (1 + 1 + 1 + 1 / 2),
       ret + 10,
-      { align: "center" }
+      { align: 'center' }
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   doc
     .setFontSize(10)
     .text(
@@ -705,12 +707,12 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       tableXPos + contentCellTableWidth * 3 + 6.7,
       ret + orderHeaderTableHeight - 10,
       {
-        align: "left",
+        align: 'left',
         maxWidth: (contentCellTableWidth - 8.4).toString(),
       }
     );
   // Date
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos + contentCellTableWidth * 4,
     yPos,
@@ -718,8 +720,8 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
     orderHeaderTableHeight
   );
   const dateTextCell = [
-    t("exportsComponent.libelles.dateLibelle", languageVal),
-    inv["date"],
+    t('exportsComponent.libelles.dateLibelle', languageVal),
+    inv['date'],
   ];
   doc
     .setFontSize(9)
@@ -727,9 +729,9 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       dateTextCell[0],
       tableXPos + contentCellTableWidth * (1 + 1 + 1 + 1 + 1 / 2),
       ret + 10,
-      { align: "center" }
+      { align: 'center' }
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   doc
     .setFontSize(10)
     .text(
@@ -737,12 +739,12 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       tableXPos + contentCellTableWidth * 4 + 6.7,
       ret + orderHeaderTableHeight - 2,
       {
-        align: "left",
+        align: 'left',
         maxWidth: (contentCellTableWidth - 8.4).toString(),
       }
     );
   // Order
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos + contentCellTableWidth * 5,
     yPos,
@@ -750,7 +752,7 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
     orderHeaderTableHeight
   );
   const orderNumberTextCell = t(
-    "exportsComponent.libelles.orderNumberLibelle",
+    'exportsComponent.libelles.orderNumberLibelle',
     languageVal
   );
   doc
@@ -759,34 +761,34 @@ function insertOrder(inv: any, yPos: number, ind: number): number {
       orderNumberTextCell,
       tableXPos + contentCellTableWidth * 5 + 1.7,
       ret + 10,
-      { align: "left" }
+      { align: 'left' }
     );
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc
     .setFontSize(18)
     .text(
-      inv["commandes"][ind].orderId.toString(),
+      inv['commandes'][ind].orderId.toString(),
       tableXPos + contentCellTableWidth * 6,
       ret + orderHeaderTableHeight - 10,
       {
-        align: "center",
+        align: 'center',
         maxWidth: (contentCellTableWidth - 1.7).toString(),
       }
     );
   ret += orderHeaderTableHeight;
   // INSERT SERVICES
   ret = insertServiceHead(ret);
-  for (const k in inv["commandes"][ind]["Services"]) {
+  for (const k in inv['commandes'][ind]['Services']) {
     // console.log(k);
-    ret = insertServiceContent(inv["commandes"][ind], ret, k);
+    ret = insertServiceContent(inv['commandes'][ind], ret, k);
   }
-  ret = insertOrderFoot(inv["commandes"][ind], ret);
+  ret = insertOrderFoot(inv['commandes'][ind], ret);
   return ret;
 };
 function insertServiceHead(yPos: number): number {
   let ret = yPos;
   // Description
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   doc.rect(
     tableXPos,
     yPos,
@@ -794,13 +796,13 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const descriptionTextCell = t(
-    "exportsComponent.libelles.descriptionLibelle",
+    'exportsComponent.libelles.descriptionLibelle',
     languageVal
   );
   doc
     .setFontSize(10)
     .text(descriptionTextCell.toUpperCase(), contentXPos, ret + 10, {
-      align: "left",
+      align: 'left',
     });
   // Service ID
   doc.rect(
@@ -810,7 +812,7 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const serviceNumberTextCell = t(
-    "exportsComponent.libelles.serviceNumberLibelle",
+    'exportsComponent.libelles.serviceNumberLibelle',
     languageVal
   );
   doc.text(
@@ -818,7 +820,7 @@ function insertServiceHead(yPos: number): number {
     tableXPos + contentCellTableWidth * 2 + 1.7,
     ret + 10,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
@@ -830,7 +832,7 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const unitPriceTextCell = t(
-    "exportsComponent.libelles.ttUnitPriceLibelle",
+    'exportsComponent.libelles.ttUnitPriceLibelle',
     languageVal
   );
   doc.text(
@@ -838,7 +840,7 @@ function insertServiceHead(yPos: number): number {
     tableXPos + contentCellTableWidth * 3 + 1.7,
     ret + 10,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
@@ -850,7 +852,7 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const quantityTextCell = t(
-    "exportsComponent.libelles.quantityLibelle",
+    'exportsComponent.libelles.quantityLibelle',
     languageVal
   );
   doc.text(
@@ -858,7 +860,7 @@ function insertServiceHead(yPos: number): number {
     tableXPos + contentCellTableWidth * 4 + 1.7,
     ret + 10,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
@@ -870,7 +872,7 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const netPriceTextCell = t(
-    "exportsComponent.libelles.ttNetPriceLibelle",
+    'exportsComponent.libelles.ttNetPriceLibelle',
     languageVal
   );
   doc.text(
@@ -878,7 +880,7 @@ function insertServiceHead(yPos: number): number {
     tableXPos + contentCellTableWidth * 5 + 1.7,
     ret + 10,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
@@ -890,7 +892,7 @@ function insertServiceHead(yPos: number): number {
     serviceHeaderTableHeight
   );
   const amountTextCell = t(
-    "exportsComponent.libelles.ttOverallAmountLibelle",
+    'exportsComponent.libelles.ttOverallAmountLibelle',
     languageVal
   );
   doc.text(
@@ -898,7 +900,7 @@ function insertServiceHead(yPos: number): number {
     tableXPos + contentCellTableWidth * 6 + 1.7,
     ret + 10,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
@@ -906,20 +908,20 @@ function insertServiceHead(yPos: number): number {
   return ret;
 };
 function insertServiceContent(ord: any, yPos: number, ind: number): number {
-  // console.log(ord["Services"][ind]);
+  // console.log(ord['Services'][ind]);
   if (ind == 0) yPos += 0.5;
   let ret = yPos;
   // Description
-  doc.setFont("helvetica", "bold");
-  doc.setFillColor("#BBBBBB");
+  doc.setFont('helvetica', 'bold');
+  doc.setFillColor('#BBBBBB');
   doc.rect(
     tableXPos,
     yPos,
     contentCellTableWidth * 2,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const descriptionTextCell = ord["Services"][ind].nom;
+  const descriptionTextCell = ord['Services'][ind].nom;
   doc
     .setFontSize(9)
     .text(
@@ -927,107 +929,107 @@ function insertServiceContent(ord: any, yPos: number, ind: number): number {
       tableXPos + 1.7,
       ret + serviceContentTableHeight - 2,
       {
-        align: "left",
+        align: 'left',
         maxWidth: (contentCellTableWidth * 2 - 3.4).toString(),
       }
     );
   // Service ID
-  doc.setFillColor("#FFFFFF");
+  doc.setFillColor('#FFFFFF');
   doc.rect(
     tableXPos + contentCellTableWidth * 2,
     yPos,
     contentCellTableWidth,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const serviceNumberTextCell = ord["Services"][ind].serviceId.toString();
+  const serviceNumberTextCell = ord['Services'][ind].serviceId.toString();
   doc.text(
     serviceNumberTextCell.toUpperCase(),
     tableXPos + contentCellTableWidth * 2 + 1.7,
     ret + serviceContentTableHeight - 2,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
   // Unit Price IT
-  doc.setFillColor("#BBBBBB");
+  doc.setFillColor('#BBBBBB');
   doc.rect(
     tableXPos + contentCellTableWidth * 3,
     yPos,
     contentCellTableWidth,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const unitPriceTextCell = ord["Services"][ind].priceUnitTTLibelle;
+  const unitPriceTextCell = ord['Services'][ind].priceUnitTTLibelle;
   doc.text(
     unitPriceTextCell,
     tableXPos + contentCellTableWidth * 3 + 1.7,
     ret + serviceContentTableHeight - 2,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
   // Quantity
-  doc.setFillColor("#FFFFFF");
+  doc.setFillColor('#FFFFFF');
   doc.rect(
     tableXPos + contentCellTableWidth * 4,
     yPos,
     contentCellTableWidth,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const quantityTextCell = ord["Services"][ind].quantite.toString();
+  const quantityTextCell = ord['Services'][ind].quantite.toString();
   doc.text(
     quantityTextCell,
     tableXPos + contentCellTableWidth * 4 + 1.7,
     ret + serviceContentTableHeight - 2,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
   // Net price IT
-  doc.setFillColor("#BBBBBB");
+  doc.setFillColor('#BBBBBB');
   doc.rect(
     tableXPos + contentCellTableWidth * 5,
     yPos,
     contentCellTableWidth,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const netPriceTextCell = ord["Services"][ind].montantNetTTLibelle;
+  const netPriceTextCell = ord['Services'][ind].montantNetTTLibelle;
   doc.text(
     netPriceTextCell,
     tableXPos + contentCellTableWidth * 5 + 1.7,
     ret + serviceContentTableHeight - 2,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
   // Overall amount IT
-  doc.setFillColor("#FFFFFF");
+  doc.setFillColor('#FFFFFF');
   doc.rect(
     tableXPos + contentCellTableWidth * 6,
     yPos,
     contentCellTableWidth - 0.2,
     serviceContentTableHeight,
-    "F"
+    'F'
   );
-  const amountTextCell = ord["Services"][ind].montantNetTTLibelle;
+  const amountTextCell = ord['Services'][ind].montantNetTTLibelle;
   doc.text(
     amountTextCell,
     tableXPos + contentCellTableWidth * 6 + 1.7,
     ret + serviceContentTableHeight - 2,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (contentCellTableWidth - 3.4).toString(),
     }
   );
   ret += serviceContentTableHeight;
-  if (ind == ord["Services"].length - 1) {
+  if (ind == ord['Services'].length - 1) {
     doc
       .setLineWidth(1)
       .line(
@@ -1044,19 +1046,19 @@ function insertOrderFoot(ord: any, yPos: number): number {
   yPos += 0.5;
   let ret = yPos;
   // Footer
-  doc.setFont("helvetica", "bold");
-  doc.setFillColor("#FFFFFF");
+  doc.setFont('helvetica', 'bold');
+  doc.setFillColor('#FFFFFF');
   doc.rect(
     tableXPos,
     yPos,
     headerTableWidth,
     serviceHeaderTableHeight,
-    "F"
+    'F'
   );
-  const totalTextCell = t("exportsComponent.libelles.totalLibelle", languageVal);
+  const totalTextCell = t('exportsComponent.libelles.totalLibelle', languageVal);
   const totalValueTextCell = ord.totalTTLibelle;
   doc.setFontSize(10).text(totalTextCell, contentXPos, ret + 10, {
-    align: "left",
+    align: 'left',
     maxWidth: (headerTableWidth - 98.3).toString(),
   });
   doc.text(
@@ -1064,8 +1066,8 @@ function insertOrderFoot(ord: any, yPos: number): number {
     tableXPos + headerTableWidth,
     ret + 10,
     {
-      align: "right",
-      maxWidth: "100",
+      align: 'right',
+      maxWidth: '100',
     }
   );
   ret += serviceHeaderTableHeight;
@@ -1083,8 +1085,8 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
     orderHeaderTableHeight
   );
   // VAT value
-  doc.setFont("helvetica", "bold");
-  const vatTextCell = t("exportsComponent.libelles.vatLibelle", languageVal);
+  doc.setFont('helvetica', 'bold');
+  const vatTextCell = t('exportsComponent.libelles.vatLibelle', languageVal);
   tableXPos +
     footerCellTableWidth +
     footerCellTableWidth / 2;
@@ -1094,59 +1096,59 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
       vatTextCell,
       tableXPos + footerCellTableWidth * (1 + 1 / 2),
       ret + 15,
-      { align: "center" }
+      { align: 'center' }
     );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   const vatValueTextCell = inv.tvaValue.tvaValueLibelle;
   doc.text(
     vatValueTextCell,
     tableXPos + footerCellTableWidth + 1.7,
     ret + orderHeaderTableHeight - 3,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (footerCellTableWidth - 3.4).toString(),
     }
   );
   // VAT base
-  doc.setFont("helvetica", "bold");
-  const vatBaseTextCell = t("exportsComponent.libelles.vatBaseLibelle", languageVal);
+  doc.setFont('helvetica', 'bold');
+  const vatBaseTextCell = t('exportsComponent.libelles.vatBaseLibelle', languageVal);
   doc.text(
     vatBaseTextCell,
     tableXPos + footerCellTableWidth * (1 + 1 + 1 / 2),
     ret + 15,
-    { align: "center" }
+    { align: 'center' }
   );
-  doc.setFont("helvetica", "normal");
-  // console.log(inv.tvaValue.tvaBaseLibelle.replaceAll(" ", ""));
+  doc.setFont('helvetica', 'normal');
+  // console.log(inv.tvaValue.tvaBaseLibelle.replaceAll(' ', ''));
   const vatBaseValueTextCell =
-    inv.devise === "€"
+    inv.devise === '€'
       ? `${inv.tvaValue.tvaBaseLibelle} ${inv.devise}`
       : `${inv.devise} ${inv.tvaValue.tvaBaseLibelle}`;
-  console.log(vatBaseValueTextCell);
+  // console.log(vatBaseValueTextCell);
   doc.text(
     vatBaseValueTextCell,
     tableXPos + footerCellTableWidth * 2 + 1.7,
     ret + orderHeaderTableHeight - 3,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (footerCellTableWidth - 3.4).toString(),
     }
   );
   // VAT amount
-  doc.setFont("helvetica", "bold");
+  doc.setFont('helvetica', 'bold');
   const vatAmountTextCell = t(
-    "exportsComponent.libelles.vatAmountLibelle",
+    'exportsComponent.libelles.vatAmountLibelle',
     languageVal
   );
   doc.text(
     vatAmountTextCell,
     tableXPos + footerCellTableWidth * (1 + 1 + 1 + 1 / 2),
     ret + 15,
-    { align: "center" }
+    { align: 'center' }
   );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   const vatAmountValueTextCell =
-    inv.devise === "€"
+    inv.devise === '€'
       ? `${inv.tvaValue.tvaMontantLibelle} ${inv.devise}`
       : `${inv.devise} ${inv.tvaValue.tvaMontantLibelle}`;
   doc.text(
@@ -1154,22 +1156,22 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
     tableXPos + footerCellTableWidth * 3 + 1.7,
     ret + orderHeaderTableHeight - 3,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (footerCellTableWidth - 3.4).toString(),
     }
   );
   // Total amount IT
-  doc.setFont("helvetica", "bold");
-  const ttTotalTextCell = t("exportsComponent.libelles.ttTotalLibelle", languageVal);
+  doc.setFont('helvetica', 'bold');
+  const ttTotalTextCell = t('exportsComponent.libelles.ttTotalLibelle', languageVal);
   doc.text(
     ttTotalTextCell,
     tableXPos + footerCellTableWidth * (1 + 1 + 1 + 1 + 1 / 2),
     ret + 15,
-    { align: "center" }
+    { align: 'center' }
   );
-  doc.setFont("helvetica", "normal");
+  doc.setFont('helvetica', 'normal');
   const ttTotalValueTextCell =
-    inv.devise === "€"
+    inv.devise === '€'
       ? `${inv.invoiceTTPrice} ${inv.devise}`
       : `${inv.devise} ${inv.invoiceTTPrice}`;
   doc.text(
@@ -1177,11 +1179,11 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
     tableXPos + footerCellTableWidth * 4 + 1.7,
     ret + orderHeaderTableHeight - 3,
     {
-      align: "left",
+      align: 'left',
       maxWidth: (footerCellTableWidth - 3.4).toString(),
     }
   );
-
+  console.log(inv.tvaValue);
   ret += orderHeaderTableHeight;
   return ret;
 };
@@ -1201,10 +1203,10 @@ function fromEuroToOther(val: number, dest: string): number {
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
-    case "dollar":
+    case 'dollar':
       ret *= produit !== null ? produit.dollar : 1;
       break;
-    case "livre":
+    case 'livre':
       ret *= produit !== null ? produit.livre : 1;
       break;
     default:
@@ -1224,10 +1226,10 @@ function fromDollarToOther(val: number, dest: string): number {
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
-    case "euro":
+    case 'euro':
       ret *= produit !== null ? produit.euro : 1;
       break;
-    case "livre":
+    case 'livre':
       ret *= produit !== null ? produit.livre : 1;
       break;
     default:
@@ -1248,10 +1250,10 @@ function fromLivreToOther(val: number, dest: string): number {
   }
   const produit = stock_price !== null ? stock_price : null;
   switch (dest) {
-    case "dollar":
+    case 'dollar':
       ret *= produit !== null ? produit.dollar : 1;
       break;
-    case "euro":
+    case 'euro':
       ret *= produit !== null ? produit.euro : 1;
       break;
     default:
@@ -1348,7 +1350,7 @@ function sanitizeQueryResult(obj: any) {
                 ret[ind]['commandes'][orderLen - 1]['Services'].push({serviceId: obj[k][l]});
               }
               else{
-                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                // const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
                 const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k][l]);
                 // if (obj[k][l] !== null){
                 if (foundIndex === -1)
@@ -1370,7 +1372,7 @@ function sanitizeQueryResult(obj: any) {
                 ret[ind]['commandes'][orderLen - 1]['Services'].push({montantHt: obj[k][l]});
               }
               else{
-                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                // const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
                 const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
                 if (foundIndex === -1)
                   ret[ind]['commandes'][orderLen - 1]['Services'].push({montantHt: obj[k][l]});
@@ -1390,7 +1392,7 @@ function sanitizeQueryResult(obj: any) {
                 ret[ind]['commandes'][orderLen - 1]['Services'].push({nom: obj[k][l]});
               }
               else{
-                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                // const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
                 const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
                 if (foundIndex === -1)
                   ret[ind]['commandes'][orderLen - 1]['Services'].push({nom : obj[k][l]});
@@ -1410,7 +1412,7 @@ function sanitizeQueryResult(obj: any) {
                 ret[ind]['commandes'][orderLen - 1]['Services'].push({quantite: obj[k][l]});
               }
               else{
-                const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
+                // const serviceLen = ret[ind]['commandes'][orderLen - 1]['Services'].length;
                 const foundIndex = ret[ind]['commandes'][orderLen - 1]['Services'].findIndex(elem => elem.serviceId === obj[k]['commandes.Services.serviceId']);
                 if (foundIndex === -1)
                   ret[ind]['commandes'][orderLen - 1]['Services'].push({quantite : obj[k][l]});
@@ -1903,41 +1905,41 @@ function sanitizeQueryResult(obj: any) {
   }
   return ret;
 };
-async function downloadForMobile(dest: string, path?: string = '', data?: any = undefined): HttpDownloadFileResult {
-  let res: HttpDownloadFileResult = null;
-  let options: HttpDownloadFileOptions = null; 
-  if (!!data){
-    options = {
-      filePath: `${dest}`,
-      url: `${window.location.origin}/`,
-      data: data,
-      // fileDirectory: Directory.Documents,
-    };
-  }
-  else {
-    options = {
-      filePath: `${dest}`,
-      url: `${window.location.origin}${t('downloadLinkTarget')}/`,
-      // fileDirectory: Directory.Documents,
-    }; 
-  }
-  console.log(options);
-  res = await Http.downloadFile(options);
-  return res;
-};
-async function writeFileForMobile(dest: string, data: any): WriteFileResult{
-  let ret: WriteFileResult = null;
-  const options: WriteFileOptions = {
-    path: `${dest}`,
-    data: data,
-    directory: Directory.Documents,
-    encoding: Encoding.UTF8,
-    recursive: false
-  };
-  // console.log(options);
-  ret = await Filesystem.writeFile(options);
-  return ret;
-};
+// async function downloadForMobile(dest: string, path: string = '', data?: any = undefined): HttpDownloadFileResult {
+//   let res: HttpDownloadFileResult = null;
+//   let options: HttpDownloadFileOptions = null; 
+//   if (!!data){
+//     options = {
+//       filePath: `${dest}`,
+//       url: `${path}`,
+//       data: data,
+//       // fileDirectory: Directory.Documents,
+//     };
+//   }
+//   else {
+//     options = {
+//       filePath: `${dest}`,
+//       url: `${window.location.origin}${t('downloadLinkTarget')}/`,
+//       // fileDirectory: Directory.Documents,
+//     }; 
+//   }
+//   console.log(options);
+//   res = await Http.downloadFile(options);
+//   return res;
+// };
+// async function writeFileForMobile(dest: string, data: any): WriteFileResult{
+//   let ret: WriteFileResult = null;
+//   const options: WriteFileOptions = {
+//     path: `${dest}`,
+//     data: data,
+//     directory: Directory.Documents,
+//     encoding: Encoding.UTF8,
+//     recursive: false
+//   };
+//   // console.log(options);
+//   ret = await Filesystem.writeFile(options);
+//   return ret;
+// };
 async function writeBlobFileForMobile(dest: string, data: Blob){
   let ret = null;
   const options = {
@@ -1954,16 +1956,16 @@ async function writeBlobFileForMobile(dest: string, data: Blob){
   ret = await write_blob(options);
   return ret;
 };
-async function getFileUri(path: string): GetUriResult{
-  let ret: GetUriResult = null;
-  const options: GetUriOptions = {
-    path: `${path}`,
-    directory: Directory.Documents,
-  };
+// async function getFileUri(path: string): GetUriResult{
+//   let ret: GetUriResult = null;
+//   const options: GetUriOptions = {
+//     path: `${path}`,
+//     directory: Directory.Documents,
+//   };
 
-  ret = await Filesystem.getUri(options);
-  return ret;
-};
+//   ret = await Filesystem.getUri(options);
+//   return ret;
+// };
 function getMimeType(name: string): string{
   let ret: string = null;
   if (name.indexOf('pdf')){

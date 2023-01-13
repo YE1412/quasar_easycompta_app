@@ -264,20 +264,21 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { nextTick, ref, provide, computed, watch } from 'vue';
-import { useActorStore } from 'stores/actor';
+// import { useActorStore } from 'stores/actor';
 import { useMessageStore } from 'stores/message';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import actorAxiosService from 'db/services/actor.service';
-import { HeadTableText, InputObjectCollection, FormState, Message } from './models';
+import { InputObjectCollection, FormState } from './models';
 import { useI18n } from 'vue-i18n';
 // import { Capacitor } from '@capacitor/core';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, closeConnection, closeDbConnection } from 'cap/storage';
+// import { useRouter } from 'vue-router';
+import { openDbConnection, isDbConnectionOpen, newRun, closeDbConnection } from 'cap/storage';
 import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
 interface ActorProps {
@@ -307,7 +308,7 @@ const props = withDefaults(defineProps<ActorProps>(), {
   dbConn: null,
 });
 const $q = useQuasar();
-const router = useRouter();
+// const router = useRouter();
 const platform = $q.platform;
 const renderComponent = ref(true);
 const { t } = useI18n({ useScope: 'global' });
@@ -441,7 +442,7 @@ const nonEmptyNom = computed(() => {
   return !!nom.value && nom.value != '';
 });
 const validEmail = computed(() => {
-  const re = /^(([a-zA-Z])(\-)*){2,15}$/;
+  // const re = /^(([a-zA-Z])(\-)*){2,15}$/;
   return true;
 });
 const nonEmptyEmail = computed(() => {
@@ -515,16 +516,18 @@ const numCommercantState = computed(() => {
   let actorType = 0;
   actorType = types.value.length == 2 ? 1 : actorType;
   actorType = types.value.length == 1 ? parseInt(types.value[0]) : actorType;
-  numCommercant.value = actorType === 3 ? null : numCommercant.value;
+  setNumCommercantValue(actorType);
   return actorType === 2 || actorType === 1 ? false : true; 
 });
 
-let messageStore = null, actorStore = null, prefs = null;
+let messageStore = null, 
+  // actorStore = null, 
+  prefs = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
   messageStore = useMessageStore();
-  actorStore = useActorStore();
+  // actorStore = useActorStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
   (async () => {
@@ -544,6 +547,9 @@ if (platform.is.desktop) {
 }
 
 // FUNCTIONS
+function setNumCommercantValue(actorType: number){
+  numCommercant.value = actorType === 3 ? null : numCommercant.value;
+};
 async function forceTableRerender() {
   renderComponent.value = false;
   await nextTick();
@@ -642,7 +648,7 @@ async function addClickFromChild(e: Event, db: boolean) {
     }
   }
 };
-async function updateClickFromChild(e: Event, db: boolean, id?: number = 0, obj?: any = null) {
+async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
     let actorType = [];
@@ -771,7 +777,7 @@ async function insertActorInDb() {
   await transformObject(obj);
   return actorAxiosService
     .create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('actorsComponent.results.ok.add')
@@ -810,7 +816,7 @@ async function insertActorInSQLiteDb () {
   let isOpen = await isDbConnectionOpen(props.dbConn);
   isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
-    const sql = `INSERT INTO \`personne\` (\`prenom\`, \`nom\`, \`email\`, \`numRue\`, \`nomRue\`, \`cp\`, \`ville\`, \`tel\`, \`actorTypeId\`, \`numCommercant\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    const sql = 'INSERT INTO \`personne\` (\`prenom\`, \`nom\`, \`email\`, \`numRue\`, \`nomRue\`, \`cp\`, \`ville\`, \`tel\`, \`actorTypeId\`, \`numCommercant\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
     // console.log(sql);
     const values = await newRun(props.dbConn, sql, [obj.prenom, obj.nom, obj.email, obj.numRue, obj.nomRue, obj.cp, obj.ville, obj.tel, obj.type, obj.numCommercant]);
     let ret = false;
@@ -872,7 +878,7 @@ async function updateActorInDb() {
   await transformObject(obj);
   return actorAxiosService
   .update(actorId.value, obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('actorsComponent.results.ok.update'),
@@ -912,7 +918,7 @@ async function updateActorInSQLiteDb() {
   isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   if (isOpen) {
     let ret = false;
-    const sql = `UPDATE \`personne\` SET \`prenom\`=?, \`nom\`=?, \`email\`=?, \`numRue\`=?, \`nomRue\`=?, \`cp\`=?, \`ville\`=?, \`tel\`=?, \`actorTypeId\`=?, \`numCommercant\`=? WHERE \`actorId\` = ?;`;
+    const sql = 'UPDATE \`personne\` SET \`prenom\`=?, \`nom\`=?, \`email\`=?, \`numRue\`=?, \`nomRue\`=?, \`cp\`=?, \`ville\`=?, \`tel\`=?, \`actorTypeId\`=?, \`numCommercant\`=? WHERE \`actorId\` = ?;';
     // console.log(sql);
     const values = await newRun(props.dbConn, sql, [obj.prenom, obj.nom, obj.email, obj.numRue, obj.nomRue, obj.cp, obj.ville, obj.tel, obj.type, obj.numCommercant, actorId.value]);
     if (values.changes.changes) {
@@ -956,7 +962,7 @@ async function updateActorInSQLiteDb() {
 function deleteActorFromDb() {
   return actorAxiosService
     .delete(actorId.value)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('actorsComponent.results.ok.delete')
