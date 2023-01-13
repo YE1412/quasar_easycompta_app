@@ -390,7 +390,7 @@ function tableInvoicesVATLibelle(ind: number) {
   tvaBaseLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
   }).format(tvaBase);
-  console.log(`tvaValue --> ${tvaValueLibelle}/tvaMontant --> ${tvaMontantLibelle}/tvaBase --> ${tvaBaseLibelle}/invTTPrice --> ${invTTPrice}`);
+  // console.log(`tvaValue --> ${tvaValueLibelle}/tvaMontant --> ${tvaMontantLibelle}/tvaBase --> ${tvaBaseLibelle}/invTTPrice --> ${invTTPrice}`);
   ret.tvaValueLibelle = `${tvaValueLibelle} %`;
   ret.tvaBaseLibelle = tvaBaseLibelle.replaceAll(/\s/gi, '');
   ret.tvaMontantLibelle = tvaMontantLibelle.replaceAll(/\s/gi, '');
@@ -1183,7 +1183,7 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
       maxWidth: (footerCellTableWidth - 3.4).toString(),
     }
   );
-  console.log(inv.tvaValue);
+  // console.log(inv.tvaValue);
   ret += orderHeaderTableHeight;
   return ret;
 };
