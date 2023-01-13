@@ -53,16 +53,15 @@ export default store(( { ssrContext } ) => {
           cookies.set(key, obj, {path: '/', sameSite: 'Lax', secure: false})
         },
         removeItem(key: string){
-          console.log(`Cookie Remove Item ${key}!`);
+          // console.log(`Cookie Remove Item ${key}!`);
           cookies.remove(key, {path: '/', sameSite: 'Lax', secure: false});
         },
       };
     }
   });
-  pinia.use(piniaPluginPersistedstate);
-  return pinia;
-
   // You can add Pinia plugins here
   // pinia.use(SomePiniaPlugin)
-  return pinia
+  pinia.use(piniaPluginPersistedstate);
+  // app.config.globalProperties.$pinia = pinia;
+  return pinia;
 })

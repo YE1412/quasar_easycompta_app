@@ -36,7 +36,6 @@ module.exports = configure(function (ctx) {
     boot: [
       'i18n',
       'axios',
-      'auth',
       {
         server: false, // run on client-side only!
         path: 'axios_client' // references /src/boot/axios_client.ts
@@ -49,6 +48,7 @@ module.exports = configure(function (ctx) {
         server: false, // run on client-side only!
         path: 'capacitor_http' // references /src/boot/capacitor_http.ts
       },
+      'auth',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css

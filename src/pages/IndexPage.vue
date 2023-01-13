@@ -79,6 +79,8 @@ interface IndexPageProps {
 const props = withDefaults(defineProps<IndexPageProps>(), {
   dbConn: null,
 });
+// const app = getCurrentInstance();
+// const pinia = app.appContext.config.globalProperties.$pinia;
 const $q = useQuasar();
 const emit = defineEmits(['change-tab']);
 const renderComponent = ref(true);

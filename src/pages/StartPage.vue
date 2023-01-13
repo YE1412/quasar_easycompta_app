@@ -161,6 +161,8 @@ interface StartProps {
 const props = withDefaults(defineProps<StartProps>(), {
   dbConn: null,
 });
+// const app = getCurrentInstance();
+// const pinia = app.appContext.config.globalProperties.$pinia;
 const $q = useQuasar();
 const platform = $q.platform;
 const login = ref(null);
@@ -262,7 +264,7 @@ async function submit(){
         forceMessageItemsRerender();
       }
       else {
-        userStore.setConnected(true);
+        // userStore.setConnected(true);
         messageStore.messages = [];
         messageStore.setMessagesVisibility(false);
         router.push(t('homeTerLinkTarget'));
