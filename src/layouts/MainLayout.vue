@@ -298,6 +298,9 @@ const connected = ref(false);
 
 let sessionStore = null, userStore = null, prefs = null;
 let db: Ref<SQLiteDBConnection> = ref(null);
+let userCookies = $q.cookies.get('user');
+// console.log('User Cookies !');
+// console.log(userCookies);
 
 // DECLARATIONS
 if (platform.is.desktop){
@@ -305,10 +308,6 @@ if (platform.is.desktop){
   userStore = useUserStore();
 } else {
 }
-
-let userCookies = $q.cookies.get('user');
-// console.log('User Cookies !');
-// console.log(userCookies);
 if (!!userCookies) {
   connected.value = userCookies.connected;
 }
