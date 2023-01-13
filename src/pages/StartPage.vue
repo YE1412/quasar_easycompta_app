@@ -149,7 +149,7 @@ import MessagesItem from 'components/MessagesItem.vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
+import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // import sessionAxiosService from 'db/services/session.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -311,9 +311,12 @@ async function submit(){
         forceMessageItemsRerender();
       }
       else {
-        const usr = await prefs.getPref('user');
-        usr.connected = true;
-        await prefs.setPref('user', usr);
+        // const usr = await prefs.getPref('user');
+        // if (!!usr ===false){
+        //   usr = {};
+        //   usr.user = 
+        // }
+        // await prefs.setPref('user', usr);
         await prefs.setPref('message', {
           messages: [],
           messagesVisibility: false,
@@ -386,13 +389,14 @@ async function loginDb() {
       const values = await newQuery(props.dbConn, sql);
       let res = false;
       // console.log(values);
-      if(values.values.length){
+      if(!!values && values.values.length){
         const intRes = sanitizeQueryResult(values.values);
         // console.log(intRes);
         await setDecryptApi();
         const result = await __TRANSFORMOBJ__(intRes[0]);
         // console.log(result);
         await prefs.setPref('user', {user: result, connected: false});
+        // console.log('Prefs setted !');
         res = true;
       }
       else {

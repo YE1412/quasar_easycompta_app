@@ -135,11 +135,13 @@ if (platform.is.desktop) {
     const invs = await prefs.getPref('invoice');
     // console.log(props.dbConn);
     let isOpen = await isDbConnectionOpen(props.dbConn);
-    isOpen = !!isOpen && !isOpen ? await openDbConnection(props.dbConn) : isOpen;
+    isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
+    // isOpen = await openDbConnection(props.dbConn);
     let newCounter = null, newInvoices = null;
     // console.log(isOpen);
     if (isOpen) {
       let sql = 'SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;';
+      // console.log(sql);
       let values = await newQuery(props.dbConn, sql);
       if (!!values && values.values.length) {
         newCounter = !!ctr ? ctr : {};
@@ -188,12 +190,16 @@ if (platform.is.desktop) {
   invoicesDetails.value = invoicesObj;
   // locale.value = mainLocale;
   let buildedPdf = [];
+  // console.log('Content For Print !');
+  // console.log(contentsForPrint.value);
   for (const key in contentsForPrint.value){
     const builded = await buildAndSavePdf(contentsForPrint.value[key]);
     if (!!builded)
       buildedPdf.push(builded);
   }
   locale.value = mainLocale;
+  // console.log('Builded PDF !');
+  // console.log(buildedPdf);
   if (platform.is.mobile && buildedPdf.length){
     const mimeType = getMimeType(buildedPdf[0].name);
     await openFile(buildedPdf[0].uri, mimeType);
@@ -449,6 +455,7 @@ function tableInvoicesBillingLibelle(ind: number) {
   return ret;
 };
 async function buildAndSavePdf(inv: any) {
+  // console.log('Building Pdf...');
   languageVal = inv.langue === 'fr-FR' ? 'fr' : '';
   languageVal = inv.langue === 'en-US' ? 'en' : languageVal;
   locale.value = inv.langue;
@@ -496,12 +503,15 @@ async function buildAndSavePdf(inv: any) {
     return null;
   }
   else {
+    // console.log('Outputing PDF...');
     const output = doc.output('blob', `${fileName}.pdf`);
+    // console.log('Output Raw PDF !');
     // console.log(output);
     // console.log('Downloading file !');
     // const res = await downloadForMobile(`${fileName}.pdf`, null, output);
     // const res = await writeFileForMobile(`${fileName}.pdf`, output);
     const res = await writeBlobFileForMobile(`${fileName}.pdf`, output);
+    // console.log('Output writing result !');
     // console.log(res);
     // const getUri = await getFileUri(`${fileName}.pdf`);
     // console.log(getUri);

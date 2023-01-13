@@ -409,7 +409,7 @@ else {
 if (!import.meta.env.SSR){
   const fullOrigin = window.location.origin;
   // console.log(import.meta.env);
-  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(":") + 1);
+  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(':') + 1);
   // console.log(origin);
   // console.log(process.env);
 }
@@ -892,8 +892,8 @@ function onInvalidCompanyLogo(entries) {
   for (const k in entries){
     const filename = entries[k].file.name;
     const filesize = entries[k].file.size;
-    const ext = filename.lastIndexOf(".") !== -1 
-      ? filename.slice(filename.lastIndexOf(".")) 
+    const ext = filename.lastIndexOf('.') !== -1 
+      ? filename.slice(filename.lastIndexOf('.')) 
       : filename;
     if (entries[k].failedPropValidation === 'accept'){
       $q.notify({
@@ -920,7 +920,7 @@ async function onFailedCompanyLogoUpload({xhr}) {
     color: 'red-5',
     textColor: 'white',
     icon: 'warning',
-    message: t('profileComponent.results.ko.upload', {err: `Request handling failed !`})
+    message: t('profileComponent.results.ko.upload', {err: 'Request handling failed !'})
   });
   if (platform.is.desktop){
     messageStore.messages.push({

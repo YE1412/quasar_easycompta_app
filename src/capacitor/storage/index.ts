@@ -35,18 +35,18 @@ export default async(importJson = false): SQLiteDBConnection | null => {
   //   console.log(opennedDB);
   // } else {
   const consistency = await connectionsConsistency();
-  console.log(consistency);
+  // console.log(consistency);
   const connectionOpenned = await isConnection();
-  console.log(connectionOpenned);
+  // console.log(connectionOpenned);
   let db = null;
   if (connectionOpenned.result && consistency.result) {
     db = await retrieveConnection();
-    console.log(db);
+    // console.log(db);
   } else {
     if (importJson)
       db = await importFromJSON();
     db = await createConnection();
-    console.log(db);
+    // console.log(db);
   }
   // console.log('return db !');
   return db;

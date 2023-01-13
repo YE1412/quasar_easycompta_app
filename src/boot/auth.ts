@@ -117,21 +117,23 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
     messageCookie = JSON.parse(decodeURIComponent(cookie.getAll().message));
   }
   // DATAS DEBUG
-  // console.log('Session Store on the server --> ');
-  // console.log(store.session);
-  // console.log('Message Store on the server --> ');
-  // console.log(store.message);
-  // console.log('User Store on the server --> ');
-  // console.log(store.user);
-  // console.log('/---------------------------------\\');
-  // console.log('Cookie Session on the server --> ');
-  // console.log(sessionCookie);
-  // console.log('Cookie Message on the server --> ');
-  // console.log(messageCookie);
-  // console.log('Cookie User on the server --> ');
-  // console.log(userCookie);
-  // console.log('/---------------------------------\\');
-  // console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\');
+  console.log('Session Store on the server --> ');
+  console.log(store.session);
+  console.log('Message Store on the server --> ');
+  console.log(store.message);
+  console.log('User Store on the server --> ');
+  console.log(store.user);
+  console.log('/---------------------------------\\');
+  console.log('Cookie Session on the server --> ');
+  console.log(sessionCookie);
+  console.log('Cookie Message on the server --> ');
+  console.log(messageCookie);
+  console.log('Cookie User on the server --> ');
+  console.log(userCookie);
+  console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\\n\n');
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
     : 'en-US';
@@ -139,12 +141,12 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
   // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie);
-  if (requireAuth && !userCookie.connected) {
+  if (requireAuth && !!userCookie && !userCookie.connected) {
     // console.log(`Session Management: ${sessionStore.getSessionId}`);
     return await validateSession(sessionCookie, platform)
       .then(
         () => {
-          // console.log('Session validate on server side !');
+          console.log('Session validate on server side !');
           if (!!userCookie.user 
             && Object.keys(userCookie.user).length
             && Object.getPrototypeOf(userCookie.user) === Object.prototype){
@@ -161,7 +163,7 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
         }
       )
       .catch(() => {
-        // console.log('Session invalidate on server side !');
+        console.log('Session invalidate on server side !');
         userCookie.user = {};
         userCookie.connected = true;
         if (sessionCookie && sessionCookie.sessionId != ''){
@@ -170,7 +172,7 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
         }
         else {
           messageCookie.messages = [{severity: true, content: t('session.results.ko')}];
-            messageCookie.messagesVisibility = true;
+          messageCookie.messagesVisibility = true;
         }
         cookie.set('user', JSON.stringify(userCookie), {path: '/', sameSite: 'Lax', secure: false});
         cookie.set('message', JSON.stringify(messageCookie), {path: '/', sameSite: 'Lax', secure: false});
@@ -180,7 +182,19 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
   else if (!hasRoute && accessiblePath !== null) {
     generateRoute(to, accessiblePath, router);
     return (to.fullPath);
-  } 
+  }
+  else if(hasRoute && to.fullPath !== '/') {
+    return null;
+  }
+  else if(userCookie === null 
+    || (!Object.keys(userCookie.user).length
+    && Object.getPrototypeOf(userCookie.user) === Object.prototype)) {
+    userCookie = {};
+    userCookie.user = {};
+    userCookie.connected = false;
+    cookie.set('user', JSON.stringify(userCookie), {path: '/', sameSite: 'Lax', secure: false});
+    return t('startLinkTarget');
+  }
   else return null;
 };
 
@@ -198,33 +212,36 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
     messageCookie = JSON.parse(decodeURIComponent(cookie.getAll().message));
   }
   // DATAS DEBUG
-  // console.log('Session Store on the client --> ');
-  // console.log(store.session);
-  // console.log('Message Store on the client --> ');
-  // console.log(store.message);
-  // console.log('User Store on the client --> ');
-  // console.log(store.user);
-  // console.log('/---------------------------------\\');
-  // console.log('Cookie Session on the client --> ');
-  // console.log(sessionCookie);
-  // console.log('Cookie Message on the client --> ');
-  // console.log(messageCookie);
-  // console.log('Cookie User on the client --> ');
-  // console.log(userCookie);
-  // console.log('/---------------------------------\\');
-  // console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\');
+  console.log('Session Store on the client --> ');
+  console.log(store.session);
+  console.log('Message Store on the client --> ');
+  console.log(store.message);
+  console.log('User Store on the client --> ');
+  console.log(store.user);
+  console.log('/---------------------------------\\');
+  console.log('Cookie Session on the client --> ');
+  console.log(sessionCookie);
+  console.log('Cookie Message on the client --> ');
+  console.log(messageCookie);
+  console.log('Cookie User on the client --> ');
+  console.log(userCookie);
+  console.log('/---------------------------------\\');
+  console.log('/---------------------------------\\\n\n');
+
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
     : 'en-US';
   const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-  // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie);
-  if (requireAuth && !userCookie.connected) {
+  debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie);
+  if (requireAuth && !!userCookie && !userCookie.connected) {
     return await validateSession(sessionCookie, platform)
       .then(
         () => {
-          // console.log('Session validate on client side !');
+          console.log('Session validate on client side !');
           if (!!userCookie.user 
             && Object.keys(userCookie.user).length
             && Object.getPrototypeOf(userCookie.user) === Object.prototype){
@@ -239,7 +256,7 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
         }
       )
       .catch(() => {
-        // console.log('Session invalidate on client side !');
+        console.log('Session invalidate on client side !');
         if (!!store 
           && Object.keys(store).length
           && Object.getPrototypeOf(store) === Object.prototype){
@@ -267,7 +284,20 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
   else if (!hasRoute && accessiblePath !== null) {
     generateRoute(to, accessiblePath, router);
     return to.fullPath;
-  } 
+  }
+  else if(hasRoute && to.fullPath !== '/') {
+    return null;
+  }
+  else if(userCookie === null
+    || (!Object.keys(userCookie.user).length
+    && Object.getPrototypeOf(userCookie.user) === Object.prototype)) {
+    console.log('unexepted path !');
+    userCookie = {};
+    userCookie.user = {};
+    userCookie.connected = false;
+    cookie.set('user', JSON.stringify(userCookie), {path: '/', sameSite: 'Lax', secure: false});
+    return t('startLinkTarget');
+  }
   else return null;
 };
 
@@ -307,6 +337,7 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
 };
 
 async function checkForMobiles(to: any, from: any, next: any, router: any, cookie: any, platform: any) {
+  // console.log('Route Navigation For Mobiles !');
   let sessionCookie = null, userCookie = null;
   if (!!cookie.getAll().session){
     sessionCookie = JSON.parse(decodeURIComponent(cookie.getAll().session));
@@ -321,8 +352,10 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
   // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie);
-  if (requireAuth && !userCookie.connected) {
+  if (requireAuth && !!userCookie && !userCookie.connected) {
     const sessionPref = await prefs.getPref('session');
+    // console.log('Seesion Prefs');
+    // console.log(sessionPref);
     const res = await validateSession(sessionCookie, platform, sessionPref);
     if (res){
       if (!!userCookie.user 
@@ -374,24 +407,26 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
     generateRoute(to, accessiblePath, router);
     // trigger a redirection
     next(to.fullPath);
-  } 
+  }
+  else if (hasRoute && to.fullPath !== '/') {
+    next();
+  }
+  else if(userCookie === null) {
+    // console.log('Null user cookie !');
+    next(t('startLinkTarget'));
+  }
   else next();
 };
 
 export default ({ store, router, ssrContext }) => {
-  console.log(store.state.value);
-  // const pinia = !!store
-  //   ? null
-  //   : null;
+  // console.log(store.state.value);
 	const platform = process.env.SERVER
 		? Platform.parseSSR(ssrContext)
 		: Platform;
 	const cookies = process.env.SERVER
 		? Cookies.parseSSR(ssrContext)
 		: Cookies;
-	// console.log(platform);
 	router.beforeEach(async(to: any, from: any, next: any) => {
-	    // console.log('Route Navigation !');
       if (platform.is.desktop) {
 	      await checkForWeb(to, from, next, router, cookies, platform, store.state.value);
 	    }
