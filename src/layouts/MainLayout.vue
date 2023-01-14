@@ -27,7 +27,7 @@
         >
           <q-btn
             flat
-            :to="{path: connected ? t('homeTerLinkTarget') : t('startLinkTarget')}">
+            :to="{name: connected ? t('homeTerLinkName') : t('startLinkName')}">
             <q-item-section
               avatar
             >
@@ -63,7 +63,7 @@
         <!--<div class="float-right">Quasar v{{ $q.version }}</div>-->
         <div class="float-right">
           <q-btn flat stretch v-if="connected" icon="mdi-logout" :label="t('startComponent.libelles.logout')" @click="logout" />
-          <router-link :to="{path: t('registerLinkTarget')}" style="text-decoration: none;color: black;">
+          <router-link :to="{name: t('registerLinkName')}" style="text-decoration: none;color: black;">
             <q-btn flat stretch v-if="!connected" icon="mdi-account-plus" :label="t('startComponent.libelles.signUp')" />
           </router-link>  
         </div>
@@ -72,7 +72,7 @@
       <q-tabs v-model="tab" v-if="connected">
         <q-tab name="home">
           <q-item clickable>
-            <router-link :to="{path: t('homeTerLinkTarget')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
+            <router-link :to="{name: t('homeLinkName')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
               <q-item-section avatar>
                 <q-icon color="primary" name="mdi-home"/>
               </q-item-section>
@@ -85,7 +85,7 @@
         </q-tab>
         <q-tab name="profile">
           <q-item clickable>
-            <router-link :to="{path: t('profileLinkTarget')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
+            <router-link :to="{name: t('profileLinkName')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
               <q-item-section avatar>
                 <q-icon color="primary" name="mdi-card-account-details"/>
               </q-item-section>
@@ -98,7 +98,7 @@
         </q-tab>
         <q-tab name="about">
           <q-item clickable>
-            <router-link :to="{path: t('aboutLinkTarget')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
+            <router-link :to="{name: t('aboutLinkName')}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
               <q-item-section avatar>
                 <q-icon color="primary" name="mdi-information"/>
               </q-item-section>
@@ -315,28 +315,6 @@ else {
   connected.value = false;
 }
 
-// WATCHERS
-watch(
-  route,
-  async (newR) => {
-    if (!import.meta.env.SSR) {
-      // console.log(newR);
-      document.title = `Easy-Compta - ${newR.meta.title}`;
-    }
-    if (platform.is.desktop){
-      // console.log('Watcher connected !');
-      connected.value = userStore.getConnected;
-    }
-    else {
-      const userCookie = await prefs.getPref('user');
-      // console.log(userCookie);
-      connected.value = !!userCookie 
-        ? userCookie.connected
-        : false ;
-    }
-  }
-)
-
 // FUNCTIONS
 function tabChanges(val: string){
   // console.log(val);
@@ -379,12 +357,12 @@ async function logout(){
 // });
 onBeforeUnmount(() => {
   if (!platform.is.desktop){
-    console.log('Close connection !');
+    // console.log('Close connection !');
     closeConnection();
   }
 });
 onMounted(() => {
-  document.title = `Easy-Compta - ${route.meta.title}`;
+  document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
   
   if (!platform.is.desktop) {
     $q.loadingBar.setDefaults({
@@ -466,5 +444,28 @@ onMounted(() => {
       }
     }
 })
+
+// WATCHERS
+watch(
+  route,
+  async (newR) => {
+    if (!import.meta.env.SSR) {
+      // console.log(newR.meta.titleKey);
+      document.title = `Easy-Compta - ${t(newR.meta.titleKey)}`;
+    }
+    if (platform.is.desktop){
+      // console.log('Watcher connected !');
+      connected.value = userStore.getConnected;
+    }
+    else {
+      const userCookie = await prefs.getPref('user');
+      // console.log(userCookie);
+      connected.value = !!userCookie 
+        ? userCookie.connected
+        : false ;
+    }
+  }
+)
+
 // @
 </script>

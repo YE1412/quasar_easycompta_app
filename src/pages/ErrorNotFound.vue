@@ -23,8 +23,16 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 // VARIABLES
 const { t } = useI18n();
+const route = useRoute();
+
+// LIFECYCE EVENTS
+onMounted(() => {
+  document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
+});
 </script>

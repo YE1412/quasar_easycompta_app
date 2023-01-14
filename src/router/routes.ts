@@ -2,7 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { i18n } from 'app/src/boot/i18n';
 // import { upload } from 'app/src/middleware/index';
 
-console.log(i18n.global);
+// console.log(i18n.global);
 const t = i18n.global.t;
 
 const routes: RouteRecordRaw[] = [
@@ -16,8 +16,9 @@ const routes: RouteRecordRaw[] = [
         name: t('homeLinkName'),
         component: () => import('pages/IndexPage.vue'),
         meta: {
-          title: t('homeTitle'),
-          requiresAuth: true
+          // title: t('homeTitle'),
+          requiresAuth: true,
+          titleKey: 'homeTitle',
         }
       },
       { 
@@ -25,8 +26,9 @@ const routes: RouteRecordRaw[] = [
         name: t('homeBisLinkName'),
         component: () => import('pages/IndexPage.vue'),
         meta: {
-          title: t('homeTitle'),
-          requiresAuth: true
+          // title: t('homeTitle'),
+          requiresAuth: true,
+          titleKey: 'homeTitle',
         }
       },
       { 
@@ -34,8 +36,9 @@ const routes: RouteRecordRaw[] = [
         name: t('profileLinkName'),
         component: () => import('pages/ProfilePage.vue'),
         meta: {
-          title: t('profileTitle'),
-          requiresAuth: true
+          // title: t('profileTitle'),
+          requiresAuth: true,
+          titleKey: 'profileTitle',
         }
       },
       { 
@@ -43,8 +46,9 @@ const routes: RouteRecordRaw[] = [
         name: t('aboutLinkName'),
         component: () => import('pages/AboutPage.vue'),
         meta: {
-          title: t('aboutTitle'),
-          requiresAuth: true
+          // title: t('aboutTitle'),
+          requiresAuth: true,
+          titleKey: 'aboutTitle',
         }
       },
       { 
@@ -52,8 +56,9 @@ const routes: RouteRecordRaw[] = [
         name: t('startLinkName'),
         component: () => import('pages/StartPage.vue'),
         meta: {
-          title: t('startTitle'),
-          requiresAuth: false
+          // title: t('startTitle'),
+          requiresAuth: false,
+          titleKey: 'startTitle',
         }
       },
       { 
@@ -61,8 +66,9 @@ const routes: RouteRecordRaw[] = [
         name: t('serviceLinkName'),
         component: () => import('pages/ServicePage.vue'),
         meta: {
-          title: t('serviceTitle'),
-          requiresAuth: true
+          // title: t('serviceTitle'),
+          requiresAuth: true,
+          titleKey: 'serviceTitle',
         },
         props: {
           admin: true,
@@ -74,8 +80,9 @@ const routes: RouteRecordRaw[] = [
         name: t('actorLinkName'),
         component: () => import('pages/ActorPage.vue'),
         meta: {
-          title: t('actorTitle'),
-          requiresAuth: true
+          // title: t('actorTitle'),
+          requiresAuth: true,
+          titleKey: 'actorTitle',
         },
         props: {
           admin: true,
@@ -87,8 +94,9 @@ const routes: RouteRecordRaw[] = [
         name: t('orderLinkName'),
         component: () => import('pages/OrderPage.vue'),
         meta: {
-          title: t('orderTitle'),
-          requiresAuth: true
+          // title: t('orderTitle'),
+          requiresAuth: true,
+          titleKey: 'orderTitle',
         },
         props: {
           admin: true,
@@ -100,8 +108,9 @@ const routes: RouteRecordRaw[] = [
         name: t('paymentLinkName'),
         component: () => import('pages/PaymentPage.vue'),
         meta: {
-          title: t('paymentTitle'),
-          requiresAuth: true
+          // title: t('paymentTitle'),
+          requiresAuth: true,
+          titleKey: 'paymentTitle',
         },
         props: {
           admin: true,
@@ -113,8 +122,9 @@ const routes: RouteRecordRaw[] = [
         name: t('invoiceLinkName'),
         component: () => import('pages/InvoicePage.vue'),
         meta: {
-          title: t('invoiceTitle'),
-          requiresAuth: true
+          // title: t('invoiceTitle'),
+          requiresAuth: true,
+          titleKey: 'invoiceTitle',
         },
         props: {
           admin: true,
@@ -126,8 +136,9 @@ const routes: RouteRecordRaw[] = [
         name: t('exportLinkName'),
         component: () => import('pages/ExportPage.vue'),
         meta: {
-          title: t('exportTitle'),
+          // title: t('exportTitle'),
           requiresAuth: true,
+          titleKey: 'exportTitle',
         },
         children: [
           {
@@ -135,8 +146,9 @@ const routes: RouteRecordRaw[] = [
             name: t('pdfLinkName'),
             component: () => import('components/PdfComponent.vue'),
             meta: {
-              title: t('pdfTitle'),
+              // title: t('pdfTitle'),
               requiresAuth: true,
+              titleKey: 'pdfTitle',
             },
           },
         ],
@@ -146,8 +158,9 @@ const routes: RouteRecordRaw[] = [
         name: t('startLinkName'),
         component: () => import('pages/StartPage.vue'),
         meta: {
-          title: t('startTitle'),
+          // title: t('startTitle'),
           requiresAuth: false,
+          titleKey: 'startTitle',
         },
       },
       { 
@@ -155,8 +168,9 @@ const routes: RouteRecordRaw[] = [
         name: t('registerLinkName'),
         component: () => import('pages/RegisterPage.vue'),
         meta: {
-          title: t('registerTitle'),
+          // title: t('registerTitle'),
           requiresAuth: false,
+          titleKey: 'registerTitle',
         },
       },
     ],
@@ -188,6 +202,11 @@ const routes: RouteRecordRaw[] = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
     // name: 'Others'
+    meta: {
+      // title: t('notFoundTitle'),
+      requiresAuth: false,
+      titleKey: 'notFoundTitle',
+    },
   },
 ];
 

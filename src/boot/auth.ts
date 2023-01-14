@@ -13,43 +13,43 @@ import * as prefs from 'app/src/capacitor/storage/preferences';
 // const plateform = Capacitor.getPlatform();
 const t = i18n.global.t;
 // console.log(i18n.global.locale.value);
-const pathsObj = [
-  {
-    component: () => import('app/src/pages/StartPage.vue'),
-    auth: false,
-    target: 'startLinkTarget',
-    targetName: 'startLinkName',
-    title: 'startTitle',
-  },
-  {
-    component: () => import('app/src/pages/RegisterPage.vue'),
-    auth: false,
-    target: 'registerLinkTarget',
-    targetName: 'registerLinkName',
-    title: 'registerTitle',
-  },
-  {
-    component: () => import('app/src/pages/IndexPage.vue'),
-    auth: true,
-    target: 'homeLinkTarget',
-    targetName: 'homeLinkName',
-    title: 'homeTitle',
-  },
-  {
-    component: () => import('app/src/pages/IndexPage.vue'),
-    auth: true,
-    target: 'homeTerLinkTarget',
-    targetName: 'homeTerLinkName',
-    title: 'homeTitle',
-  },
-  {
-    component: () => import('app/src/pages/ProfilePage.vue'),
-    auth: true,
-    target: 'profileLinkTarget',
-    targetName: 'profileLinkName',
-    title: 'profileTitle',
-  },
-];
+// const pathsObj = [
+//   {
+//     component: () => import('app/src/pages/StartPage.vue'),
+//     auth: false,
+//     target: 'startLinkTarget',
+//     targetName: 'startLinkName',
+//     title: 'startTitle',
+//   },
+//   {
+//     component: () => import('app/src/pages/RegisterPage.vue'),
+//     auth: false,
+//     target: 'registerLinkTarget',
+//     targetName: 'registerLinkName',
+//     title: 'registerTitle',
+//   },
+//   {
+//     component: () => import('app/src/pages/IndexPage.vue'),
+//     auth: true,
+//     target: 'homeLinkTarget',
+//     targetName: 'homeLinkName',
+//     title: 'homeTitle',
+//   },
+//   {
+//     component: () => import('app/src/pages/IndexPage.vue'),
+//     auth: true,
+//     target: 'homeTerLinkTarget',
+//     targetName: 'homeTerLinkName',
+//     title: 'homeTitle',
+//   },
+//   {
+//     component: () => import('app/src/pages/ProfilePage.vue'),
+//     auth: true,
+//     target: 'profileLinkTarget',
+//     targetName: 'profileLinkName',
+//     title: 'profileTitle',
+//   },
+// ];
 
 // let router: any = null;
 
@@ -64,24 +64,24 @@ async function validateSession(sessionCookie: any, platform: any, sessionPref: a
       return false;
   }
 };
-function isRealPath(to: string) {
-  const ret = null;
-  // console.log(i18n.global.locale.value);
-  // console.log(`Obj path : `);
-  for (const obj of pathsObj) {
-    // console.log(t(obj.target));
-    if (to === t(obj.target)) {
-      const ret = {};
-      ret.path = t(obj.target);
-      ret.component = obj.component;
-      ret.name = t(obj.targetName);
-      ret.auth = obj.auth;
-      ret.title = t(obj.title);
-      return ret;
-    }
-  }
-  return ret;
-};
+// function isRealPath(to: string) {
+//   const ret = null;
+//   // console.log(i18n.global.locale.value);
+//   // console.log(`Obj path : `);
+//   for (const obj of pathsObj) {
+//     // console.log(t(obj.target));
+//     if (to === t(obj.target)) {
+//       const ret = {};
+//       ret.path = t(obj.target);
+//       ret.component = obj.component;
+//       ret.name = t(obj.targetName);
+//       ret.auth = obj.auth;
+//       ret.title = t(obj.title);
+//       return ret;
+//     }
+//   }
+//   return ret;
+// };
 function hasNecessaryRoute(to: any, router: any): boolean {
   let ret = false;
   // console.log('Routes ! --> ');
@@ -90,24 +90,24 @@ function hasNecessaryRoute(to: any, router: any): boolean {
   return ret;
 };
 
-function generateRoute(to: any, pathObj: any, router: any): void {
-  const comp = pathObj.component;
-  router.addRoute('Main', {
-    path: pathObj.path,
-    name: pathObj.name,
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: comp,
-    // component: () => import('app/src/pages/RegisterPage.vue'),
-    meta: {
-      title: pathObj.title,
-      // icon: icon,
-      requiresAuth: pathObj.auth,
-    },
-    children: pathObj.children,
-  });
-};
+// function generateRoute(to: any, pathObj: any, router: any): void {
+//   const comp = pathObj.component;
+//   router.addRoute('Main', {
+//     path: pathObj.path,
+//     name: pathObj.name,
+//     // route level code-splitting
+//     // this generates a separate chunk (About.[hash].js) for this route
+//     // which is lazy-loaded when the route is visited.
+//     component: comp,
+//     // component: () => import('app/src/pages/RegisterPage.vue'),
+//     meta: {
+//       title: pathObj.title,
+//       // icon: icon,
+//       requiresAuth: pathObj.auth,
+//     },
+//     children: pathObj.children,
+//   });
+// };
 
 async function routingForServer(store: Store, cookie: any, from: any, to: any, router: any, platform: any): string | null{
   let sessionCookie = null, 
@@ -125,10 +125,10 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
     : 'en-US';
-  const accessiblePath = isRealPath(to.fullPath);
+  // const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-  // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie, messageCookie);
+  // debugRoute(from, to, hasRoute, requireAuth, sessionCookie, userCookie, messageCookie);
   if (requireAuth && !!userCookie && !userCookie.connected) {
     // console.log(`Session Management: ${sessionStore.getSessionId}`);
     return await validateSession(sessionCookie, platform)
@@ -167,11 +167,11 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
         return t('startLinkTarget');
       });
   } 
-  else if (!hasRoute && accessiblePath !== null) {
-    // console.log('Generate route !');
-    generateRoute(to, accessiblePath, router);
-    return (to.fullPath);
-  }
+  // else if (!hasRoute && accessiblePath !== null) {
+  //   // console.log('Generate route !');
+  //   generateRoute(to, accessiblePath, router);
+  //   return (to.fullPath);
+  // }
   else if(hasRoute && to.fullPath !== '/') {
     // console.log('Has Route !== \'/\' so Go on !');
     if (to.fullPath === t('startLinkTarget')){
@@ -217,10 +217,10 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
     : 'en-US';
-  const accessiblePath = isRealPath(to.fullPath);
+  // const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-  // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie, messageCookie, store);
+  // debugRoute(from, to, hasRoute, requireAuth, sessionCookie, userCookie, messageCookie, store);
   if (requireAuth && !!userCookie && !userCookie.connected) {
     return await validateSession(sessionCookie, platform)
       .then(
@@ -265,11 +265,11 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
         return t('startLinkTarget');
       });
   } 
-  else if (!hasRoute && accessiblePath !== null) {
-    // console.log('Generate route !');
-    generateRoute(to, accessiblePath, router);
-    return to.fullPath;
-  }
+  // else if (!hasRoute && accessiblePath !== null) {
+  //   // console.log('Generate route !');
+  //   generateRoute(to, accessiblePath, router);
+  //   return to.fullPath;
+  // }
   else if(hasRoute && to.fullPath !== '/') {
     // console.log('Has Route !== \'/\' so Go on !');
     if (to.fullPath === t('startLinkTarget')){
@@ -298,7 +298,7 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
   else return null;
 };
 
-function debugRoute(from: any, to: any, hasRoute: boolean, accessiblePath: any, requireAuth: boolean, sessionCookie: any, userCookie: any, messageCookie: any, store: Store = null){
+function debugRoute(from: any, to: any, hasRoute: boolean, requireAuth: boolean, sessionCookie: any, userCookie: any, messageCookie: any, store: Store = null){
   // DATAS DEBUG
   console.log('/---------------------------------\\');
   console.log('/---------------------------------\\');
@@ -308,8 +308,8 @@ function debugRoute(from: any, to: any, hasRoute: boolean, accessiblePath: any, 
   console.log('to --> ');
   console.log(to);
   console.log(`has route ? --> ${hasRoute}`);
-  console.log('accessible ? --> ');
-  console.log(accessiblePath);
+  // console.log('accessible ? --> ');
+  // console.log(accessiblePath);
   console.log(`require Auth ? --> ${requireAuth}`);
   console.log(`current Local --> ${i18n.global.locale.value}`);
   console.log('/---------------------------------\\');
@@ -422,16 +422,16 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
       next(t('startLinkTarget'));
     }
   }
-  else if (!hasRoute && accessiblePath !== null) {
-    // console.log('Generating route');
-    generateRoute(to, accessiblePath, router);
-    // trigger a redirection
-    next(to.fullPath);
-  }
+  // else if (!hasRoute && accessiblePath !== null) {
+  //   // console.log('Generating route');
+  //   generateRoute(to, accessiblePath, router);
+  //   // trigger a redirection
+  //   next(to.fullPath);
+  // }
   else if (hasRoute && to.fullPath !== '/') {
     next();
   }
-  else if(userCookie === null) {
+  else if(userCookie === null && hasRoute) {
     // console.log('Null user cookie !');
     next(t('startLinkTarget'));
   }

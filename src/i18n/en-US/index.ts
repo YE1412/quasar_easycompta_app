@@ -4,7 +4,7 @@
 export default {
   failed: 'Action failed',
   success: 'Action was successful',
-  startTitle: 'Start',
+  startTitle: 'Sign In',
   startLinkName: 'Start',
   startLinkTarget: '/start',
   registerTitle: 'Sign up',
@@ -45,6 +45,7 @@ export default {
   pdfLinkName: 'PdfExport',
   pdfLinkTarget: '/pdf/:invoiceIds(\\d+)*',
   pdfPreLinkTarget: '/pdf/',
+  notFoundTitle: 'Page Not Found',
   drawer: {
     title: 'Links'
   },
