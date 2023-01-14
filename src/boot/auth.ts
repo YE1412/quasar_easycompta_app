@@ -19,30 +19,35 @@ const pathsObj = [
     auth: false,
     target: 'startLinkTarget',
     targetName: 'startLinkName',
+    title: 'startTitle',
   },
   {
     component: () => import('app/src/pages/RegisterPage.vue'),
     auth: false,
     target: 'registerLinkTarget',
     targetName: 'registerLinkName',
+    title: 'registerTitle',
   },
   {
     component: () => import('app/src/pages/IndexPage.vue'),
     auth: true,
     target: 'homeLinkTarget',
     targetName: 'homeLinkName',
+    title: 'homeTitle',
   },
   {
     component: () => import('app/src/pages/IndexPage.vue'),
     auth: true,
     target: 'homeTerLinkTarget',
     targetName: 'homeTerLinkName',
+    title: 'homeTitle',
   },
   {
     component: () => import('app/src/pages/ProfilePage.vue'),
     auth: true,
     target: 'profileLinkTarget',
     targetName: 'profileLinkName',
+    title: 'profileTitle',
   },
 ];
 
@@ -71,6 +76,7 @@ function isRealPath(to: string) {
       ret.component = obj.component;
       ret.name = t(obj.targetName);
       ret.auth = obj.auth;
+      ret.title = t(obj.title);
       return ret;
     }
   }
@@ -95,7 +101,7 @@ function generateRoute(to: any, pathObj: any, router: any): void {
     component: comp,
     // component: () => import('app/src/pages/RegisterPage.vue'),
     meta: {
-      title: pathObj.name,
+      title: pathObj.title,
       // icon: icon,
       requiresAuth: pathObj.auth,
     },
@@ -180,7 +186,8 @@ async function routingForServer(store: Store, cookie: any, from: any, to: any, r
   }
   else if(userCookie === null 
     || (!Object.keys(userCookie.user).length
-    && Object.getPrototypeOf(userCookie.user) === Object.prototype)) {
+    && Object.getPrototypeOf(userCookie.user) === Object.prototype)
+    && hasRoute) {
     // console.log('UserCookie corrupted Go to start !');
     if (userCookie === null){
       userCookie = {};
@@ -277,7 +284,8 @@ async function routingForClient(store: Store, cookie: any, from: any, to: any, r
   }
   else if(userCookie === null
     || (!Object.keys(userCookie.user).length
-    && Object.getPrototypeOf(userCookie.user) === Object.prototype)) {
+    && Object.getPrototypeOf(userCookie.user) === Object.prototype)
+    && hasRoute) {
     // console.log('UserCookie corrupted Go to start !');
     if (userCookie === null){
       userCookie = {};

@@ -7,7 +7,7 @@
         flat
         :icon="icon !== undefined ? icon : ''"
         :label="title" 
-        :to="link">
+        :to="{path: link}">
       </q-btn>
     </q-item>
     <q-item
@@ -20,7 +20,7 @@
               {{ item.header }}
             </q-item-label>
             <q-item clickable v-close-popup tabindex="0">
-              <router-link :to="item.link" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
+              <router-link :to="{path: item.link}" class="q-item q-item-type row no-wrap q-item--clickable q-link cursor-pointer q-focusable q-hoverable">
                 <q-item-section avatar>
                   <q-avatar :icon="item.avatar" color="secondary" text-color="white" font-size="25px"/>
                 </q-item-section>

@@ -77,7 +77,7 @@
                 <q-icon color="primary" name="mdi-home"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ t('homeLinkName') }}</q-item-label>
+                <q-item-label>{{ t('homeTitle') }}</q-item-label>
               </q-item-section>
             </router-link>
           </q-item>
@@ -90,7 +90,7 @@
                 <q-icon color="primary" name="mdi-card-account-details"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ t('profileLinkName') }}</q-item-label>
+                <q-item-label>{{ t('profileTitle') }}</q-item-label>
               </q-item-section>
             </router-link>
           </q-item>
@@ -103,7 +103,7 @@
                 <q-icon color="primary" name="mdi-information"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ t('aboutLinkName') }}</q-item-label>
+                <q-item-label>{{ t('aboutTitle') }}</q-item-label>
               </q-item-section>
             </router-link>
           </q-item>

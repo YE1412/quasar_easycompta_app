@@ -2,7 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { i18n } from 'app/src/boot/i18n';
 // import { upload } from 'app/src/middleware/index';
 
-// console.log(i18n.global.t);
+console.log(i18n.global);
 const t = i18n.global.t;
 
 const routes: RouteRecordRaw[] = [
