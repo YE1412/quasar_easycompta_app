@@ -22,7 +22,7 @@
             filled
             type="text"
             v-model="login"
-            :label="t('startComponent.inputLabels.login')"
+            :label="t('startComponent.inputLabels.login') + ' *'"
             :hint="t('startComponent.hints.login')"
             :hide-hint="true"
             :placeholder="t('startComponent.placeholders.login')"
