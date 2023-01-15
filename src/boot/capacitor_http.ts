@@ -39,7 +39,7 @@ const put = async (url: string, headers?: HttpHeaders = [], params?: HttpParams 
   return ret;
 };
 
-const deleteRequest = async (url: string, headers?: HttpHeaders = undefined, params?: any = undefined): HttpResponse => {
+const deleteRequest = async (url: string, headers?: HttpHeaders = [], params?: any = undefined): HttpResponse => {
   let ret: HttpResponse = null;
   const options: HttpOptions = {
     url: url,

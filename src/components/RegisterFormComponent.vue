@@ -208,18 +208,19 @@
 </template>
 
 <script setup lang="ts">
+/*eslint @typescript-eslint/no-explicit-any: off*/
 import { useQuasar } from 'quasar';
-import { ref, computed, watch, nextTick, getCurrentInstance } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import MessagesItem from './MessagesItem.vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useInvoiceStore } from 'stores/invoice';
 import userAxiosService from 'db/services/user.service';
-import uploadImageAxiosService from 'db/services/upload_image.service';
+// import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
-import getConnection, { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeConnection, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
-import { SQLiteDBConnection, capSQLiteResult, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
+import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { useRouter } from 'vue-router';
 
 interface RegisterCompProps {
@@ -229,7 +230,7 @@ const props = withDefaults(defineProps<RegisterCompProps>(), {
   dbConn: null
 });
 const $q = useQuasar();
-const userId = ref(0);
+// const userId = ref(0);
 const firstName = ref(null);
 const firstNameRef = ref(null);
 const lastName = ref(null);
@@ -260,13 +261,13 @@ const platform = $q.platform;
 const messageVisibility = ref(false);
 const renderComponent = ref(true);
 const { t } = useI18n();
-const progress = ref(0);
+// const progress = ref(0);
 const router = useRouter();
 const validFirstName = computed(() => {
   const re = /^(([a-zA-Z])([-])*){2,30}$/;
   const ret = re.test(firstName.value);
   if (!ret){
-    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    firstNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
 
   return ret;
@@ -274,7 +275,7 @@ const validFirstName = computed(() => {
 const nonEmptyFirstName = computed(() => {
   const ret = !!firstName.value && firstName.value !== '';
   if (!ret){
-    firstNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    firstNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -282,14 +283,14 @@ const validLastName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
   const ret = re.test(lastName.value);
   if (!ret){
-    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    lastNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyLastName = computed(() => {
   const ret = !!lastName.value && lastName.value !== '';
   if (!ret){
-    lastNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    lastNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -297,28 +298,28 @@ const validLogin = computed(() => {
   const re = /^(([a-zA-Z])([_])*){2,15}$/;
   const ret = re.test(firstName.value);
   if (!ret){
-    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    loginRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyLogin = computed(() => {
   const ret = !!login.value && login.value !== '';
   if (!ret){
-    loginRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    loginRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const validEmail = computed(() => {
   const ret = true;
   if (!ret){
-    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    emailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyEmail = computed(() => {
   const ret = !!email.value && email.value !== '';
   if (!ret){
-    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    emailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -326,14 +327,14 @@ const validPass = computed(() => {
   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\-_(\[\])@$!%*#?&{}])[A-Za-z\d\-_(\[\])@$!%*#?&{}]{8,30}$/;
   const ret = re.test(pass.value);
   if (!ret){
-    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    passRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyPass = computed(() => {
   const ret = !!pass.value && pass.value !== '';
   if (!ret){
-    passRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    passRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -341,14 +342,14 @@ const validCompanyName = computed(() => {
   const re = /^([a-zA-Z]){2,30}$/;
   const ret = re.test(companyName.value);
   if (!ret){
-    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    companyNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyCompanyName = computed(() => {
   const ret = !!companyName.value && companyName.value !== '';
   if (!ret){
-    companyNameRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    companyNameRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
@@ -362,35 +363,35 @@ const nonEmptyCompanyName = computed(() => {
 const nonEmptyDevise = computed(() => {
   const ret = !!devise.value && devise.value.value != 0;
   if (!ret){
-    deviseRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    deviseRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const nonEmptyUserType = computed(() => {
   const ret = !!userType.value && userType.value.value != 0;
   if (!ret){
-    userTypeRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    userTypeRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const validConfirmEmail = computed(() => {
   const ret = (confirmEmail.value === email.value);
   if (!ret){
-    confirmEmailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    confirmEmailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const validConfirmPass = computed(() => {
   const ret = (confirmPass.value === pass.value);
   if (!ret){
-    confirmPassRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    confirmPassRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 });
 const emailCheck = async () => {
   const ret = await checkEmail();
   if (!ret){
-    emailRef.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    emailRef.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
   }
   return ret;
 };
@@ -402,7 +403,7 @@ const validateForm = async () => {
 };
 
 let userStore = null, messageStore = null, invoiceStore = null, prefs = null, origin = null;
-let app = null, get = null, post = null;
+let userCapService = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
@@ -412,10 +413,11 @@ if (platform.is.desktop) {
   messageVisibility.value = messageStore.getMessagesVisibility;
 }
 else {
-  app = getCurrentInstance()
-  get = app.appContext.config.globalProperties.$get;
-  post = app.appContext.config.globalProperties.$get;
+  // app = getCurrentInstance()
+  // get = app.appContext.config.globalProperties.$get;
+  // post = app.appContext.config.globalProperties.$post;
   (async () => {
+    userCapService = await import('cap/service/cap.user.service');
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
     // console.log(mess);
@@ -433,7 +435,7 @@ else {
 if (!import.meta.env.SSR){
   const fullOrigin = window.location.origin;
   // console.log(import.meta.env);
-  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(":") + 1);
+  origin = fullOrigin.slice(0, fullOrigin.lastIndexOf(':') + 1);
   // console.log(origin);
   // console.log(process.env);
 }
@@ -473,36 +475,6 @@ async function submit() {
     // let ret = true;
     if (!!companyLogo.value){
       companyLogoUploader.value.upload();
-      // ret = await upload()
-      //   .then((res) => {
-      //     // console.log(res);
-      //     return true;
-      //   })
-      //   .catch(async (err) => {
-      //     if (platform.is.desktop) {
-      //       messageStore.messages.push({
-      //         severity: true,
-      //         content: t('profileComponent.results.ko.upload', {err: err})
-      //       });
-      //     }
-      //     else {
-      //       await prefs.setPref('messages', [
-      //         {
-      //           severity: true,
-      //           content: t('invoicesComponent.results.ko.upload', { err: err })
-      //         }
-      //       ]);
-      //     }
-      //     messageVisibility.value = true;
-      //     $q.notify({
-      //       color: 'red-5',
-      //       textColor: 'white',
-      //       icon: 'warning',
-      //       message: t('profileComponent.results.ko.upload', {err: err})
-      //     });
-      //     forceMessageItemsRerender();
-      //     return false;
-      //   });
     }
     // console.log(ret);
     else {
@@ -652,7 +624,7 @@ async function hydrateForm() {
     if (isOpen) {
       // const tables = await props.dbConn.getTableList();   
       // console.log(tables);@
-      let sql = `SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;`;
+      let sql = 'SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;';
       let values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length) {
@@ -690,7 +662,7 @@ async function hydrateForm() {
         messageVisibility.value = true;
       }
 
-      sql = `SELECT \`user_type\`.\`userTypeId\`, \`user_type\`.\`regular\`, \`user_type\`.\`admin\` FROM \`user_type\`;`;
+      sql = 'SELECT \`user_type\`.\`userTypeId\`, \`user_type\`.\`regular\`, \`user_type\`.\`admin\` FROM \`user_type\`;';
       values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length) {
@@ -812,7 +784,7 @@ async function addUserInDb() {
   };
   await transformObject(obj);
   return userAxiosService.create(obj)
-    .then((res) => {
+    .then(() => {
       messageStore.messages.push({
         severity: false,
         content: t('profileComponent.results.ok.add')
@@ -909,8 +881,8 @@ function onInvalidCompanyLogo(entries) {
   for (const k in entries){
     const filename = entries[k].file.name;
     const filesize = entries[k].file.size;
-    const ext = filename.lastIndexOf(".") !== -1 
-      ? filename.slice(filename.lastIndexOf(".")) 
+    const ext = filename.lastIndexOf('.') !== -1 
+      ? filename.slice(filename.lastIndexOf('.')) 
       : filename;
     if (entries[k].failedPropValidation === 'accept'){
       $q.notify({
@@ -930,14 +902,14 @@ function onInvalidCompanyLogo(entries) {
     }
   }
 };
-async function onFailedCompanyLogoUpload({files, xhr}) {
+async function onFailedCompanyLogoUpload({xhr}) {
   const res = JSON.parse(xhr.response);
   // console.log(res);
   $q.notify({
     color: 'red-5',
     textColor: 'white',
     icon: 'warning',
-    message: t('profileComponent.results.ko.upload', {err: `Request handling failed !`})
+    message: t('profileComponent.results.ko.upload', {err: 'Request handling failed !'})
   });
   if (platform.is.desktop){
     messageStore.messages.push({
@@ -959,9 +931,9 @@ async function onFailedCompanyLogoUpload({files, xhr}) {
   }
   messageVisibility.value = true;
   forceMessageItemsRerender();
-  companyLogoUploader.value.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  companyLogoUploader.value.$el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'});
 };
-async function onFileUploaded({files, xhr}){
+async function onFileUploaded({xhr}){
   const xhrRes = JSON.parse(xhr.response);
   let res = false;
   // console.log(res);
@@ -994,12 +966,12 @@ async function onFileUploaded({files, xhr}){
     forceMessageItemsRerender();
   }
 };
-function factoryFn(files) {
+function factoryFn() {
   return new Promise((resolve) => {
     // console.log(files);
     resolve({
       url: `${origin}${process.env.PORT_SSR}${process.env.PUBLIC_PATH}/api/users/upload`,
-      method: "POST",
+      method: 'POST',
     });
   });
 };
@@ -1014,7 +986,7 @@ function addedFile(files) {
   //   companyLogoURL.value = null;
   // }
 };
-function removedFile(files) {
+function removedFile() {
   companyLogoURL.value = null;
   companyLogo.value = null;
 };

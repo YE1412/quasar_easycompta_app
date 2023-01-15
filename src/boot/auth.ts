@@ -368,10 +368,10 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
     : 'en-US';
-  const accessiblePath = isRealPath(to.fullPath);
+  // const accessiblePath = isRealPath(to.fullPath);
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
-  // debugRoute(from, to, hasRoute, accessiblePath, requireAuth, sessionCookie, userCookie);
+  // debugRoute(from, to, hasRoute, requireAuth, sessionCookie, userCookie);
   if (requireAuth && !!userCookie && !userCookie.connected) {
     const sessionPref = await prefs.getPref('session');
     // console.log('Seesion Prefs');

@@ -450,43 +450,6 @@ async function submit() {
       // console.log(companyLogo.value);
       // ret = await uploadForMobile();
       companyLogoUploader.value.upload();
-      // if (platform.is.desktop){
-      //   ret = await upload()
-      //     .then((res) => {
-      //       // console.log(res);
-      //       return true;
-      //     })
-      //     .catch(async (err) => {
-      //       if (platform.is.desktop) {
-      //         messageStore.messages.push({
-      //           severity: true,
-      //           content: t('profileComponent.results.ko.upload', {err: err})
-      //         });
-      //       }
-      //       else {
-      //         await prefs.setPref('message', {
-      //           messages: [
-      //             {
-      //               severity: true,
-      //               content: t('invoicesComponent.results.ko.upload', { err: err })
-      //             }
-      //           ],
-      //           messageVisibility: true,
-      //         });
-      //       }
-      //       messageVisibility.value = true;
-      //       $q.notify({
-      //         color: 'red-5',
-      //         textColor: 'white',
-      //         icon: 'warning',
-      //         message: t('profileComponent.results.ko.upload', {err: err})
-      //       });
-      //       forceMessageItemsRerender();
-      //       return false;
-      //     });
-      // }
-      // else {
-      // }
     }
     // console.log(ret);
     else {

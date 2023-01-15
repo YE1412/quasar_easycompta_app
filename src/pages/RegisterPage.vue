@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+/*eslint @typescript-eslint/no-unused-vars: off*/
 import RegisterFormComponent from 'components/RegisterFormComponent.vue';
 
 // VARIABLES
