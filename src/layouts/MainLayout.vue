@@ -142,7 +142,7 @@
 
     <q-page-container>
       <Suspense>
-        <router-view @change-tab="tabChanges" :dbConn="db"/>
+        <router-view v-if="renderComponent" @change-tab="tabChanges" :dbConn="db"/>
       </Suspense>
     </q-page-container>
 
@@ -159,7 +159,7 @@
 </template> 
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, onMounted, watch, onBeforeUnmount, nextTick } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useUserStore } from 'stores/user';
 // import { useStore } from 'vuex';
@@ -177,6 +177,7 @@ import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // VARIABLES
 // const app = getCurrentInstance()
 // const axiosApi = app.appContext.config.globalProperties.$api
+const renderComponent = ref(true);
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
@@ -336,6 +337,7 @@ function changeLanguage(val: string) {
   } else {
 
   }
+  forceRerender();
 };
 
 async function logout(){
@@ -350,6 +352,12 @@ async function logout(){
     await prefs.removeAll();
   }
   router.push({path: t('startLinkTarget')});
+};
+
+async function forceRerender() {
+  renderComponent.value = false;
+  await nextTick();
+  renderComponent.value = true;
 };
 
 // LIFECYCLE EVENTS
