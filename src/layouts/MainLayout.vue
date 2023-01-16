@@ -142,7 +142,7 @@
 
     <q-page-container>
       <Suspense>
-        <router-view v-if="renderComponent" @change-tab="tabChanges" :dbConn="db"/>
+        <router-view @change-tab="tabChanges" :dbConn="db"/>
       </Suspense>
     </q-page-container>
 
@@ -177,13 +177,14 @@ import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // VARIABLES
 // const app = getCurrentInstance()
 // const axiosApi = app.appContext.config.globalProperties.$api
-const renderComponent = ref(true);
+// const renderComponent = ref(true);
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
 // console.log(route.path);
 // console.log(typeof route.path);
 const { t, locale } = useI18n({ useScope: 'global' });
+const emit = defineEmits(['language-rerender']);
 const displayedLanguage = ref({nom: 'en-US'});
 const classAssoc: ClassLangAssoc = {
   'en-US': {
@@ -196,7 +197,7 @@ const classAssoc: ClassLangAssoc = {
 const tab = ref(undefined);
 const platform = $q.platform;
 const languages = ref([]);
-const comptaLinks: ComptaLinkProps[] = [
+const links = [
   {
     title: t('comptaLinks.services.title'),
     icon: 'home_repair_service',
@@ -293,6 +294,7 @@ const comptaLinks: ComptaLinkProps[] = [
     link: t('comptaLinks.export.link'),
   },
 ];
+const comptaLinks: ComptaLinkProps[] = ref(links);
 const leftDrawerOpen = ref(false);
 const faviconSrc = 'icons/favicon-32x32.png';
 const connected = ref(false);
@@ -329,6 +331,8 @@ function toggleLeftDrawer() {
 function changeLanguage(val: string) {
   // console.log(`Language changing: ${val}`);
   locale.value = val;
+  console.log(links);
+  // comptaLinks.value = links;
   displayedLanguage.value = languages.value.find((lang) => {
     return lang.nom === locale.value;
   });
@@ -337,7 +341,8 @@ function changeLanguage(val: string) {
   } else {
 
   }
-  forceRerender();
+  emit('language-rerender');
+  // forceRerender();
 };
 
 async function logout(){
@@ -354,11 +359,11 @@ async function logout(){
   router.push({path: t('startLinkTarget')});
 };
 
-async function forceRerender() {
-  renderComponent.value = false;
-  await nextTick();
-  renderComponent.value = true;
-};
+// async function forceRerender() {
+//   renderComponent.value = false;
+//   await nextTick();
+//   renderComponent.value = true;
+// };
 
 // LIFECYCLE EVENTS
 // onBeforeMount(() => {
