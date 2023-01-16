@@ -159,7 +159,7 @@
 </template> 
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useUserStore } from 'stores/user';
 // import { useStore } from 'vuex';
@@ -331,7 +331,7 @@ function toggleLeftDrawer() {
 function changeLanguage(val: string) {
   // console.log(`Language changing: ${val}`);
   locale.value = val;
-  console.log(links);
+  // console.log(links);
   // comptaLinks.value = links;
   displayedLanguage.value = languages.value.find((lang) => {
     return lang.nom === locale.value;

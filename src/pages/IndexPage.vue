@@ -148,7 +148,7 @@ else {
     let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
     // console.log(sql);
     let values = await newQuery(props.dbConn, sql);
-    console.log(values);
+    // console.log(values);
     if (values.values.length){
       nbInvoices.value = values.values[0].n_inv;
     }
@@ -167,7 +167,7 @@ else {
 
     sql = 'SELECT COUNT(\`orderId\`) AS \`n_ord\` FROM \`commande\` AS \`commande\`;';
     values = await newQuery(props.dbConn, sql);
-    console.log(values);
+    // console.log(values);
     if (values.values.length){
       nbOrders.value = values.values[0].n_ord;
     }
@@ -186,7 +186,7 @@ else {
 
     sql = 'SELECT COUNT(\`actorId\`) AS \`n_act\` FROM \`personne\` AS \`personne\`;';
     values = await newQuery(props.dbConn, sql);
-    console.log(values);
+    // console.log(values);
     if (values.values.length){
       nbActors.value = values.values[0].n_act;
     }
@@ -205,7 +205,7 @@ else {
 
     sql = 'SELECT COUNT(\`serviceId\`) AS \`n_srv\` FROM \`produitservice\` AS \`produitservice\`;';
     values = await newQuery(props.dbConn, sql);
-    console.log(values);
+    // console.log(values);
     if (values.values.length){
       nbServices.value = values.values[0].n_srv;
     }

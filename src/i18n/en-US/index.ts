@@ -343,8 +343,8 @@ export default {
     hints: {
       etat: 'State field is mandatory !',
       paymentValue: 'Value can\'t be greater than the invoice price !',
-      paymentType: 'Type field is mandatory',
-      facture: 'Invoice filed is mandatory',
+      paymentType: 'Type field is mandatory !',
+      facture: 'Invoice field is mandatory !',
     },
     errors: {
       empty: {
@@ -373,7 +373,7 @@ export default {
         add: 'An error occured while adding payment: {err}',
         update: 'An error occured while updating payment: {err}',
         delete: 'An error occured while deleting payment: {err}',
-        fetch_invoices: 'An error occured wihle fetching invoices: {err}',
+        fetch_invoices: 'An error occured while fetching invoices: {err}',
         fetch_etats: 'An error occured while fetching states: {err}',
         fetch_types: 'An error occured while fetching types: {err}',
       },
@@ -574,10 +574,10 @@ export default {
         email: 'Bad email supplied !',
         confirmEmail: 'Bad email confirmation supplied !',
         emailBusy: 'Email already exists !',
-        emailMissmatch: 'Email and confirm missmatch !',
+        emailMissmatch: 'Email and confirmation missmatch !',
         pass: 'Bad password supplied !',
         confirmPass: 'Bad password confirmation supplied !',
-        passMissmatch: 'Password and confirml missmatch',
+        passMissmatch: 'Password and confirmation missmatch',
         companyName: 'Bad company name supplied !',
         companyLogo: {
           accept: 'Bad image supplied, waiting for (.svg) having ({ext}) !',
@@ -601,7 +601,7 @@ export default {
     },
     results: {
       ok: {
-        add: 'Profile added successfully !',
+        add: 'Profile created successfully !',
         update: 'Profile updated successfully !',
         delete: 'Profile deleted successfully !',
       },
@@ -619,16 +619,8 @@ export default {
   exportsComponent: {
     tableTitle: 'Export',
     results: {
-      // ok: {
-      //   add: 'Invoice added successfully !',
-      //   update: 'Invoice updated successfully !',
-      //   delete: 'Invoice deleted successfully !',
-      // },
       ko: {
-        // add: 'An error occured while adding invoice: {err}',
-        // update: 'An error occured while updating invoice: {err}',
-        // delete: 'An error occured while deleting invoice: {err}',
-        fetch_invoices: 'An error occured wihle fetching invoices: {err}',
+       fetch_invoices: 'An error occured wihle fetching invoices: {err}',
       },
     },
     libelles: {
