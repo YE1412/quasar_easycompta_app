@@ -1,18 +1,12 @@
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
 /*eslint @typescript-eslint/no-unused-vars: off*/
-// import { useUserStore } from 'app/src/stores/user';
-// import { useSessionStore } from 'app/src/stores/session';
+
 import sessionAxiosService from 'app/src/db/services/session.service';
-// import { useMessageStore } from 'app/src/stores/message';
 import { i18n } from 'app/src/boot/i18n';
-// import routes from './routes';
-// import { Capacitor } from '@capacitor/core';
 import { Platform, Cookies } from 'quasar';
 import * as prefs from 'app/src/capacitor/storage/preferences';
 
-// const plateform = Capacitor.getPlatform();
 const t = i18n.global.t;
-// console.log(i18n.global.locale.value);
 // const pathsObj = [
 //   {
 //     component: () => import('app/src/pages/StartPage.vue'),
@@ -51,13 +45,10 @@ const t = i18n.global.t;
 //   },
 // ];
 
-// let router: any = null;
-
 async function validateSession(sessionCookie: any, platform: any, sessionPref: any = null) {
   if (platform.is.desktop)
     return sessionAxiosService.validate(!!sessionCookie ? sessionCookie.sessionId : '');
   else {
-    // const session = await prefs.getPref('session');
     if ((!!sessionPref && !!sessionCookie) && (sessionPref.sessionId === sessionCookie.sessionId))
       return true;
     else
@@ -84,8 +75,6 @@ async function validateSession(sessionCookie: any, platform: any, sessionPref: a
 // };
 function hasNecessaryRoute(to: any, router: any): boolean {
   let ret = false;
-  // console.log('Routes ! --> ');
-  // console.log(router.getRoutes());
   ret = router.hasRoute(to.name);
   return ret;
 };

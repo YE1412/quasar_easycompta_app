@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent' />
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent' />
+  </q-no-ssr>
   <div class='q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold'>{{ t('profileComponent.titles.register') }}</div>
   <div class='q-pa-lg' style='width: 70%'>
     <q-form

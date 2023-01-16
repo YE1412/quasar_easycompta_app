@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent'></MessagesItem>
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent'></MessagesItem>
+  </q-no-ssr>
   <div style="width: 100%;">
     <table-item
       :tableTitle='t("servicesComponent.tableTitle")'
@@ -39,8 +41,8 @@
             :clearable="true"
             :placeholders="t('servicesComponent.placeholders.name')"
             :rules="[
-              val => nonEmptyNom || t('servicesComponent.errors.empty.quantity'),
-              val => validNom || t('servicesComponent.errors.error.quantity')
+              val => nonEmptyNom || t('servicesComponent.errors.empty.name'),
+              val => validNom || t('servicesComponent.errors.error.name')
             ]">
               <template v-slot:prepend v-if="platform.is.desktop">
                 <q-icon name="badge" />
@@ -208,7 +210,7 @@ const formSubmitButtonState = computed(() => {
     && validMontantHt.value && nonEmptyMontantHt.value);
 });
 const validNom = computed(() => {
-  const re = /^([a-zA-Z]){1,30}$/;
+  const re = /^(([\wàåâäéèëêçìîïœöòôùûü])(\s)*){1,30}$/i;
   return re.test(nom.value);
 });
 const nonEmptyNom = computed(() => {

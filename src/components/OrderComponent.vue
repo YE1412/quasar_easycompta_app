@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent' />
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent' />
+  </q-no-ssr>
   <div style='width: 100%'>
     <table-item
       :tableTitle='t("ordersComponent.tableTitle")'
@@ -227,7 +229,7 @@ const formState: Ref<FormState> = ({
 });
 const defaultRow: Ref<DefaultOrderRow[]> = ref([]);
 const validContenuAdditionnel = computed(() => {
-  const re = /^(([a-zA-Z0-9])([-\s])*){2,30}$/;
+  const re = /^(([\wàåâäéèëêçìîïœöòôùûü0-9])([-\s])*){2,30}$/i;
   return re.test(contenuAdditionnel.value);
 });
 const nonEmptyContenuAdditionnel = computed(() => {

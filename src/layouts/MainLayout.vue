@@ -27,7 +27,7 @@
         >
           <q-btn
             flat
-            :to="{name: connected ? t('homeTerLinkName') : t('startLinkName')}">
+            :to="{name: connected ? t('homeLinkName') : t('startLinkName')}">
             <q-item-section
               avatar
             >

@@ -1,7 +1,9 @@
 <template>
   <q-page padding class="column items-center justify-start">
     <!-- content -->
-    <MessagesItem v-if='messageVisibility && renderComponent' />
+    <q-no-ssr>
+      <MessagesItem v-if='messageVisibility && renderComponent' />
+    </q-no-ssr>
     <q-img
       :src="imgSrc"
       style="min-width: 100%; height: 750px;"
@@ -188,8 +190,9 @@ if (platform.is.desktop){
   userStore = useUserStore();
   sessionStore = useSessionStore();
   messageStore = useMessageStore();
-  if (messageStore.getMessages.length)
+  if (messageStore.getMessages.length){
     messageStore.setMessagesVisibility(true);
+  }
   messageVisibility.value = messageStore.getMessagesVisibility;
   imgSrc.value = 'dist/assets/imgs/slider-2.jpg';
 }

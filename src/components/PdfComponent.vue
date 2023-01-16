@@ -1,6 +1,6 @@
 <template>
-    <div></div>
-  </template>
+  <div></div>
+</template>
 
 <script setup lang='ts'>
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/

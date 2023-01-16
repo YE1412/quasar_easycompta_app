@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent' />
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent' />
+  </q-no-ssr>
   <div style="width: 100%">
     <div class='q-pa-md'>
       <q-table

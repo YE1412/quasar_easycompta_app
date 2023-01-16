@@ -1,6 +1,8 @@
 <template>
   <q-page class="column q-pa-lg">
-    <messages-item v-if="messageVisibility && renderComponent"></messages-item>
+    <q-no-ssr>
+      <messages-item v-if="messageVisibility && renderComponent"></messages-item>
+    </q-no-ssr>
     <div class="row text-center q-pt-xl">
       <div class="col">
         <q-icon size="lg" aria-hidden="false" name="mdi-receipt-text" color="primary">

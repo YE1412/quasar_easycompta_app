@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent'></MessagesItem>
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent'></MessagesItem>
+  </q-no-ssr>
   <div style="width: 100%;">
     <table-item
       :tableTitle='t("actorsComponent.tableTitle")'
@@ -129,7 +131,7 @@
             :hide-hint="true"
             :counter='false'
             :autogrow='false'
-            :maxlength='15'
+            :maxlength='50'
             :clearable='true'
             :placeholders='t("actorsComponent.placeholders.streetName")'
             :rules='[
@@ -175,7 +177,7 @@
             :hide-hint="true"
             :counter='false'
             :autogrow='false'
-            :maxlength='15'
+            :maxlength='50'
             :clearable='true'
             :placeholders='t("actorsComponent.placeholders.city")'
             :rules='[
@@ -456,7 +458,7 @@ const nonEmptyNumRue = computed(() => {
   return !!numRue.value && numRue.value != '';
 });
 const validNomRue = computed(() => {
-  const re = /^(([a-zA-Z])(\-)*){2,15}$/;
+  const re = /^(([a-zA-Z])([\-\s])*){2,50}$/;
   return re.test(nomRue.value);
 });
 const nonEmptyNomRue = computed(() => {
@@ -470,7 +472,7 @@ const nonEmptyCp = computed(() => {
   return !!cp.value && cp.value != '';
 });
 const validVille = computed(() => {
-  const re = /^(([a-zA-Z])(\-)*){2,15}$/;
+  const re = /^(([a-zA-Z])(\-)*){2,50}$/;
   return re.test(ville.value);
 });
 const nonEmptyVille = computed(() => {

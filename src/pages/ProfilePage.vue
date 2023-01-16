@@ -1,11 +1,5 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <!-- <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component> -->
     <profile-component
       :dbConn="dbConn"></profile-component>
   </q-page>

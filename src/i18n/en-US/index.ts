@@ -620,7 +620,7 @@ export default {
     tableTitle: 'Export',
     results: {
       ko: {
-       fetch_invoices: 'An error occured wihle fetching invoices: {err}',
+       fetch_invoices: 'An error occured while fetching invoices: {err}',
       },
     },
     libelles: {

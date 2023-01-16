@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent' />
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent' />
+  </q-no-ssr>
   <div style="width: 100%">
     <table-item
       :tableTitle='t("invoicesComponent.tableTitle")'
@@ -550,7 +552,8 @@ const nonEmptyDate = computed(() => {
 });
 const validDate = computed(() => {
   const dateRef = new Date(date.value);
-  return dateRef >= new Date();
+  const now = new Date();
+  return dateRef >= new Date(`${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()} 00:00:00`);
 });
 const nonEmptyInvoiceHTPrice = computed(() => {
   return (!!invoiceHTPrice.value && invoiceHTPrice.value != 0);
@@ -651,17 +654,17 @@ async function transformObject(obj: any) {
 };
 async function fetchDatasForForms() {
   if (platform.is.desktop) {
+    let obj = {};
+    selectLanguagesOption.value = [];
+    obj.value = 0;
+    obj.label = t('invoicesComponent.placeholders.language');
+    obj.cannotSelect = true;
+    obj.langueId = 0;
+    obj.libelle = null;
+    obj.nom = null;
+    selectLanguagesOption.value.push(obj);
     invoiceStore.getAllLanguages()
       .then((res) => {
-        let obj = {};
-        selectLanguagesOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.language');
-        obj.cannotSelect = true;
-        obj.langueId = 0;
-        obj.libelle = null;
-        obj.nom = null;
-        selectLanguagesOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].langueId;
@@ -689,17 +692,17 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       });
 
+      obj = {};
+      selectDevisesOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.devise');
+      obj.cannotSelect = true;
+      obj.deviseId = 0;
+      obj.libelle = null;
+      obj.symbole = null;
+      selectDevisesOption.value.push(obj);
       invoiceStore.getAllDevises()
       .then((res) => {
-        let obj = {};
-        selectDevisesOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.devise');
-        obj.cannotSelect = true;
-        obj.deviseId = 0;
-        obj.libelle = null;
-        obj.symbole = null;
-        selectDevisesOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].deviseId;
@@ -727,25 +730,25 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       });
 
+      obj = {};
+      allBuyers.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.buyer');
+      obj.cannotSelect = true;
+      obj.actorId = 0;
+      obj.cp = null;
+      obj.email = null;
+      obj.nom = null;
+      obj.prenom = null;
+      obj.nomRue = null;
+      obj.numRue = null;
+      obj.tel = null;
+      obj.actorTypeId = 0;
+      obj.ville = null;
+      obj.numCommercant = null;
+      allBuyers.value.push(obj);
       invoiceStore.getAllBuyers()
       .then((res) => {
-        let obj = {};
-        allBuyers.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.buyer');
-        obj.cannotSelect = true;
-        obj.actorId = 0;
-        obj.cp = null;
-        obj.email = null;
-        obj.nom = null;
-        obj.prenom = null;
-        obj.nomRue = null;
-        obj.numRue = null;
-        obj.tel = null;
-        obj.actorTypeId = 0;
-        obj.ville = null;
-        obj.numCommercant = null;
-        allBuyers.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].actorId;
@@ -781,25 +784,25 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       });
 
+      obj = {};
+      allSellers.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.seller');
+      obj.cannotSelect = true;
+      obj.actorId = 0;
+      obj.cp = null;
+      obj.email = null;
+      obj.nom = null;
+      obj.prenom = null;
+      obj.nomRue = null;
+      obj.numRue = null;
+      obj.tel = null;
+      obj.actorTypeId = 0;
+      obj.ville = null;
+      obj.numCommercant = null;
+      allSellers.value.push(obj);
       invoiceStore.getAllSellers()
       .then((res) => {
-        let obj = {};
-        allSellers.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.seller');
-        obj.cannotSelect = true;
-        obj.actorId = 0;
-        obj.cp = null;
-        obj.email = null;
-        obj.nom = null;
-        obj.prenom = null;
-        obj.nomRue = null;
-        obj.numRue = null;
-        obj.tel = null;
-        obj.actorTypeId = 0;
-        obj.ville = null;
-        obj.numCommercant = null;
-        allSellers.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].actorId;
@@ -835,18 +838,18 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       });
 
+      obj = {};
+      selectOrdersOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.commande');
+      obj.cannotSelect = true;
+      obj.orderId = 0;
+      obj.contenuAdditionnel = null;
+      obj.priceHt = 0;
+      obj.factureId = 0;
+      selectOrdersOption.value.push(obj);
       invoiceStore.getAllOrders()
       .then((res) => {
-        let obj = {};
-        selectOrdersOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.commande');
-        obj.cannotSelect = true;
-        obj.orderId = 0;
-        obj.contenuAdditionnel = null;
-        obj.priceHt = 0;
-        obj.factureId = 0;
-        selectOrdersOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].orderId;
@@ -875,19 +878,19 @@ async function fetchDatasForForms() {
         messageVisibility.value = true;
       });
 
+      obj = {};
+      selectPaymentsOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.payment');
+      obj.cannotSelect = true;
+      obj.paymentId = 0;
+      obj.etat = -1;
+      obj.paymentValue = 0;
+      obj.paymentType = 0;
+      obj.factureId = 0;
+      selectPaymentsOption.value.push(obj);
       invoiceStore.getAllPayments()
       .then((res) => {
-        let obj = {};
-        selectPaymentsOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.commande');
-        obj.cannotSelect = true;
-        obj.paymentId = 0;
-        obj.etat = -1;
-        obj.paymentValue = 0;
-        obj.paymentType = 0;
-        obj.factureId = 0;
-        selectPaymentsOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].paymentId;
@@ -900,6 +903,8 @@ async function fetchDatasForForms() {
           obj.factureId = res[k].factureId;
           selectPaymentsOption.value.push(obj);
         }
+      }, () => {
+        return;
       })
       .catch((err) => {
         messageStore.messages.push({
@@ -916,18 +921,18 @@ async function fetchDatasForForms() {
     if (isOpen) {
       let sql = 'SELECT \`langue\`.\`langueId\`, \`langue\`.\`libelle\`, \`langue\`.\`nom\` FROM \`langue\`;';
       let values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      let obj = {};
+      selectLanguagesOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.language');
+      obj.cannotSelect = true;
+      obj.langueId = 0;
+      obj.libelle = null;
+      obj.nom = null;
+      selectLanguagesOption.value.push(obj);
+      if (!!values && values.values.length) {
         // await setDecryptApi();
         const res = values.values;
-        let obj = {};
-        selectLanguagesOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.language');
-        obj.cannotSelect = true;
-        obj.langueId = 0;
-        obj.libelle = null;
-        obj.nom = null;
-        selectLanguagesOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].langueId;
@@ -954,18 +959,18 @@ async function fetchDatasForForms() {
 
       sql = 'SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;';
       values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      obj = {};
+      selectDevisesOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.devise');
+      obj.cannotSelect = true;
+      obj.deviseId = 0;
+      obj.libelle = null;
+      obj.symbole = null;
+      selectDevisesOption.value.push(obj);
+      if (!!values && values.values.length) {
         // await setDecryptApi();
         const res = values.values;
-        let obj = {};
-        selectDevisesOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.devise');
-        obj.cannotSelect = true;
-        obj.deviseId = 0;
-        obj.libelle = null;
-        obj.symbole = null;
-        selectDevisesOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].deviseId;
@@ -993,26 +998,26 @@ async function fetchDatasForForms() {
       sql = `SELECT \`personne\`.\`actorId\`, \`personne\`.\`cp\`, \`personne\`.\`email\`,
       \`personne\`.\`nom\`, \`personne\`.\`nomRue\`, \`personne\`.\`numRue\`, \`personne\`.\`numCommercant\`, \`personne\`.\`prenom\`, \`personne\`.\`tel\`, \`personne\`.\`ville\`, \`personne\`.\`actorTypeId\` FROM \`personne\` WHERE \`personne\`.\`actorTypeId\` IN (1, 3);`;
       values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      obj = {};
+      allBuyers.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.buyer');
+      obj.cannotSelect = true;
+      obj.actorId = 0;
+      obj.cp = null;
+      obj.email = null;
+      obj.nom = null;
+      obj.prenom = null;
+      obj.nomRue = null;
+      obj.numRue = null;
+      obj.tel = null;
+      obj.actorTypeId = 0;
+      obj.ville = null;
+      obj.numCommercant = null;
+      allBuyers.value.push(obj);
+      if (!!values && values.values.length) {
         await setDecryptApi();
         const res = await __TRANSFORMOBJ__(values.values);
-        let obj = {};
-        allBuyers.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.buyer');
-        obj.cannotSelect = true;
-        obj.actorId = 0;
-        obj.cp = null;
-        obj.email = null;
-        obj.nom = null;
-        obj.prenom = null;
-        obj.nomRue = null;
-        obj.numRue = null;
-        obj.tel = null;
-        obj.actorTypeId = 0;
-        obj.ville = null;
-        obj.numCommercant = null;
-        allBuyers.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].actorId;
@@ -1048,26 +1053,26 @@ async function fetchDatasForForms() {
       sql = `SELECT \`personne\`.\`actorId\`, \`personne\`.\`cp\`, \`personne\`.\`email\`,
       \`personne\`.\`nom\`, \`personne\`.\`nomRue\`, \`personne\`.\`numRue\`, \`personne\`.\`numCommercant\`, \`personne\`.\`prenom\`, \`personne\`.\`tel\`, \`personne\`.\`ville\`, \`personne\`.\`actorTypeId\` FROM \`personne\` WHERE \`personne\`.\`actorTypeId\` IN (1,2);`;
       values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      obj = {};
+      allSellers.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.seller');
+      obj.cannotSelect = true;
+      obj.actorId = 0;
+      obj.cp = null;
+      obj.email = null;
+      obj.nom = null;
+      obj.prenom = null;
+      obj.nomRue = null;
+      obj.numRue = null;
+      obj.tel = null;
+      obj.actorTypeId = 0;
+      obj.ville = null;
+      obj.numCommercant = null;
+      allSellers.value.push(obj);
+      if (!!values && values.values.length) {
         await setDecryptApi();
         const res = await __TRANSFORMOBJ__(values.values);
-        let obj = {};
-        allSellers.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.seller');
-        obj.cannotSelect = true;
-        obj.actorId = 0;
-        obj.cp = null;
-        obj.email = null;
-        obj.nom = null;
-        obj.prenom = null;
-        obj.nomRue = null;
-        obj.numRue = null;
-        obj.tel = null;
-        obj.actorTypeId = 0;
-        obj.ville = null;
-        obj.numCommercant = null;
-        allSellers.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].actorId;
@@ -1103,19 +1108,19 @@ async function fetchDatasForForms() {
       sql = `SELECT \`commande\`.\`orderId\`, \`commande\`.\`contenuAdditionnel\`, \`commande\`.\`priceHt\`,
       \`commande\`.\`factureId\` FROM \`commande\`;`;
       values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      obj = {};
+      selectOrdersOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.commande');
+      obj.cannotSelect = true;
+      obj.orderId = 0;
+      obj.contenuAdditionnel = null;
+      obj.priceHt = 0;
+      obj.factureId = 0;
+      selectOrdersOption.value.push(obj);
+      if (!!values && values.values.length) {
         await setDecryptApi();
         const res = await __TRANSFORMOBJ__(values.values);
-        let obj = {};
-        selectOrdersOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.commande');
-        obj.cannotSelect = true;
-        obj.orderId = 0;
-        obj.contenuAdditionnel = null;
-        obj.priceHt = 0;
-        obj.factureId = 0;
-        selectOrdersOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].orderId;
@@ -1144,20 +1149,20 @@ async function fetchDatasForForms() {
       sql = `SELECT \`payment\`.\`paymentId\`, \`payment\`.\`etat\`, \`payment\`.\`paymentValue\`,
       \`payment\`.\`paymentType\`, \`payment\`.\`factureId\` FROM \`payment\`;`;
       values = await newQuery(props.dbConn, sql);
-      if (values.values) {
+      obj = {};
+      selectPaymentsOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.payment');
+      obj.cannotSelect = true;
+      obj.paymentId = 0;
+      obj.etat = -1;
+      obj.paymentValue = 0;
+      obj.paymentType = 0;
+      obj.factureId = 0;
+      selectPaymentsOption.value.push(obj);
+      if (!!values && values.values.length) {
         await setDecryptApi();
         const res = await __TRANSFORMOBJ__(values.values);
-        let obj = {};
-        selectPaymentsOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.payment');
-        obj.cannotSelect = true;
-        obj.paymentId = 0;
-        obj.etat = -1;
-        obj.paymentValue = 0;
-        obj.paymentType = 0;
-        obj.factureId = 0;
-        selectPaymentsOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].paymentId;
@@ -1171,7 +1176,7 @@ async function fetchDatasForForms() {
           selectPaymentsOption.value.push(obj);
         }
       }
-      else {
+      else if(!!values === false) {
         await prefs.setPref('message', {
           messages: [
             {

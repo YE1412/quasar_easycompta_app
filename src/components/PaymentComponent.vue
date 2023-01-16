@@ -1,5 +1,7 @@
 <template>
-  <MessagesItem v-if='messageVisibility && renderComponent' />
+  <q-no-ssr>
+    <MessagesItem v-if='messageVisibility && renderComponent' />
+  </q-no-ssr>
   <div style='width: 100%'>
     <table-item
       :tableTitle='t("paymentsComponent.tableTitle")'
