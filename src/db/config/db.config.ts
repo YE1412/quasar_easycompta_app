@@ -9,7 +9,7 @@ dotenv.config({ path: destPath });
 
 // console.log(import.meta.env);
 // console.log(__dirname);
-console.log(process.env);
+// console.log(process.env);
 
 // if (import.meta.env.PROD){
 //   destPath = path.resolve(__dirname, '../envs/.env');
