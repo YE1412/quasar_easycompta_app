@@ -10,8 +10,8 @@
     "dev:and": "quasar dev -m capacitor -T android",
     "dev:ios": "quasar dev -m capacitor -T ios",
     "build:web": "quasar build -m ssr -d",
-    "build:and": "quasar build -m capacitor -T android -d",
-    "build:ios": "quasar build -m capacitor -T ios -d",
+    "build:and": "quasar build -m capacitor -T android -d --ide",
+    "build:ios": "quasar build -m capacitor -T ios -d --ide",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0"

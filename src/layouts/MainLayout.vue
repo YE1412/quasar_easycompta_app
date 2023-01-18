@@ -301,9 +301,9 @@ const links = [
 ];
 const comptaLinks: ComptaLinkProps[] = ref(links);
 const leftDrawerOpen = ref(false);
-const faviconSrc = import.meta.env.PROD 
-  ? 'dist/icons/favicon-32x32.png'
-  : 'icons/favicon-32x32.png';
+const faviconSrc = import.meta.env.PROD && platform.is.desktop
+  ? `dist/icons/${import.meta.env.PUB_ICON}`
+  : `icons/${import.meta.env.PUB_ICON}`;
 const connected = ref(false);
 
 let sessionStore = null, userStore = null, prefs = null;
