@@ -121,7 +121,7 @@
 
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { nextTick, ref, provide, computed, watch } from 'vue';
+import { nextTick, ref, provide, computed, watch, getCurrentInstance } from 'vue';
 // import { useOrderStore } from 'stores/order';
 import { useMessageStore } from 'stores/message';
 import { useServiceStore } from 'stores/service';
@@ -135,7 +135,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 // import { useRouter } from 'vue-router';
 import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
+import { setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
@@ -159,6 +159,8 @@ const props = withDefaults(defineProps<OrderProps>(), {
   display: false,
   dbConn: null,
 });
+const app = getCurrentInstance();
+const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 // const router = useRouter();
 const platform = $q.platform;
@@ -282,11 +284,11 @@ async function forceTableRerender() {
   renderComponent.value = true;
 };
 async function transformObject(obj: any) {
-  if (__KEY__ === null) {
-    await setGenApi();
-  }
+  // if (__KEY__ === null) {
+  //   await setGenApi();
+  // }
   await setCryptApi();
-  __FORMATOBJ__(obj);
+  __FORMATOBJ__(obj, key);
 };
 async function fetchDatasForForms() {
   if (platform.is.desktop) {

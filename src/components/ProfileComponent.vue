@@ -184,7 +184,7 @@
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
 import { useQuasar } from 'quasar';
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, getCurrentInstance } from 'vue';
 import MessagesItem from './MessagesItem.vue';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
@@ -193,7 +193,7 @@ import userAxiosService from 'db/services/user.service';
 // import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
 import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
+import { setCryptApi, __FORMATOBJ__ } from 'src/globals';
 // import { Http } from '@capacitor-community/http';
 // import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 // import * as dotenv from "dotenv";
@@ -206,6 +206,8 @@ interface ProfileProps {
 const props = withDefaults(defineProps<ProfileProps>(), {
   dbConn: null
 });
+const app = getCurrentInstance();
+const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 const userId = ref(0);
 const firstName = ref(null);
@@ -424,11 +426,11 @@ async function forceMessageItemsRerender() {
   renderComponent.value = true;
 };
 async function transformObject(obj: any) {
-  if (__KEY__ === null) {
-    await setGenApi();
-  }
+  // if (__KEY__ === null) {
+  //   await setGenApi();
+  // }
   await setCryptApi();
-  __FORMATOBJ__(obj);
+  __FORMATOBJ__(obj, key);
 };
 function reset() {
   firstName.value = null;

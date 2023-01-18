@@ -1,4 +1,4 @@
-import { http } from 'app/src/boot/axios_client';
+import { http } from 'app/src/db/services/index';
 
 class UploadFilesService {
   upload(file: any, onUploadProgress: any) {

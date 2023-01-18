@@ -1,17 +1,17 @@
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { genMod, cryptMod, decryptMod } from './modules/WasmModules';
+import { cryptMod, decryptMod } from './modules/WasmModules';
 
 const isServer = import.meta.env.SSR;
-const __SECRET__ = 'myLittleSecret';
+// const __SECRET__ = 'myLittleSecret';
 // if (!isServer){
 //   window.__KEY__ = null;
 // }
-const __FORMATOBJ__ = (obj: any): any => {
+const __FORMATOBJ__ = (obj: any, key: string): any => {
   // console.log(window.__KEY__);
   // if (!isServer){
     for (const k in obj) {
       if (typeof obj[k] === 'string' && obj[k] !== '' && k !== 'date' && k !== 'date_format') {
-        obj[k] = window.__CRYPTAPI__.crypt(obj[k], window.__KEY__);
+        obj[k] = window.__CRYPTAPI__.crypt(obj[k], key);
       }
     }
   // }
@@ -51,15 +51,15 @@ const __TRANSFORMOBJ__ = async (obj: any): any => {
   return ret;
 };
 
-async function setGenApi() {
-  const ret = await genMod;
-  if (!isServer) {
-    window.__GENKEYAPI__ = ret;
-    if (!!window.__KEY__ === false)
-      window.__KEY__ = window.__GENKEYAPI__.generate_key(__SECRET__);
-  }
-  return ret;
-};
+// async function setGenApi() {
+//   const ret = await genMod;
+//   if (!isServer) {
+//     window.__GENKEYAPI__ = ret;
+//     if (!!window.__KEY__ === false)
+//       window.__KEY__ = window.__GENKEYAPI__.generate_key(__SECRET__);
+//   }
+//   return ret;
+// };
 async function setCryptApi() {
   const ret = await cryptMod;
   // console.log(ret);
@@ -92,9 +92,9 @@ async function setDecryptApi() {
   //   global.__DECRYPTAPI__ = e;
   // });
 // }
-if (!isServer){
+// if (!isServer){
   // console.log(isServer);
-  setGenApi();
+  // setGenApi();
   // window.__KEY__ = null;
-}
-export { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ };
+// }
+export { setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ };

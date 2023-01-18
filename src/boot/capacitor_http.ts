@@ -10,7 +10,7 @@ const get = async (url: string, headers?: HttpHeaders = [], params?: HttpParams 
     data: data,
     headers: headers,
   };
-  console.log(options);
+  // console.log(options);
   ret = await Http.get(options);
   return ret;
 };

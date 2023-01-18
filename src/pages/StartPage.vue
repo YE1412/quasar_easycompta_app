@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, getCurrentInstance } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useSessionStore } from 'stores/session';
@@ -150,7 +150,7 @@ import { useI18n } from 'vue-i18n';
 import MessagesItem from 'components/MessagesItem.vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { setGenApi, setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
+import { setCryptApi, setDecryptApi, __FORMATOBJ__, __TRANSFORMOBJ__ } from 'src/globals';
 import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // import sessionAxiosService from 'db/services/session.service';
@@ -163,8 +163,8 @@ interface StartProps {
 const props = withDefaults(defineProps<StartProps>(), {
   dbConn: null,
 });
-// const app = getCurrentInstance();
-// const pinia = app.appContext.config.globalProperties.$pinia;
+const app = getCurrentInstance();
+const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 const platform = $q.platform;
 const login = ref(null);
@@ -231,12 +231,12 @@ async function forceMessageItemsRerender() {
 async function transformObject(obj: any) {
   // console.log('Generate Key !');
   // console.log(window.__KEY__);
-  if (!!window.__KEY__ === false) {
-    await setGenApi();
-  }
+  // if (!!window.__KEY__ === false) {
+  //   await setGenApi();
+  // }
   // console.log('Key --> '+window.__KEY__);
   await setCryptApi();
-  __FORMATOBJ__(obj);
+  __FORMATOBJ__(obj, key);
 };
 async function submit(){
   // console.log('login !');

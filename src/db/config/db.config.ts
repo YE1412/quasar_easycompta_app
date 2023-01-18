@@ -2,13 +2,21 @@ import * as dotenv from 'dotenv';
 import path from 'path';
 // import { fileURLToPath } from 'node:url';
 
-const __dirname = path.resolve(path.dirname('src/db/config/db.config'), '../../../');
+const __dirname = path.resolve(process.cwd());
+// let destPath = null;
 const destPath = path.join(__dirname, '/envs/.env');
 dotenv.config({ path: destPath });
 
+// console.log(import.meta.env);
 // console.log(__dirname);
+console.log(process.env);
+
+// if (import.meta.env.PROD){
+//   destPath = path.resolve(__dirname, '../envs/.env');
+//   dotenv.config({ path: destPath });
+// }
+
 // console.log(destPath);
-// console.log(process.env);
 
 const config = {
   HOST: process.env.DB_HOST,

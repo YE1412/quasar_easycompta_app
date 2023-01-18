@@ -11,6 +11,7 @@
  */
 import express from 'express';
 import compression from 'compression';
+// import path from 'path';
 // import cookieParser from 'cookie-parser';
 // import session from 'express-session';
 import {
@@ -22,6 +23,9 @@ import {
 } from 'quasar/wrappers';
 import db from 'app/src/db/models/index';
 // import * as dotenv from 'dotenv';
+
+// __dirname = process.cwd();
+// dotenv.config({ path: path.join(__dirname, "/envs/.env") });
 
 declare function initDB();
 

@@ -2,7 +2,7 @@ import { RenderError } from '@quasar/app-vite';
 import { ssrMiddleware } from 'quasar/wrappers';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
-import db from 'app/src/db/models/index';
+// import db from 'app/src/db/models/index';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import express from 'express';
@@ -15,6 +15,8 @@ export default ssrMiddleware(async ({ app, port, resolve, render, serve, folders
   // console.log(resolve.root('src'));
   // console.log(resolve.urlPath('assets'));
   // console.log(folders.root);
+  // console.log('App in ssrMiddleware ! (Express App)');
+  // console.log(app);
   app.use(resolve.urlPath('assets'), express.static(`${resolve.root('src')}/assets`))
   app.use(cors({
       origin: [`http://localhost:${port}`, `https://localhost:${port}`],

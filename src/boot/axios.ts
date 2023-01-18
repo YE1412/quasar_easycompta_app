@@ -20,6 +20,7 @@ export default boot(({ app }) => {
   // console.log(urlPath);
   // console.log(process.env);
   app.config.globalProperties.$axios = axios;
+  // app.provide('axios', app.config.globalProperties.$axios);
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
@@ -28,4 +29,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-// export { http };
+export { axios };

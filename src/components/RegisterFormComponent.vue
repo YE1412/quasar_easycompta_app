@@ -212,7 +212,7 @@
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: off*/
 import { useQuasar } from 'quasar';
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, getCurrentInstance } from 'vue';
 import MessagesItem from './MessagesItem.vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
@@ -221,7 +221,7 @@ import userAxiosService from 'db/services/user.service';
 // import uploadImageAxiosService from 'db/services/upload_image.service';
 import { useI18n } from 'vue-i18n';
 import { openDbConnection, isDbConnectionOpen, newRun, newQuery, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
+import { setCryptApi, __FORMATOBJ__ } from 'src/globals';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { useRouter } from 'vue-router';
 
@@ -231,6 +231,8 @@ interface RegisterCompProps {
 const props = withDefaults(defineProps<RegisterCompProps>(), {
   dbConn: null
 });
+const app = getCurrentInstance();
+const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 // const userId = ref(0);
 const firstName = ref(null);
@@ -450,11 +452,11 @@ async function forceMessageItemsRerender() {
   renderComponent.value = true;
 };
 async function transformObject(obj: any) {
-  if (__KEY__ === null) {
-    await setGenApi();
-  }
+  // if (__KEY__ === null) {
+  //   await setGenApi();
+  // }
   await setCryptApi();
-  __FORMATOBJ__(obj);
+  __FORMATOBJ__(obj, key);
 };
 function reset() {
   firstName.value = null;
@@ -539,17 +541,17 @@ async function hydrateForm() {
   // console.log(platform.is);
   if (platform.is.desktop){
     if (!import.meta.env.SSR){
+      let obj = {};
+      selectDevisesOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.devise');
+      obj.cannotSelect = true;
+      obj.deviseId = 0;
+      obj.symbole = null;
+      obj.libelle = null;
+      selectDevisesOption.value.push(obj);
       invoiceStore.getAllDevises()
         .then((res) => {
-          let obj = {};
-          selectDevisesOption.value = [];
-          obj.value = 0;
-          obj.label = t('invoicesComponent.placeholders.devise');
-          obj.cannotSelect = true;
-          obj.deviseId = 0;
-          obj.symbole = null;
-          obj.libelle = null;
-          selectDevisesOption.value.push(obj);
           for (const k in res) {
             obj = {};
             obj.value = res[k].deviseId;
@@ -577,17 +579,17 @@ async function hydrateForm() {
           messageStore.setMessagesVisibility(true);
         });
 
+      obj = {};
+      selectUserTypesOption.value = [];
+      obj.value = 0;
+      obj.label = t('profileComponent.placeholders.userType');
+      obj.cannotSelect = true;
+      obj.userTypeId = 0;
+      obj.regular = null;
+      obj.admin = null;
+      selectUserTypesOption.value.push(obj);
       userStore.getUserTypes()
           .then((res) => {
-            let obj = {};
-            selectUserTypesOption.value = [];
-            obj.value = 0;
-            obj.label = t('profileComponent.placeholders.userType');
-            obj.cannotSelect = true;
-            obj.userTypeId = 0;
-            obj.regular = null;
-            obj.admin = null;
-            selectUserTypesOption.value.push(obj);
             for (const k in res) {
               let label = res[k].regular && !res[k].admin ? t('profileComponent.libelles.types.regular') : '';
               label = res[k].admin && !res[k].regular ? t('profileComponent.libelles.types.admin') : label;
@@ -625,21 +627,21 @@ async function hydrateForm() {
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
       // const tables = await props.dbConn.getTableList();   
-      // console.log(tables);@
+      // console.log(tables);
+      let obj = {};
+      selectDevisesOption.value = [];
+      obj.value = 0;
+      obj.label = t('invoicesComponent.placeholders.devise');
+      obj.cannotSelect = true;
+      obj.deviseId = 0;
+      obj.symbole = null;
+      obj.libelle = null;
+      selectDevisesOption.value.push(obj);
       let sql = 'SELECT \`devise\`.\`deviseId\`, \`devise\`.\`symbole\`, \`devise\`.\`libelle\` FROM \`devise\`;';
       let values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length) {
         const res = values.values;
-        let obj = {};
-        selectDevisesOption.value = [];
-        obj.value = 0;
-        obj.label = t('invoicesComponent.placeholders.devise');
-        obj.cannotSelect = true;
-        obj.deviseId = 0;
-        obj.symbole = null;
-        obj.libelle = null;
-        selectDevisesOption.value.push(obj);
         for (const k in res) {
           obj = {};
           obj.value = res[k].deviseId;
@@ -664,20 +666,20 @@ async function hydrateForm() {
         messageVisibility.value = true;
       }
 
+      obj = {};
+      selectUserTypesOption.value = [];
+      obj.value = 0;
+      obj.label = t('profileComponent.placeholders.userType');
+      obj.cannotSelect = true;
+      obj.userTypeId = 0;
+      obj.regular = null;
+      obj.admin = null;
+      selectUserTypesOption.value.push(obj);
       sql = 'SELECT \`user_type\`.\`userTypeId\`, \`user_type\`.\`regular\`, \`user_type\`.\`admin\` FROM \`user_type\`;';
       values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length) {
         const res = values.values;
-        let obj = {};
-        selectUserTypesOption.value = [];
-        obj.value = 0;
-        obj.label = t('profileComponent.placeholders.userType');
-        obj.cannotSelect = true;
-        obj.userTypeId = 0;
-        obj.regular = null;
-        obj.admin = null;
-        selectUserTypesOption.value.push(obj);
         for (const k in res) {
           let label = res[k].regular && !res[k].admin ? t('profileComponent.libelles.types.regular') : '';
             label = res[k].admin && !res[k].regular ? t('profileComponent.libelles.types.admin') : label;

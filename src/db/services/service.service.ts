@@ -1,5 +1,5 @@
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { http } from 'app/src/boot/axios_client';
+import { http } from 'app/src/db/services/index';
 
 class ServiceDataService {
   getAll() {

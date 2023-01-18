@@ -175,8 +175,13 @@ import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // import { CapacitorHttp } from '@capacitor/core';
 
 // VARIABLES
-// const app = getCurrentInstance()
-// const axiosApi = app.appContext.config.globalProperties.$api
+// console.log(import.meta.env);
+// console.log(process.env);
+// const axios: AxiosInstance = inject('axios') as AxiosInstance
+// const app = getCurrentInstance();
+// const key = app.appContext.config.globalProperties.$key;
+// console.log(key);
+// console.log(window);
 // const renderComponent = ref(true);
 const $q = useQuasar();
 const route = useRoute();
@@ -296,7 +301,9 @@ const links = [
 ];
 const comptaLinks: ComptaLinkProps[] = ref(links);
 const leftDrawerOpen = ref(false);
-const faviconSrc = 'icons/favicon-32x32.png';
+const faviconSrc = import.meta.env.PROD 
+  ? 'dist/icons/favicon-32x32.png'
+  : 'icons/favicon-32x32.png';
 const connected = ref(false);
 
 let sessionStore = null, userStore = null, prefs = null;

@@ -4,6 +4,7 @@
 export default ({ store }) => {
   // store.use(piniaCapacitorPersist)
   // For Pinia
+  // console.log(window.__pinia);
   // console.log(window);
   store.state.value = window.__INITIAL_STATE__
   // For Vuex

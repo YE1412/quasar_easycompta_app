@@ -38,8 +38,12 @@ module.exports = configure(function (ctx) {
       'axios',
       {
         server: false, // run on client-side only!
-        path: 'axios_client' // references /src/boot/axios_client.ts
+        path: 'secret'
       },
+      // {
+      //   server: false, // run on client-side only!
+      //   path: 'axios_client' // references /src/boot/axios_client.ts
+      // },
       {
         server: false, // run on client-side only!
         path: 'hydrate_store' // references /src/boot/hydrate_store.ts
@@ -85,7 +89,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
-      // vueOptionsAPI: false,
+      vueOptionsAPI: false,
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
@@ -107,18 +111,31 @@ module.exports = configure(function (ctx) {
         if (ctx.mode.capacitor) {
           // do something with ViteConf
         }
+        viteConf.envDir = "envs";
+        viteConf.envPrefix = "PUB_";
       },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
-        ['@intlify/vite-plugin-vue-i18n', {
-          // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
-          // compositionOnly: false,
+        [
+          '@intlify/vite-plugin-vue-i18n', 
+          {
+            // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
+            // compositionOnly: false,
 
-          // you need to set i18n resource including paths !
-          include: path.resolve(__dirname, './src/i18n/**')
-        }]
-      ]
+            // you need to set i18n resource including paths !
+            include: path.resolve(__dirname, './src/i18n/**')
+          },
+        ],
+        [
+          'rollup-plugin-copy',
+          {
+            targets: [
+              { src: 'envs', dest: 'dist/ssr' }
+            ],
+          },
+        ],
+      ],
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
@@ -180,7 +197,7 @@ module.exports = configure(function (ctx) {
       // extendSSRWebserverConf (esbuildConf) {},
       // extendPackageJson (json) {},
 
-      pwa: true,
+      pwa: false,
 
       manualStoreHydration: true,
       // manualPostHydrationTrigger: true,

@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { nextTick, ref, provide, computed, watch } from 'vue';
+import { nextTick, ref, provide, computed, watch, getCurrentInstance } from 'vue';
 // import { useServiceStore } from 'stores/service';
 import { useMessageStore } from 'stores/message';
 import TableItem from './TableItem.vue';
@@ -125,10 +125,12 @@ import { useI18n } from 'vue-i18n';
 // import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { openDbConnection, isDbConnectionOpen, newRun, closeDbConnection } from 'cap/storage';
-import { setGenApi, setCryptApi, __FORMATOBJ__ } from 'src/globals';
+import { setCryptApi, __FORMATOBJ__ } from 'src/globals';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 // VARIABLES
+const app = getCurrentInstance();
+const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 // const router = useRouter();
 const platform = $q.platform;
@@ -465,11 +467,11 @@ async function deleteClickFromChild(e: Event, id: number){
   }
 };
 async function transformObject(obj: any): any {
-  if (__KEY__ === null){
-    await setGenApi();
-  }
+  // if (__KEY__ === null){
+  //   await setGenApi();
+  // }
   await setCryptApi();
-  __FORMATOBJ__(obj);
+  __FORMATOBJ__(obj, key);
 };
 async function insertServiceInSQLiteDb() {
   const obj = {

@@ -18,12 +18,14 @@ axios.defaults.withCredentials = true;
 // let port = 3000;
 // console.log(process.env);
 // port = process.env.MODE === 'ssr' ? port : (process.env.MODE === 'capacitor' ? 3200 : port);
-const url = process.env.APP_URL.slice(-1) === '/' 
-  ? `${process.env.APP_URL}api`
-  : `${process.env.APP_URL}/api`;
-const http = axios.create({ baseURL: `${url}`, withCredentials: true, });
 
 export default boot(({ app }) => {
+  // console.log(urlPath);
+  // console.log(publicPath);
+  // const url = process.env.APP_URL.slice(-1) === '/' 
+  //   ? `${process.env.APP_URL}api`
+  //   : `${process.env.APP_URL}/api`;
+  // const http = axios.create({ baseURL: `${url}`, withCredentials: true, });
   // for use inside Vue files (Options API) through this.$axios and this.$api
   // app.config.globalProperties.$axios = axios;
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
@@ -34,4 +36,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { http };
+// export { http };
