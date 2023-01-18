@@ -38,13 +38,13 @@ export default ssrMiddleware(async ({ app, port, resolve, render, serve, folders
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-  const userRouter = await import(`app/src/db/routes/user.route`);
-  const serviceRouter = await import(`app/src/db/routes/service.route`);
-  const sessionsRouter = await import(`app/src/db/routes/sessions.route`);
-  const actorRouter = await import(`app/src/db/routes/actor.route`);
-  const orderRouter = await import(`app/src/db/routes/order.route`);
-  const paymentRouter = await import(`app/src/db/routes/payment.route`);
-  const invoiceRouter = await import(`app/src/db/routes/invoice.route`);
+  const userRouter = await import('app/src/db/routes/user.route');
+  const serviceRouter = await import('app/src/db/routes/service.route');
+  const sessionsRouter = await import('app/src/db/routes/sessions.route');
+  const actorRouter = await import('app/src/db/routes/actor.route');
+  const orderRouter = await import('app/src/db/routes/order.route');
+  const paymentRouter = await import('app/src/db/routes/payment.route');
+  const invoiceRouter = await import('app/src/db/routes/invoice.route');
 
   app.use(`${resolve.urlPath('api')}/users`, userRouter.default(express));
   app.use(`${resolve.urlPath('api')}/services`, serviceRouter.default(express));

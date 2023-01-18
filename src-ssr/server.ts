@@ -142,9 +142,12 @@ function initDB() {
  *
  * Should NOT be async!
  */
-export const create = ssrCreate((/* { ... } */) => {
+export const create = ssrCreate(( { /* ... */ } ) => {
   const app = express();
   const opt = {};
+  // console.log(resolve);
+  // console.log(process.env);
+  // console.log(import.meta.env);
   if (process.env.PROD) {
     opt.logging = false;
   } else {
@@ -155,7 +158,8 @@ export const create = ssrCreate((/* { ... } */) => {
       await db.sequelize.query('SET  FOREIGN_KEY_CHECKS = 0', { raw: true })
       .then(async () => {
         await db.sequelize.sync(opt);
-        // initDB();
+        if (process.env.INIT === 'true')
+          initDB();
       });
     })
     .catch((err) => {
@@ -167,22 +171,41 @@ export const create = ssrCreate((/* { ... } */) => {
   app.disable('x-powered-by');
 
   // (async ()=>{
-  //   console.log('app middleware routing !');
-  //   const userRouter = await import('app/src/db/routes/user.route');
-  //   const serviceRouter = await import('app/src/db/routes/service.route');
-  //   const sessionsRouter = await import('app/src/db/routes/sessions.route');
-  //   const actorRouter = await import('app/src/db/routes/actor.route');
-  //   const orderRouter = await import('app/src/db/routes/order.route');
-  //   const paymentRouter = await import('app/src/db/routes/payment.route');
-  //   const invoiceRouter = await import('app/src/db/routes/invoice.route');
+    // console.log('app middleware routing !');
+    // const userRouter = await import('app/src/db/routes/user.route');
+    // const serviceRouter = await import('app/src/db/routes/service.route');
+    // const sessionsRouter = await import('app/src/db/routes/sessions.route');
+    // const actorRouter = await import('app/src/db/routes/actor.route');
+    // const orderRouter = await import('app/src/db/routes/order.route');
+    // const paymentRouter = await import('app/src/db/routes/payment.route');
+    // const invoiceRouter = await import('app/src/db/routes/invoice.route');
 
-  //   app.use('/api/users', userRouter.default);
-  //   app.use('/api/services', serviceRouter.default);
-  //   app.use('/api/sessions', sessionsRouter.default);
-  //   app.use('/api/actors', actorRouter.default);
-  //   app.use('/api/orders', orderRouter.default);
-  //   app.use('/api/payments', paymentRouter.default);
-  //   app.use('/api/invoices', invoiceRouter.default);
+    // app.use(`${resolve.urlPath('api')}/users`, userRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/services`, serviceRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/sessions`, sessionsRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/actors`, actorRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/orders`, orderRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/payments`, paymentRouter.default(express));
+    // app.use(`${resolve.urlPath('api')}/invoices`, invoiceRouter.default(express));
+    // app.get(`${resolve.urlPath('api')}/session`, (req, res) => {
+    //   // console.log('routing to session route !');
+    //   req.session.appSession = uuidv4();
+    //   res.send({ id: req.session.appSession });
+    // });
+    // app.post(`${resolve.urlPath('api')}/session`, (req, res) => {
+    //   // console.log(`Req Session ID : ${req.body.sessionID}`);
+    //   // console.log(`Cookie Session Id : ${req.cookies.session}`);
+    //   let sessionId = req.session.appSession ?? req.cookies.session;
+    //   sessionId = req.session.appSession ? req.session.appSession
+    //     : (req.cookies.session ? JSON.parse(req.cookies.session).sessionId : undefined);
+    //   // console.log(`Session ID : ${sessionId}`);
+    //   // if (sessionId === undefined)
+    //   //   console.log(req);
+    //   if (req.body.sessionID != sessionId) {
+    //     return res.status(500).send({ message: 'The data in the session does not match the request sessionID !'});
+    //   }
+    //   res.send({ message: 'Success !' });
+    // });
   // })();
   
   // place here any middlewares that
