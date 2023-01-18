@@ -186,6 +186,11 @@ else {
     counter.value = await prefs.getPref('counter');
   }
 
+  const lastDayNum = checkLeapYear(yearLabel.value + 1)
+    ? '29'
+    : '28';
+  // console.log(lastDayNum);
+
   datas.value = [
     await getNbInvoices(
       new Date(`${yearLabel.value}-06-01`),
@@ -221,7 +226,7 @@ else {
     ),
     await getNbInvoices(
       new Date(`${yearLabel.value + 1}-02-01`),
-      new Date(`${yearLabel.value + 1}-02-28`)
+      new Date(`${yearLabel.value + 1}-02-${lastDayNum}`)
     ),
     await getNbInvoices(
       new Date(`${yearLabel.value + 1}-03-01`),
@@ -770,6 +775,28 @@ function sanitizeQueryResult(obj: any) {
           ret[ind][l] = obj[k][l];
         }
       }
+    }
+  }
+  return ret;
+};
+function checkLeapYear(year: number){
+  let ret = false;
+  if (year >= 400){
+    if (!Number.isInteger(year / 4) 
+      && !Number.isInteger(year / 100)
+      && !Number.isInteger(year / 400)){
+      return ret;
+    }
+    else if (Number.isInteger(year / 4)){
+      if (Number.isInteger(year / 100)
+        && !Number.isInteger(year / 400)){
+        return ret;
+      }
+      else {
+        ret = true;
+      }
+    } else if(Number.isInteger(year / 400)) {
+      ret = true;
     }
   }
   return ret;
