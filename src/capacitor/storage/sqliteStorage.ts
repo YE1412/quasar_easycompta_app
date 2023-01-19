@@ -29,6 +29,10 @@ const importFromJSON = async (): any => {
 	console.log('importFromJSON Call !');
 	// console.log(dataToImport);
 	let ret = 0;
+	// console.log('Json val -->');
+	// console.log(JSON.stringify(dataToImport));
+	// console.log('end of val ---------');
+	// ret = await sqlite.importFromJson(JSON.stringify(dataToImport));
 	const res  = await sqlite.isJsonValid(JSON.stringify(dataToImport));
 	if (res.result){
 		ret = await sqlite.importFromJson(JSON.stringify(dataToImport));

@@ -1,10 +1,10 @@
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
 export const dataToImport: any = {
 	database: 'easy_compta',
-	version: 9,
+	version: 0,
 	encrypted: false,
-	overwrite: false, 
-	mode: 'partial',
+	overwrite: true, 
+	mode: 'full',
 	tables: [
 		{
 			name: 'commande',
@@ -16,14 +16,9 @@ export const dataToImport: any = {
 				{ foreignkey: 'factureId', value: 'REFERENCES facture(factureId) ON DELETE SET NULL ON UPDATE CASCADE' }
 			],
 			indexes: [
-				{ name: 'index_commande_orderId', value: 'orderId', mode: 'PRIMARY KEY' },
+				{ name: 'index_commande_orderId', value: 'orderId' },
 				{ name: 'index_commande_factureId', value: 'factureId' }
-			],
-			// 'triggers': [
-			// ],
-			// values: [
-			// 	[1]
-			// ]
+			]
 		},
 		{
 			name: 'produitservice',
@@ -34,7 +29,7 @@ export const dataToImport: any = {
 				{ column: 'quantite', value: 'INTEGER NOT NULL' }
 			],
 			indexes: [
-				{ name: 'index_produitservice_serviceId', value: 'serviceId', mode: 'PRIMARY KEY' }
+				{ name: 'index_produitservice_serviceId', value: 'serviceId' }
 			],
 		},
 		{
@@ -46,8 +41,7 @@ export const dataToImport: any = {
 				{ foreignkey: 'serviceId', value: 'REFERENCES produitservice(serviceId) ON DELETE CASCADE ON UPDATE CASCADE' }
 			],
 			indexes: [
-				{ name: 'index_contains_serviceId_orderId_unique', value: 'orderId, serviceId', mode: 'UNIQUE' },
-				{ name: 'index_contains_serviceId_orderId_primary', value: 'orderId, serviceId', mode: 'PRIMARY KEY' }
+				{ name: 'index_contains_serviceId_orderId_unique', value: 'orderId, serviceId', mode: 'UNIQUE' }
 			]
 		},
 		{
@@ -58,7 +52,7 @@ export const dataToImport: any = {
 				{ column: 'libelle', value: 'TEXT NOT NULL' }
 			],
 			indexes: [
-				{ name: 'index_devise_deviseId', value: 'deviseId', mode: 'PRIMARY KEY' }
+				{ name: 'index_devise_deviseId', value: 'deviseId' }
 			],
 			values: [
 				[1, '$', 'dollar'],
@@ -74,7 +68,7 @@ export const dataToImport: any = {
 				{ column: 'nom', value: 'TEXT DEFAULT NULL' }
 			],
 			indexes: [
-				{ name: 'index_langue_langueId', value: 'langueId', mode: 'PRIMARY KEY' }
+				{ name: 'index_langue_langueId', value: 'langueId' }
 			],
 			values: [
 				[1, 'English', 'en-US'],
@@ -98,7 +92,7 @@ export const dataToImport: any = {
 				{ foreignkey: 'actorTypeId', value: 'REFERENCES personne_type(actorTypeId) ON DELETE SET NULL ON UPDATE CASCADE' }
 			],
 			indexes: [
-				{ name: 'index_personne_actorId', value: 'actorId', mode: 'PRIMARY KEY' },
+				{ name: 'index_personne_actorId', value: 'actorId' },
 				{ name: 'index_personne_email_unique', value: 'email', mode: 'UNIQUE' },
 				{ name: 'index_personne_actorTypeId', value: 'actorTypeId' }
 			],
@@ -107,11 +101,11 @@ export const dataToImport: any = {
 			name: 'personne_type',
 			schema: [
 				{ column: 'actorTypeId', value: 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL' },
-				{ column: 'seller', value: 'INTEGER NOT NULL' },
-				{ column: 'buyer', value: 'INTEGER NOT NULL' },
+				{ column: 'seller', value: 'BOOLEAN DEFAULT 0 CHECK (seller IN (0, 1))' },
+				{ column: 'buyer', value: 'BOOLEAN DEFAULT 0 CHECK (buyer IN (0, 1))' },
 			],
 			indexes: [
-				{ name: 'index_personne_type_actorTypeId', value: 'actorTypeId', mode: 'PRIMARY KEY' },
+				{ name: 'index_personne_type_actorTypeId', value: 'actorTypeId' },
 				{ name: 'index_personne_type_constraint', value: 'seller, buyer', mode: 'UNIQUE' }
 			],
 			values: [
@@ -140,7 +134,7 @@ export const dataToImport: any = {
 				{ foreignkey: 'administratorId', value: 'REFERENCES user(userId) ON DELETE SET NULL ON UPDATE CASCADE' },
 			],
 			indexes: [
-				{ name: 'index_facture_facturId', value: 'factureId', mode: 'PRIMARY KEY' },
+				{ name: 'index_facture_facturId', value: 'factureId' },
 				{ name: 'index_facture_languageId', value: 'languageId' },
 				{ name: 'index_facture_deviseId', value: 'deviseId' },
 				{ name: 'index_facture_buyerId', value: 'buyerId' },
@@ -164,24 +158,16 @@ export const dataToImport: any = {
 				{ foreignkey: 'deviseId', value: 'REFERENCES devise(deviseId) ON UPDATE CASCADE' },
 				{ foreignkey: 'userTypeId', value: 'REFERENCES user_type(userTypeId) ON DELETE SET NULL ON UPDATE CASCADE' },
 			],
-			// indexes: [
-			// 	{ name: 'index_user_userId', value: 'userId', mode: 'PRIMARY KEY' },
-			// 	{ name: 'index_user_deviseId', value: 'deviseId' },
-			// 	{ name: 'index_user_userTypeId', value: 'userTypeId' },
-			// ],
-			// values: [
-			// 	[1, 'firstName', 'lastName', 'mad', 'mad@mad.fr', 'apass', 'ACompanyName', null, 3, 3]
-			// ],
 		},
 		{
 			name: 'user_type',
 			schema: [
 				{ column: 'userTypeId', value: 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL' },
-				{ column: 'regular', value: 'INTEGER NOT NULL' },
-				{ column: 'admin', value: 'INTEGER NOT NULL' },
+				{ column: 'regular', value: 'BOOLEAN DEFAULT 0 CHECK (regular IN (0, 1))' },
+				{ column: 'admin', value: 'BOOLEAN DEFAULT 0 CHECK (admin IN (0, 1))' },
 			],
 			indexes: [
-				{ name: 'index_userType_userTypeId', value: 'userTypeId', mode: 'PRIMARY KEY' },
+				{ name: 'index_userType_userTypeId', value: 'userTypeId' },
 				{ name: 'index_user_type_constraint', value: 'regular, admin', mode: 'UNIQUE' }
 			],
 			values: [
@@ -194,7 +180,7 @@ export const dataToImport: any = {
 			name: 'payment',
 			schema: [
 				{ column: 'paymentId', value: 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL' },
-				{ column: 'etat', value: 'INTEGER NOT NULL' },
+				{ column: 'etat', value: 'BOOLEAN DEFAULT 0 CHECK (etat IN (0, 1))' },
 				{ column: 'paymentValue', value: 'REAL NOT NULL' },
 				{ column: 'paymentType', value: 'INTEGER NOT NULL' },
 				{ column: 'factureId', value: 'INTEGER DEFAULT NULL' },
@@ -202,7 +188,7 @@ export const dataToImport: any = {
 				{ foreignkey: 'factureId', value: 'REFERENCES facture(factureId) ON DELETE CASCADE ON UPDATE CASCADE' }
 			],
 			indexes: [
-				{ name: 'index_payment_paymentId', value: 'paymentId', mode: 'PRIMARY KEY' },
+				{ name: 'index_payment_paymentId', value: 'paymentId' },
 				{ name: 'index_payment_paymentType', value: 'paymentType' },
 				{ name: 'index_payment_factureId', value: 'factureId' },
 			],
@@ -211,12 +197,12 @@ export const dataToImport: any = {
 			name: 'payment_type',
 			schema: [
 				{ column: 'paymentTypeId', value: 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL' },
-				{ column: 'cb', value: 'INTEGER NOT NULL' },
-				{ column: 'esp', value: 'INTEGER NOT NULL' },
-				{ column: 'chq', value: 'INTEGER NOT NULL' },
+				{ column: 'cb', value: 'BOOLEAN DEFAULT 0 CHECK (cb IN (0, 1))' },
+				{ column: 'esp', value: 'BOOLEAN DEFAULT 0 CHECK (esp IN (0, 1))' },
+				{ column: 'chq', value: 'BOOLEAN DEFAULT 0 CHECK (chq IN (0, 1))' },
 			],
 			indexes: [
-				{ name: 'index_payment_type_paymentTypeId', value: 'paymentTypeId', mode: 'PRIMARY KEY' },
+				{ name: 'index_payment_type_paymentTypeId', value: 'paymentTypeId' },
 				{ name: 'index_payment_type_cb_esp_chq', value: 'cb, esp, chq', mode: 'UNIQUE' },
 			],
 			values: [
@@ -234,7 +220,7 @@ export const dataToImport: any = {
 				{ column: 'livre', value: 'REAL NOT NULL' },
 			],
 			indexes: [
-				{ name: 'index_stock_prices_stockPricesId', value: 'stockPricesId', mode: 'PRIMARY KEY' },
+				{ name: 'index_stock_prices_stockPricesId', value: 'stockPricesId' },
 			],
 			values: [
 				[1, 1, 1.04, 0.86],

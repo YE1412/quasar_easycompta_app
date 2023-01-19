@@ -123,7 +123,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      v-if="connected"
+      v-if="connected && renderComponent"
     >
       <q-list>
         <q-item-label
@@ -142,7 +142,7 @@
 
     <q-page-container>
       <Suspense>
-        <router-view @change-tab="tabChanges" :dbConn="db"/>
+        <router-view @change-tab="tabChanges" :dbConn="db" v-if="renderComponent"/>
       </Suspense>
     </q-page-container>
 
@@ -159,7 +159,7 @@
 </template> 
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, onBeforeMount, onMounted, watch, onBeforeUnmount, nextTick } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useUserStore } from 'stores/user';
 // import { useStore } from 'vuex';
@@ -182,14 +182,15 @@ import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 // const key = app.appContext.config.globalProperties.$key;
 // console.log(key);
 // console.log(window);
-// const renderComponent = ref(true);
+const renderComponent = ref(true);
+// const viewRef = ref(null);
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
 // console.log(route.path);
 // console.log(typeof route.path);
 const { t, locale } = useI18n({ useScope: 'global' });
-const emit = defineEmits(['language-rerender']);
+// const emit = defineEmits(['language-rerender']);
 const displayedLanguage = ref({nom: 'en-US'});
 const classAssoc: ClassLangAssoc = {
   'en-US': {
@@ -202,104 +203,7 @@ const classAssoc: ClassLangAssoc = {
 const tab = ref(undefined);
 const platform = $q.platform;
 const languages = ref([]);
-const links = [
-  {
-    title: t('comptaLinks.services.title'),
-    icon: 'home_repair_service',
-    items: [{
-      header: t('comptaLinks.services.admin'),
-      avatar: 'edit_note',
-      label: t('comptaLinks.services.adminLabel'),
-      caption: '',
-      link: t('comptaLinks.services.adminLink'),
-    },
-    {
-      header: t('comptaLinks.services.display'),
-      avatar: 'list',
-      label: t('comptaLinks.services.displayLabel'),
-      caption: '',
-      link: t('comptaLinks.services.displayLink'),
-    }]
-  },
-  {
-    title: t('comptaLinks.actors.title'),
-    icon: 'person',
-    items: [{
-      header: t('comptaLinks.actors.admin'),
-      avatar: 'edit_note',
-      label: t('comptaLinks.actors.adminLabel'),
-      caption: '',
-      link: t('comptaLinks.actors.adminLink'),
-    },
-    {
-      header: t('comptaLinks.actors.display'),
-      avatar: 'list',
-      label: t('comptaLinks.actors.displayLabel'),
-      caption: '',
-      link: t('comptaLinks.actors.displayLink'),
-    }],
-  },
-  {
-    title: t('comptaLinks.orders.title'),
-    icon: 'shopping_cart',
-    items: [{
-      header: t('comptaLinks.orders.admin'),
-      avatar: 'edit_note',
-      label: t('comptaLinks.orders.adminLabel'),
-      caption: '',
-      link: t('comptaLinks.orders.adminLink'),
-    },
-    {
-      header: t('comptaLinks.orders.display'),
-      avatar: 'list',
-      label: t('comptaLinks.orders.displayLabel'),
-      caption: '',
-      link: t('comptaLinks.orders.displayLink'),
-    }],
-  },
-  {
-    title: t('comptaLinks.invoices.title'),
-    icon: 'list_alt',
-    items: [{
-      header: t('comptaLinks.invoices.admin'),
-      avatar: 'edit_note',
-      label: t('comptaLinks.invoices.adminLabel'),
-      caption: '',
-      link: t('comptaLinks.invoices.adminLink'),
-    },
-    {
-      header: t('comptaLinks.invoices.display'),
-      avatar: 'list',
-      label: t('comptaLinks.invoices.displayLabel'),
-      caption: '',
-      link: t('comptaLinks.invoices.displayLink'),
-    }],
-  },
-  {
-    title: t('comptaLinks.payments.title'),
-    icon: 'payments',
-    items: [{
-      header: t('comptaLinks.payments.admin'),
-      avatar: 'edit_note',
-      label: t('comptaLinks.payments.adminLabel'),
-      caption: '',
-      link: t('comptaLinks.payments.adminLink'),
-    },
-    {
-      header: t('comptaLinks.payments.display'),
-      avatar: 'list',
-      label: t('comptaLinks.payments.displayLabel'),
-      caption: '',
-      link: t('comptaLinks.payments.displayLink'),
-    }],
-  },
-  {
-    title: t('comptaLinks.export.title'),
-    icon: 'picture_as_pdf',
-    link: t('comptaLinks.export.link'),
-  },
-];
-const comptaLinks: ComptaLinkProps[] = ref(links);
+const comptaLinks: ComptaLinkProps[] = ref(getLinks());
 const leftDrawerOpen = ref(false);
 const faviconSrc = import.meta.env.PROD && platform.is.desktop
   ? `dist/icons/${import.meta.env.PUB_ICON}`
@@ -335,21 +239,24 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 };
 
-function changeLanguage(val: string) {
+async function changeLanguage(val: string) {
   // console.log(`Language changing: ${val}`);
   locale.value = val;
-  // console.log(links);
-  // comptaLinks.value = links;
+  // console.log(getLinks());
+  comptaLinks.value = getLinks();
   displayedLanguage.value = languages.value.find((lang) => {
     return lang.nom === locale.value;
   });
   if (platform.is.desktop) {
     sessionStore.setLangDisplayed(displayedLanguage.value);
   } else {
-
+    const session = await prefs.getPref('session');
+    session.langDisplayed = displayedLanguage.value;
+    await prefs.setPref('session', session);
+    // console.log('languageDisplayed setted in session !');
   }
-  emit('language-rerender');
-  // forceRerender();
+  // emit('language-rerender');
+  forceRerender();
 };
 
 async function logout(){
@@ -358,32 +265,135 @@ async function logout(){
     userStore.reset();
   }
   else {
-    await prefs.removePref('session');
-    await prefs.removePref('user');
-    await prefs.removePref('message');
-    await prefs.removeAll();
+    const session = await prefs.getPref('session');
+    session.sessionId = '';
+    await prefs.setPref('session', session);
+    const usr = await prefs.getPref('user');
+    usr.connected = false;
+    usr.user = {};
+    await prefs.setPref('user', usr);
+    const msg = await prefs.getPref('message');
+    msg.messages = [];
+    msg.messagesVisibility = false;
+    await prefs.setPref('message', msg);
+    // await prefs.removeAll();
   }
-  router.push({path: t('startLinkTarget')});
+  router.push({name: t('startLinkName')});
 };
 
-// async function forceRerender() {
-//   renderComponent.value = false;
-//   await nextTick();
-//   renderComponent.value = true;
-// };
+async function forceRerender() {
+  // console.log('Force rerender !');
+  renderComponent.value = false;
+  await nextTick();
+  renderComponent.value = true;
+};
+
+function getLinks(){
+  return [
+    {
+      title: t('comptaLinks.services.title'),
+      icon: 'home_repair_service',
+      items: [{
+        header: t('comptaLinks.services.admin'),
+        avatar: 'edit_note',
+        label: t('comptaLinks.services.adminLabel'),
+        caption: '',
+        link: t('comptaLinks.services.adminLink'),
+      },
+      {
+        header: t('comptaLinks.services.display'),
+        avatar: 'list',
+        label: t('comptaLinks.services.displayLabel'),
+        caption: '',
+        link: t('comptaLinks.services.displayLink'),
+      }]
+    },
+    {
+      title: t('comptaLinks.actors.title'),
+      icon: 'person',
+      items: [{
+        header: t('comptaLinks.actors.admin'),
+        avatar: 'edit_note',
+        label: t('comptaLinks.actors.adminLabel'),
+        caption: '',
+        link: t('comptaLinks.actors.adminLink'),
+      },
+      {
+        header: t('comptaLinks.actors.display'),
+        avatar: 'list',
+        label: t('comptaLinks.actors.displayLabel'),
+        caption: '',
+        link: t('comptaLinks.actors.displayLink'),
+      }],
+    },
+    {
+      title: t('comptaLinks.orders.title'),
+      icon: 'shopping_cart',
+      items: [{
+        header: t('comptaLinks.orders.admin'),
+        avatar: 'edit_note',
+        label: t('comptaLinks.orders.adminLabel'),
+        caption: '',
+        link: t('comptaLinks.orders.adminLink'),
+      },
+      {
+        header: t('comptaLinks.orders.display'),
+        avatar: 'list',
+        label: t('comptaLinks.orders.displayLabel'),
+        caption: '',
+        link: t('comptaLinks.orders.displayLink'),
+      }],
+    },
+    {
+      title: t('comptaLinks.invoices.title'),
+      icon: 'list_alt',
+      items: [{
+        header: t('comptaLinks.invoices.admin'),
+        avatar: 'edit_note',
+        label: t('comptaLinks.invoices.adminLabel'),
+        caption: '',
+        link: t('comptaLinks.invoices.adminLink'),
+      },
+      {
+        header: t('comptaLinks.invoices.display'),
+        avatar: 'list',
+        label: t('comptaLinks.invoices.displayLabel'),
+        caption: '',
+        link: t('comptaLinks.invoices.displayLink'),
+      }],
+    },
+    {
+      title: t('comptaLinks.payments.title'),
+      icon: 'payments',
+      items: [{
+        header: t('comptaLinks.payments.admin'),
+        avatar: 'edit_note',
+        label: t('comptaLinks.payments.adminLabel'),
+        caption: '',
+        link: t('comptaLinks.payments.adminLink'),
+      },
+      {
+        header: t('comptaLinks.payments.display'),
+        avatar: 'list',
+        label: t('comptaLinks.payments.displayLabel'),
+        caption: '',
+        link: t('comptaLinks.payments.displayLink'),
+      }],
+    },
+    {
+      title: t('comptaLinks.export.title'),
+      icon: 'picture_as_pdf',
+      link: t('comptaLinks.export.link'),
+    },
+  ];
+}
+
+// defineExpose({
+//   forceRerender
+// });
 
 // LIFECYCLE EVENTS
-// onBeforeMount(() => {
-// });
-onBeforeUnmount(() => {
-  if (!platform.is.desktop){
-    // console.log('Close connection !');
-    closeConnection();
-  }
-});
-onMounted(() => {
-  document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
-  
+onBeforeMount(() => {
   if (!platform.is.desktop) {
     $q.loadingBar.setDefaults({
       color: 'primary',
@@ -396,8 +406,6 @@ onMounted(() => {
       // console.log(`Cookie Session`);
       prefs = await import('cap/storage/preferences');
       const session = await prefs.getPref('session');
-      // console.log('')
-      // console.log(session);
       if (db.value === null)
         db.value = await getConnection(true);
       if (!!session && !!session.langDisplayed && !!session.languages) {
@@ -409,14 +417,11 @@ onMounted(() => {
         locale.value = currentLang;
       }
       else {
-        // db.value = await getConnection(true);
         let isOpen = await isDbConnectionOpen(db.value);
-        // console.log(isOpen);
         if (!isOpen){
           isOpen = await openDbConnection(db.value);
         }
         const values = await newQuery(db.value, 'SELECT * FROM langue');
-        // console.log(values);
         languages.value = values.values;
         closeDbConnection(db.value);
         const newSession = !!session ? session : {};
@@ -425,44 +430,117 @@ onMounted(() => {
           return lang.nom === locale.value;
         });
         newSession.langDisplayed = displayedLanguage.value;
-        // console.log('MainLayout newSession !');
-        // console.log(newSession);
         await prefs.setPref('session', newSession);
       }
+      // console.log(`Local value --> ${locale.value}`);
       $q.loadingBar.increment(1);
       Loading.hide();
       $q.loadingBar.stop();
-      // console.log(decodeURIComponent($q.cookies.getAll().session));
     })();
   }
   else {
-      // console.log('Before Mount !');
-      // console.log(sessionStore.getLangDisplayed);
-      // console.log(sessionStore.getLanguages.length);
-      // console.log(displayedLanguage.value);
-      if (sessionStore.getLangDisplayed !== null && sessionStore.getLanguages.length){
-        languages.value = sessionStore.getLanguages;
-        const currentLang = sessionStore.getLangDisplayed.nom;
-          displayedLanguage.value = sessionStore.getLanguages.find((lang) => {
-            return lang.nom === currentLang;
-          });
-        locale.value = currentLang;
-      }
-      else {
-        sessionStore.getLanguagesFromDB()
-        .then(() => {
-          languages.value = sessionStore.getLanguages;
-          const currentLang = locale.value;
-          displayedLanguage.value = languages.value.find((lang) => {
-            return lang.nom === currentLang;
-          });
-          sessionStore.setLangDisplayed(displayedLanguage.value);
-        })
-        .catch((err) => {
-          console.log(err);
+    if (sessionStore.getLangDisplayed !== null && sessionStore.getLanguages.length){
+      languages.value = sessionStore.getLanguages;
+      const currentLang = sessionStore.getLangDisplayed.nom;
+        displayedLanguage.value = sessionStore.getLanguages.find((lang) => {
+          return lang.nom === currentLang;
         });
-      }
+      locale.value = currentLang;
     }
+    else {
+      sessionStore.getLanguagesFromDB()
+      .then(() => {
+        languages.value = sessionStore.getLanguages;
+        const currentLang = locale.value;
+        displayedLanguage.value = languages.value.find((lang) => {
+          return lang.nom === currentLang;
+        });
+        sessionStore.setLangDisplayed(displayedLanguage.value);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+  }
+});
+onBeforeUnmount(() => {
+  if (!platform.is.desktop){
+    // console.log('Close connection !');
+    closeConnection();
+  }
+});
+onMounted(() => {
+  // console.log('On mounted !');
+  document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
+  
+  // if (!platform.is.desktop) {
+  //   $q.loadingBar.setDefaults({
+  //     color: 'primary',
+  //     size: '15px',
+  //     position: 'bottom',
+  //   });
+  //   Loading.show();
+  //   $q.loadingBar.start();
+  //   (async() => {
+  //     // console.log(`Cookie Session`);
+  //     prefs = await import('cap/storage/preferences');
+  //     const session = await prefs.getPref('session');
+  //     if (db.value === null)
+  //       db.value = await getConnection(true);
+  //     if (!!session && !!session.langDisplayed && !!session.languages) {
+  //       languages.value = session.languages;
+  //       const currentLang = session.langDisplayed.nom;
+  //       displayedLanguage.value = session.languages.find((lang) => {
+  //         return lang.nom === currentLang;
+  //       });
+  //       locale.value = currentLang;
+  //     }
+  //     else {
+  //       let isOpen = await isDbConnectionOpen(db.value);
+  //       if (!isOpen){
+  //         isOpen = await openDbConnection(db.value);
+  //       }
+  //       const values = await newQuery(db.value, 'SELECT * FROM langue');
+  //       languages.value = values.values;
+  //       closeDbConnection(db.value);
+  //       const newSession = !!session ? session : {};
+  //       newSession.languages = values.values;
+  //       displayedLanguage.value = newSession.languages.find((lang) => {
+  //         return lang.nom === locale.value;
+  //       });
+  //       newSession.langDisplayed = displayedLanguage.value;
+  //       await prefs.setPref('session', newSession);
+  //     }
+  //     // console.log(`Local value --> ${locale.value}`);
+  //     $q.loadingBar.increment(1);
+  //     Loading.hide();
+  //     $q.loadingBar.stop();
+  //   })();
+  // }
+  // else {
+  //     if (sessionStore.getLangDisplayed !== null && sessionStore.getLanguages.length){
+  //       languages.value = sessionStore.getLanguages;
+  //       const currentLang = sessionStore.getLangDisplayed.nom;
+  //         displayedLanguage.value = sessionStore.getLanguages.find((lang) => {
+  //           return lang.nom === currentLang;
+  //         });
+  //       locale.value = currentLang;
+  //     }
+  //     else {
+  //       sessionStore.getLanguagesFromDB()
+  //       .then(() => {
+  //         languages.value = sessionStore.getLanguages;
+  //         const currentLang = locale.value;
+  //         displayedLanguage.value = languages.value.find((lang) => {
+  //           return lang.nom === currentLang;
+  //         });
+  //         sessionStore.setLangDisplayed(displayedLanguage.value);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //     }
+  //   }
 })
 
 // WATCHERS

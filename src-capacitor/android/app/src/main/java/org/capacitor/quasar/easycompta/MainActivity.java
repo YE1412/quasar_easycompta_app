@@ -1,7 +1,8 @@
 package org.capacitor.quasar.easycompta;
 
+import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
-import com.getcapacitor.plugin.http.Http;
+// import com.getcapacitor.plugin.http.Http;
 
 public class MainActivity extends BridgeActivity {
 	@Override
@@ -9,12 +10,12 @@ public class MainActivity extends BridgeActivity {
 		super.onCreate(savedInstanceState);
 
 		// Initializes the Bridge
-		this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {
-			{
-			  // Additional plugins you've installed go here
-			  // Ex: add(TotallyAwesomePlugin.class);
-			  add(Http.class);
-			}
-		});
+		// this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {
+		// 	{
+		// 	  // Additional plugins you've installed go here
+		// 	  // Ex: add(TotallyAwesomePlugin.class);
+		// 	  add(Http.class);
+		// 	}
+		// });
 	}
 }

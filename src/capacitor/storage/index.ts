@@ -4,6 +4,8 @@ import { createSQLiteConnection,
   connectionsConsistency,
   createConnection,
   retrieveConnection,
+  polyfills,
+  createJeepSQLiteElem,
   // setDB,
   isConnection,
   openDB,
@@ -13,27 +15,17 @@ import { createSQLiteConnection,
   closeConnection,
   closeDBConnection } from './sqliteStorage';
 import { SQLiteDBConnection, capSQLiteChanges, DBSQLiteValues } from '@capacitor-community/sqlite';
+import { Platform } from 'quasar'
+
+// console.log(Platform);
 
 export default async(importJson = false): SQLiteDBConnection | null => {
   // console.log('running through capacitor !');
   createSQLiteConnection();
-  // if (platform == 'web'){
-  //   await polyfills();
-  //   await createJeepSQLiteElem();
-  //   const connectionOpenned = await isConnection();
-  //   console.log(connectionOpenned);
-  //   let db = null;
-  //   if (!connectionOpenned.result) {
-  //     db = await importFromJSON();
-  //     db = await createConnection();
-  //     console.log(db);
-  //   } else {
-  //     db = await retrieveConnection();
-  //     console.log(db);
-  //   }
-  //   const opennedDB = await openDB(db);
-  //   console.log(opennedDB);
-  // } else {
+  if (!!Platform.is.nativeMobile === false){
+    await polyfills();
+    await createJeepSQLiteElem();
+  }
   const consistency = await connectionsConsistency();
   // console.log(consistency);
   const connectionOpenned = await isConnection();
@@ -50,13 +42,6 @@ export default async(importJson = false): SQLiteDBConnection | null => {
   }
   // console.log('return db !');
   return db;
-  // const opennedDB = await openDB(db);
-  // console.log(opennedDB);
-  // const values = await query(db, 'SELECT * FROM langue');
-  // console.log(values);
-  // resolve();
-  // languages.value = values.values;
-  // }
 };
 
 export async function openDbConnection(db: SQLiteDBConnection): boolean {
