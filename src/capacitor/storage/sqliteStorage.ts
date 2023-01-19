@@ -53,7 +53,7 @@ const connectionsConsistency = async (): capSQLiteResult | null => {
 const createConnection = async (): SQLiteDBConnection | null => {
 	console.log('createConnection Call !');
 	const ret =  sqlite !== null
-		? await sqlite.createConnection('easy_compta', false, 'no-encryption', 9, false)
+		? await sqlite.createConnection('easy_compta', false, 'no-encryption', 1, false)
 		: null;
 	return ret;
 };
