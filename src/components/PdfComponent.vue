@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<PdfComponentProps>(), {
 });
 const $q = useQuasar();
 const platform = $q.platform;
-console.log(platform);
+// console.log(platform);
 const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
 const router = useRouter();
@@ -185,7 +185,7 @@ if (platform.is.desktop) {
     }
     await prefs.setPref('counter', newCounter, false);
     await prefs.setPref('invoice', newInvoices, false);
-    counter = ctr;
+    counter = newCounter;
     invoicesObj = newInvoices.invoices;
   }
   invoicesDetails.value = invoicesObj;
@@ -210,42 +210,6 @@ if (platform.is.desktop) {
 })();
 
 // FUNCTIONS
-function getConvertFunc() {
-  let ret = undefined;
-  if (platform.is.desktop){
-    switch (userStore.getUser.devise.libelle) {
-      case 'euro':
-        ret = fromEuroToOther;
-        break;
-      case 'dollar':
-        ret = fromDollarToOther;
-        break;
-      case 'livre':
-        ret = fromLivreToOther;
-        break;
-      default:
-        ret = fromEuroToOther;
-        break;
-    }
-  }
-  else {
-    switch (user.devise.libelle) {
-      case 'euro':
-        ret = fromEuroToOther;
-        break;
-      case 'dollar':
-        ret = fromDollarToOther;
-        break;
-      case 'livre':
-        ret = fromLivreToOther;
-        break;
-      default:
-        ret = fromEuroToOther;
-        break;
-    }
-  }
-  return ret;
-};
 function tableInvoicesOrdersLibelle(ind: number) {
   let ret = [],
     tvaValue = 0.0,
@@ -265,6 +229,7 @@ function tableInvoicesOrdersLibelle(ind: number) {
       destDevise.libelle,
       getConvertFunc()
     );
+    // totalHT = invoicesDetails.value[ind]['commandes'][m].priceHt;
     totalTT = totalHT + totalHT * tvaValue;
     totalTTLibelle = new Intl.NumberFormat(loc, {
       minimumFractionDigits: 2,
@@ -340,7 +305,7 @@ function tableInvoicesLangueLibelle(ind: number) {
 };
 function tableInvoicesPaymentsLibelle(ind: number) {
   let ret = '';
-  let destDevise = invoicesDetails.value[ind]['devise'];
+  // let destDevise = invoicesDetails.value[ind]['devise'];
   for (const m in invoicesDetails.value[ind]['payments']) {
     let libelle = '';
     let state = '',
@@ -353,11 +318,12 @@ function tableInvoicesPaymentsLibelle(ind: number) {
       invoicesDetails.value[ind]['payments'][m].etat === 1
         ? t('paymentsComponent.libelles.etats.paid')
         : '';
-    paymentVal = convertAmount(
-      invoicesDetails.value[ind]['payments'][m].paymentValue,
-      destDevise.libelle,
-      getConvertFunc()
-    );
+    // paymentVal = convertAmount(
+    //   invoicesDetails.value[ind]['payments'][m].paymentValue,
+    //   destDevise.libelle,
+    //   getConvertFunc()
+    // );
+    paymentVal = invoicesDetails.value[ind]['payments'][m].paymentValue;
     libelle = `${invoicesDetails.value[ind]['payments'][m].paymentId} - ${state} - ${paymentVal}`;
     ret +=
       m != invoicesDetails.value[ind]['payments'].length - 1
@@ -374,17 +340,18 @@ function tableInvoicesVATLibelle(ind: number) {
     tvaMontant = 0.0,
     tvaBaseLibelle = '',
     tvaMontantLibelle = '',
-    destDevise = invoicesDetails.value[ind]['devise'],
+    // destDevise = invoicesDetails.value[ind]['devise'],
     invTTPrice = 0.0;
   let loc =
     invoicesDetails.value[ind]['langue'].nom;
   // loc =
   //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
-  invTTPrice = convertAmount(
-    invoicesDetails.value[ind].invoiceTTPrice,
-    destDevise.libelle,
-    getConvertFunc()
-  );
+  // invTTPrice = convertAmount(
+  //   invoicesDetails.value[ind].invoiceTTPrice,
+  //   destDevise.libelle,
+  //   getConvertFunc()
+  // );
+  invTTPrice = invoicesDetails.value[ind].invoiceTTPrice;
   tvaValue = invoicesDetails.value[ind]['tvaValue'] * 100;
   tvaValueLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
@@ -422,17 +389,18 @@ function tableInvoicesTTPriceLibelle(ind: number) {
   let ret = '';
   let ttPriceLibelle = '',
     ttPrice = 0.0,
-    destDevise = invoicesDetails.value[ind]['devise'],
+    // destDevise = invoicesDetails.value[ind]['devise'],
     invTTPrice = 0.0;
   let loc =
     invoicesDetails.value[ind]['langue'].nom;
   // loc =
   //   invoicesDetails.value[ind]['langue'].nom === 'us' ? 'en-US' : loc;
-  invTTPrice = convertAmount(
-    invoicesDetails.value[ind].invoiceTTPrice,
-    destDevise.libelle,
-    getConvertFunc()
-  );
+  // invTTPrice = convertAmount(
+  //   invoicesDetails.value[ind].invoiceTTPrice,
+  //   destDevise.libelle,
+  //   getConvertFunc()
+  // );
+  invTTPrice = invoicesDetails.value[ind].invoiceTTPrice;
   ttPrice = invTTPrice;
   ttPriceLibelle = new Intl.NumberFormat(loc, {
     minimumFractionDigits: 2,
@@ -1198,6 +1166,42 @@ function insertInvoiceFoot(inv: any, yPos: number): number {
   ret += orderHeaderTableHeight;
   return ret;
 };
+function getConvertFunc() {
+  let ret = undefined;
+  if (platform.is.desktop){
+    switch (userStore.getUser.devise.libelle) {
+      case 'euro':
+        ret = fromEuroToOther;
+        break;
+      case 'dollar':
+        ret = fromDollarToOther;
+        break;
+      case 'livre':
+        ret = fromLivreToOther;
+        break;
+      default:
+        ret = fromEuroToOther;
+        break;
+    }
+  }
+  else {
+    switch (user.devise.libelle) {
+      case 'euro':
+        ret = fromEuroToOther;
+        break;
+      case 'dollar':
+        ret = fromDollarToOther;
+        break;
+      case 'livre':
+        ret = fromLivreToOther;
+        break;
+      default:
+        ret = fromEuroToOther;
+        break;
+    }
+  }
+  return ret;
+};
 function convertAmount(val: number, dest: string, func: any) {
   return func(val, dest);
 };
@@ -1916,6 +1920,58 @@ function sanitizeQueryResult(obj: any) {
   }
   return ret;
 };
+async function writeBlobFileForMobile(dest: string, data: Blob){
+  let ret = null;
+  // console.log(platform);
+  const options = {
+    path: `${dest}`,
+    directory: Directory.Documents,
+    blob: data,
+    recursive: false,
+    fast_mode: false,
+    on_fallback: (err) => {
+      console.log(err);
+    }
+  };
+  if (platform.is.android){
+    options.path = `Easy_Compta_Outputs/${dest}`;
+    options.directory = Directory.ExternalStorage;
+    options.recursive = true;
+  }
+
+  ret = await write_blob(options);
+  return ret;
+};
+function getMimeType(name: string): string{
+  let ret: string = null;
+  if (name.indexOf('pdf')){
+    ret = 'application/pdf';
+  }
+  else if(name.indexOf('png')){
+    ret = 'image/png';
+  }
+  else if(name.indexOf('jpg') || name.indexOf('jpeg')){
+    ret = 'image/jpeg';
+  }
+  else if(name.indexOf('mp4')){
+    ret = 'video/mp4';
+  }
+  else if(name.indexOf('mp3')){
+    ret = 'audio/mp3';
+  }
+
+  return ret;
+};
+async function openFile(uriPath: string, mimeType: string){
+  const options: FileOpenerOptions = {
+    filePath: uriPath,
+    contentType: mimeType,
+    openWithDefault: false,
+  };
+
+  await FileOpener.open(options);
+};
+
 // async function downloadForMobile(dest: string, path: string = '', data?: any = undefined): HttpDownloadFileResult {
 //   let res: HttpDownloadFileResult = null;
 //   let options: HttpDownloadFileOptions = null; 
@@ -1951,28 +2007,6 @@ function sanitizeQueryResult(obj: any) {
 //   ret = await Filesystem.writeFile(options);
 //   return ret;
 // };
-async function writeBlobFileForMobile(dest: string, data: Blob){
-  let ret = null;
-  // console.log(platform);
-  const options = {
-    path: `${dest}`,
-    directory: Directory.Documents,
-    blob: data,
-    recursive: false,
-    fast_mode: false,
-    on_fallback: (err) => {
-      console.log(err);
-    }
-  };
-  if (platform.is.android){
-    options.path = `Easy_Compta_Outputs/${dest}`;
-    options.directory = Directory.ExternalStorage;
-    options.recursive = true;
-  }
-
-  ret = await write_blob(options);
-  return ret;
-};
 // async function getFileUri(path: string): GetUriResult{
 //   let ret: GetUriResult = null;
 //   const options: GetUriOptions = {
@@ -1983,35 +2017,6 @@ async function writeBlobFileForMobile(dest: string, data: Blob){
 //   ret = await Filesystem.getUri(options);
 //   return ret;
 // };
-function getMimeType(name: string): string{
-  let ret: string = null;
-  if (name.indexOf('pdf')){
-    ret = 'application/pdf';
-  }
-  else if(name.indexOf('png')){
-    ret = 'image/png';
-  }
-  else if(name.indexOf('jpg') || name.indexOf('jpeg')){
-    ret = 'image/jpeg';
-  }
-  else if(name.indexOf('mp4')){
-    ret = 'video/mp4';
-  }
-  else if(name.indexOf('mp3')){
-    ret = 'audio/mp3';
-  }
-
-  return ret;
-};
-async function openFile(uriPath: string, mimeType: string){
-  const options: FileOpenerOptions = {
-    filePath: uriPath,
-    contentType: mimeType,
-    openWithDefault: false,
-  };
-
-  await FileOpener.open(options);
-};
 
 // WATCHERS
 // watch(

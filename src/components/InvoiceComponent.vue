@@ -330,6 +330,7 @@ import { nextTick, ref, provide, computed, watch, getCurrentInstance } from 'vue
 import { useMessageStore } from 'stores/message';
 import { useUserStore } from 'stores/user';
 import { useInvoiceStore } from 'stores/invoice';
+import { useCounterStore } from 'stores/counter';
 import TableItem from './TableItem.vue';
 import MessagesItem from './MessagesItem.vue';
 import invoiceAxiosService from 'db/services/invoice.service';
@@ -474,11 +475,15 @@ const messageVisibility = ref(false);
 const invoiceId = ref(0);
 const date = ref(null);
 const invoiceHTPrice = computed(() => {
-  let ret = 0;
+  let ret = 0,
+    int = 0;
   if (commandes.value !== null){
     for (const k in commandes.value) {
-      ret += commandes.value[k].priceHt;
+      int += commandes.value[k].priceHt;
     }
+  }
+  if (int && (!!devise.value && devise.value.value != 0)) {
+    ret = convertAmount(int, devise.value.libelle, getConvertFunc());
   }
   return ret;
 });
@@ -490,11 +495,15 @@ const invoiceTTPrice = computed(() => {
   }
 });
 const maxValue = computed(() => {
-  let ret = 0;
+  let ret = 0,
+    int = 0;
   if (commandes.value !== null){
     for (const k in commandes.value) {
-      ret += commandes.value[k].priceHt;
+      int += commandes.value[k].priceHt;
     }
+  }
+  if (int && (!!devise.value && devise.value.value != 0)) {
+    ret = convertAmount(int, devise.value.libelle, getConvertFunc());
   }
   return ret;
 });
@@ -601,13 +610,20 @@ const formSubmitButtonState = computed(() => {
   return ret1 || ret2;
 });
 
-let messageStore = null, invoiceStore = null, prefs = null, userStore = null;
+let messageStore = null, 
+  invoiceStore = null, 
+  prefs = null, 
+  userStore = null,
+  counterStore = null,
+  counter = null, 
+  user = null;
 
 // DECLARATIONS
 if (platform.is.desktop) {
   messageStore = useMessageStore();
   invoiceStore = useInvoiceStore();
   userStore = useUserStore();
+  counterStore = useCounterStore();
   userId.value = userStore.getUser.userId;
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
@@ -615,6 +631,9 @@ if (platform.is.desktop) {
     prefs = await import('cap/storage/preferences');
     const usr = await prefs.getPref('user');
     const mess = await prefs.getPref('message');
+    const count = await prefs.getPref('counter');
+    counter = !!count ? count : counter;
+    user = !!usr ? usr.user : user;
     // console.log(mess);
     userId.value = !!usr ? usr.user.userId : 0;
     const messages = !!mess ? mess.messages : [];
@@ -656,6 +675,7 @@ async function transformObject(obj: any) {
 };
 async function fetchDatasForForms() {
   if (platform.is.desktop) {
+    await counterStore.getAllPrices();
     let obj = {};
     selectLanguagesOption.value = [];
     obj.value = 0;
@@ -918,11 +938,27 @@ async function fetchDatasForForms() {
       });
   }
   else {
+    let newCounter = null;
     let isOpen = await isDbConnectionOpen(props.dbConn);
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
-      let sql = 'SELECT \`langue\`.\`langueId\`, \`langue\`.\`libelle\`, \`langue\`.\`nom\` FROM \`langue\`;';
+      let sql = 'SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;';
+      // console.log(sql);
       let values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (!!values && values.values.length) {
+        newCounter = !!counter ? counter : {};
+        newCounter.prices = values.values;
+      }
+      else {
+        newCounter = !!counter ? counter : {};
+        newCounter.prices = [];
+      }
+      await prefs.setPref('counter', newCounter, false);
+      counter = newCounter;
+
+      sql = 'SELECT \`langue\`.\`langueId\`, \`langue\`.\`libelle\`, \`langue\`.\`nom\` FROM \`langue\`;';
+      values = await newQuery(props.dbConn, sql);
       let obj = {};
       selectLanguagesOption.value = [];
       obj.value = 0;
@@ -1829,6 +1865,116 @@ async function deleteInvoiceFromSQLiteDb() {
   });
   messageVisibility.value = true;
   return false;
+};
+function getConvertFunc() {
+  let ret = undefined;
+  if (platform.is.desktop){
+    switch (userStore.getUser.devise.libelle) {
+      case 'euro':
+        ret = fromEuroToOther;
+        break;
+      case 'dollar':
+        ret = fromDollarToOther;
+        break;
+      case 'livre':
+        ret = fromLivreToOther;
+        break;
+      default:
+        ret = fromEuroToOther;
+        break;
+    }
+  }
+  else {
+    switch (user.devise.libelle) {
+      case 'euro':
+        ret = fromEuroToOther;
+        break;
+      case 'dollar':
+        ret = fromDollarToOther;
+        break;
+      case 'livre':
+        ret = fromLivreToOther;
+        break;
+      default:
+        ret = fromEuroToOther;
+        break;
+    }
+  }
+  return ret;
+};
+function convertAmount(val: number, dest: string, func: any) {
+  return func(val, dest);
+};
+function fromEuroToOther(val: number, dest: string): number {
+  let ret = val;
+  let stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getEuroPrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.euro === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'dollar':
+      ret *= produit !== null ? produit.dollar : 1;
+      break;
+    case 'livre':
+      ret *= produit !== null ? produit.livre : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
+};
+function fromDollarToOther(val: number, dest: string): number {
+  let ret = val, stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getDollarPrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.dollar === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'euro':
+      ret *= produit !== null ? produit.euro : 1;
+      break;
+    case 'livre':
+      ret *= produit !== null ? produit.livre : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
+};
+function fromLivreToOther(val: number, dest: string): number {
+  let ret = val;
+  let stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getLivrePrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.livre === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'dollar':
+      ret *= produit !== null ? produit.dollar : 1;
+      break;
+    case 'euro':
+      ret *= produit !== null ? produit.euro : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
 };
 
 // WATCHERS
