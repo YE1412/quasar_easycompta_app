@@ -22,7 +22,6 @@
     "@capacitor-community/sqlite": "^4.5.0",
     "@capacitor/core": "^4.6.1",
     "@capacitor/filesystem": "^4.1.4",
-    "@capacitor/keyboard": "^4.1.0",
     "@capacitor/preferences": "^4.0.2",
     "@quasar/extras": "^1.15.8",
     "@vueuse/core": "^9.6.0",

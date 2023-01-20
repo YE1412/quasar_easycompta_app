@@ -85,7 +85,7 @@
             :hide-hint="true"
             :counter='false'
             :autogrow='false'
-            :maxlength='15'
+            :maxlength='50'
             :clearable='true'
             :placeholders='t("actorsComponent.placeholders.email")'
             :rules='[

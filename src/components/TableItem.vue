@@ -307,7 +307,7 @@ async function hydrateObjContentFromStore() {
   }
 };
 async function hydrateObjContentFromSQLite() {
-  console.log('hydrate from SQLite !');
+  // console.log('hydrate from SQLite !');
   let isOpen = await isDbConnectionOpen(props.dbConn);
   isOpen = !isOpen ? await openDbConnection(props.dbConn) : isOpen;
   let res = [];
@@ -345,6 +345,7 @@ async function hydrateObjContentFromSQLite() {
       // console.log(res);
       res = values.values;
     } else if(src === 'invoices'){
+      prefs = await import('cap/storage/preferences');
       const usr = await prefs.getPref('user');
       sql = 'SELECT `facture`.`factureId`, `facture`.`date`, `facture`.`invoiceHTPrice`, `facture`.`invoiceTTPrice`, `facture`.`tvaValue`, `langue`.`langueId` AS `langue.langueId`, `langue`.`libelle` AS `langue.libelle`, `langue`.`nom` AS `langue.nom`, `devise`.`deviseId` AS `devise.deviseId`, `devise`.`symbole` AS `devise.symbole`, `devise`.`libelle` AS `devise.libelle`, `buyer`.`actorId` AS `buyer.actorId`, `buyer`.`cp` AS `buyer.cp`, `buyer`.`email` AS `buyer.email`, `buyer`.`nom` AS `buyer.nom`, `buyer`.`nomRue` AS `buyer.nomRue`, `buyer`.`numCommercant` AS `buyer.numCommercant`, `buyer`.`numRue` AS `buyer.numRue`, `buyer`.`prenom` AS `buyer.prenom`, `buyer`.`tel` AS `buyer.tel`, `buyer`.`actorTypeId` AS `buyer.actorTypeId`, `buyer`.`ville` AS `buyer.ville`, `seller`.`actorId` AS `seller.actorId`, `seller`.`cp` AS `seller.cp`, `seller`.`email` AS `seller.email`, `seller`.`nom` AS `seller.nom`, `seller`.`nomRue` AS `seller.nomRue`, `seller`.`numCommercant` AS `seller.numCommercant`, `seller`.`numRue` AS `seller.numRue`, `seller`.`prenom` AS `seller.prenom`, `seller`.`tel` AS `seller.tel`, `seller`.`actorTypeId` AS `seller.actorTypeId`, `seller`.`ville` AS `seller.ville`, `commandes`.`orderId` AS `commandes.orderId`, `commandes`.`contenuAdditionnel` AS `commandes.contenuAdditionnel`, `commandes`.`priceHt` AS `commandes.priceHt`, `commandes`.`factureId` AS `commandes.factureId`, `payments`.`paymentId` AS `payments.paymentId`, `payments`.`etat` AS `payments.etat`, `payments`.`paymentValue` AS `payments.paymentValue`, `payments`.`paymentType` AS `payments.paymentType`, `payments`.`factureId` AS `payments.factureId` FROM `facture` AS `facture` LEFT OUTER JOIN `langue` AS `langue` ON `facture`.`languageId` = `langue`.`langueId` LEFT OUTER JOIN `devise` AS `devise` ON `facture`.`deviseId` = `devise`.`deviseId` LEFT OUTER JOIN `personne` AS `buyer` ON `facture`.`buyerId` = `buyer`.`actorId` LEFT OUTER JOIN `personne` AS `seller` ON `facture`.`sellerId` = `seller`.`actorId` LEFT OUTER JOIN `commande` AS `commandes` ON `facture`.`factureId` = `commandes`.`factureId` LEFT OUTER JOIN `payment` AS `payments` ON `facture`.`factureId` = `payments`.`factureId` WHERE `facture`.`administratorId` = \''+usr.user.userId+'\' GROUP BY `facture`.`factureId`, `payments.paymentId`, `commandes.orderId`;';
       const values = await newQuery(props.dbConn, sql);

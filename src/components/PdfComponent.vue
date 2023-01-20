@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<PdfComponentProps>(), {
 });
 const $q = useQuasar();
 const platform = $q.platform;
+console.log(platform);
 const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
 const router = useRouter();
@@ -200,7 +201,7 @@ if (platform.is.desktop) {
   locale.value = mainLocale;
   // console.log('Builded PDF !');
   // console.log(buildedPdf);
-  if (platform.is.mobile && buildedPdf.length){
+  if (!!platform.is.nativeMobile && buildedPdf.length){
     const mimeType = getMimeType(buildedPdf[0].name);
     await openFile(buildedPdf[0].uri, mimeType);
   }
@@ -498,7 +499,7 @@ async function buildAndSavePdf(inv: any) {
     .replaceAll(':', '_')
     .replaceAll(',', '')
     .replaceAll('à', 'a')}`;
-  if (platform.is.desktop){
+  if (platform.is.desktop || !!platform.is.nativeMobile === false){
     doc.save(`${fileName}.pdf`);
     return null;
   }
@@ -1952,6 +1953,7 @@ function sanitizeQueryResult(obj: any) {
 // };
 async function writeBlobFileForMobile(dest: string, data: Blob){
   let ret = null;
+  // console.log(platform);
   const options = {
     path: `${dest}`,
     directory: Directory.Documents,
@@ -1962,6 +1964,11 @@ async function writeBlobFileForMobile(dest: string, data: Blob){
       console.log(err);
     }
   };
+  if (platform.is.android){
+    options.path = `Easy_Compta_Outputs/${dest}`;
+    options.directory = Directory.ExternalStorage;
+    options.recursive = true;
+  }
 
   ret = await write_blob(options);
   return ret;

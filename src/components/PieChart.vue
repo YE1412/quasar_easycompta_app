@@ -145,7 +145,7 @@ else {
         ],
         messagesVisibility: true,
       });
-      messageVisibility.value = true;
+      // messageVisibility.value = true;
     }
     counter.value = await prefs.getPref('counter');
   }

@@ -78,7 +78,7 @@ const openDB = async (db: SQLiteDBConnection): boolean => {
 	console.log('openDB Call !');
 	// console.log(db);
 	let ret = false;
-	if (db !== null || db !== undefined){
+	if (!!db){
 		await db.open();
 		ret = true;
 	}
@@ -88,7 +88,7 @@ const openDB = async (db: SQLiteDBConnection): boolean => {
 const isOpenDB = async(db: SQLiteDBConnection): capSQLiteResult | null => {
 	console.log('isOpenDB Call !');
 	let ret = null;
-	if (db !== null || db !== undefined){
+	if (!!db){
 		ret = await db.isDBOpen();
 	}
 	// console.log(ret);
