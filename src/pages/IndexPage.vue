@@ -3,7 +3,7 @@
     <q-no-ssr>
       <messages-item v-if="messageVisibility && renderComponent"></messages-item>
     </q-no-ssr>
-    <div class="row text-center q-pt-xl">
+    <div class="row full-width text-center q-pt-xl" v-if="!compact">
       <div class="col">
         <q-icon size="lg" aria-hidden="false" name="mdi-receipt-text" color="primary">
         </q-icon>
@@ -49,12 +49,63 @@
         <h6 class="SenExtrabold-font">{{ t("homeComponent.labels.servicesLabel") }}</h6>
       </div>
     </div>
+
+    <div class="column full-width text-center q-pt-xl" v-if="compact">
+      <div class="row q-pb-lg">  
+        <div class="col">
+          <q-icon size="lg" aria-hidden="false" name="mdi-receipt-text" color="primary">
+          </q-icon>
+          <h5 class="text-primary q-my-sm">
+            {{ nbInvoices }}
+          </h5>
+          <h6 class="SenExtrabold-font q-my-md">{{ t("homeComponent.labels.invoicesLabel") }}</h6>
+          <div
+            class="vr vr-blurry position-absolute my-0 h-100 d-none d-md-block top-0 end-0"
+          ></div>
+        </div>
+
+        <div class="col">
+          <q-icon size="lg" aria-hidden="false" color="dark" name="mdi-order-bool-descending">
+          </q-icon>
+          <h5 class="text-dark q-my-sm">
+            {{ nbOrders }}
+          </h5>
+          <h6 class="SenExtrabold-font q-my-md">{{ t("homeComponent.labels.ordersLabel") }}</h6>
+          <div
+            class="vr vr-blurry position-absolute my-0 h-100 d-none d-md-block top-0 end-0"
+          ></div>
+        </div>
+      </div>
+      <div class="row"> 
+        <div class="col">
+          <q-icon size="lg" aria-hidden="false" name="mdi-clipboard-account" color="accent">
+          </q-icon>
+          <h5 class="text-accent q-my-sm">
+            {{ nbActors }}
+          </h5>
+          <h6 class="SenExtrabold-font q-my-md">{{ t("homeComponent.labels.actorsLabel") }}</h6>
+          <div
+            class="vr vr-blurry position-absolute my-0 h-100 d-none d-md-block top-0 end-0"
+          ></div>
+        </div>
+
+        <div class="col">
+          <q-icon size="lg" aria-hidden="false" class="text-secondary" name="mdi-room-service" color="secondary">
+          </q-icon>
+          <h5 class="text-secondary q-my-sm">
+            {{ nbServices }}
+          </h5>
+          <h6 class="SenExtrabold-font q-my-md">{{ t("homeComponent.labels.servicesLabel") }}</h6>
+        </div>
+      </div>
+    </div>
+
     <home-table
-      cssClasses="q-pa-md"
+      cssClasses="q-pa-md full-width"
       :dbConn="dbConn"
     />
-    <bar-chart :dbConn="dbConn" />
-    <pie-chart :dbConn="dbConn" />
+    <bar-chart cssClasses="q-pa-md full-width" :dbConn="dbConn" />
+    <pie-chart cssClasses="q-pa-md full-width" :dbConn="dbConn" />
   </q-page>
 </template>
 
@@ -67,7 +118,7 @@ import MessagesItem from 'components/MessagesItem.vue';
 import BarChart from 'components/BarChart.vue';
 import PieChart from 'components/PieChart.vue';
 import HomeTable from 'components/HomeTable.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
@@ -93,6 +144,8 @@ const nbOrders = ref(0);
 const nbActors = ref(0);
 const nbServices = ref(0);
 const messageVisibility = ref(false);
+const orientation = ref(null);
+const compact = ref(false);
 
 let counterStore = null,
   messageStore = null, prefs = null, userStore = null;
@@ -120,125 +173,136 @@ if (platform.is.desktop) {
   })();
 }
 else {
-  prefs = await import('cap/storage/preferences');
-  // console.log('Get messages preferences !');
-  const mess = await prefs.getPref('message');
-  const usr = await prefs.getPref('user');
-  // console.log(mess);
-  // console.log(usr);
-  // console.log(`Setting messages !`);
-  const messages = !!mess ? mess.messages : [];
-  const vis = !!mess ? mess.messagesVisibility : mess;
-  if (messages.length && vis === null) {
-    messageVisibility.value = true;
-  } else {
-    messageVisibility.value = vis !== null ? vis : false;
+  orientation.value = window.screen.orientation.type;
+  if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+    compact.value = true;
   }
-  // console.log(`Setting date !`);
-  let dateStart = null;
-  const now = new Date();
-  if (now.getMonth() < 5) {
-    dateStart = new Date(`${now.getFullYear() - 1}-06-01`);
-  } 
-  else {
-    dateStart = new Date(`${now.getFullYear()}-06-01`);
-  }
-  // console.log(`Open DB Connection !`);
-  let isOpen = await isDbConnectionOpen(props.dbConn);
-  isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
-  if (isOpen) {
-    let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
-    // console.log(sql);
-    let values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      nbInvoices.value = values.values[0].n_inv;
-    }
-    else {
-      await prefs.setPref('message', {
-        messages: [
-          {
-            severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count invoices from SQLite DB !' })
-          }
-        ],
-        messagesVisibility: true,
-      });
+  window.addEventListener('orientationchange', handleOrientation);
+  (async() => {
+    prefs = await import('cap/storage/preferences');
+    // console.log('Get messages preferences !');
+    const mess = await prefs.getPref('message');
+    const usr = await prefs.getPref('user');
+    // console.log(mess);
+    // console.log(usr);
+    // console.log(`Setting messages !`);
+    const messages = !!mess ? mess.messages : [];
+    const vis = !!mess ? mess.messagesVisibility : mess;
+    if (messages.length && vis === null) {
       messageVisibility.value = true;
+    } else {
+      messageVisibility.value = vis !== null ? vis : false;
     }
+    // console.log(`Setting date !`);
+    let dateStart = null;
+    const now = new Date();
+    if (now.getMonth() < 5) {
+      dateStart = new Date(`${now.getFullYear() - 1}-06-01`);
+    } 
+    else {
+      dateStart = new Date(`${now.getFullYear()}-06-01`);
+    }
+    // console.log(`Open DB Connection !`);
+    let isOpen = await isDbConnectionOpen(props.dbConn);
+    isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
+    if (isOpen) {
+      let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
+      // console.log(sql);
+      let values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        nbInvoices.value = values.values[0].n_inv;
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count invoices from SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
 
-    sql = 'SELECT COUNT(\`orderId\`) AS \`n_ord\` FROM \`commande\` AS \`commande\`;';
-    values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      nbOrders.value = values.values[0].n_ord;
-    }
-    else {
-      await prefs.setPref('message', {
-        messages: [
-          {
-            severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count orders from SQLite DB !' })
-          }
-        ],
-        messagesVisibility: true,
-      });
-      messageVisibility.value = true;
-    }
+      sql = 'SELECT COUNT(\`orderId\`) AS \`n_ord\` FROM \`commande\` AS \`commande\`;';
+      values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        nbOrders.value = values.values[0].n_ord;
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count orders from SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
 
-    sql = 'SELECT COUNT(\`actorId\`) AS \`n_act\` FROM \`personne\` AS \`personne\`;';
-    values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      nbActors.value = values.values[0].n_act;
-    }
-    else {
-      await prefs.setPref('message', {
-        messages: [
-          {
-            severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count actors from SQLite DB !' })
-          }
-        ],
-        messagesVisibility: true,
-      });
-      messageVisibility.value = true;
-    }
+      sql = 'SELECT COUNT(\`actorId\`) AS \`n_act\` FROM \`personne\` AS \`personne\`;';
+      values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        nbActors.value = values.values[0].n_act;
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count actors from SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
 
-    sql = 'SELECT COUNT(\`serviceId\`) AS \`n_srv\` FROM \`produitservice\` AS \`produitservice\`;';
-    values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      nbServices.value = values.values[0].n_srv;
+      sql = 'SELECT COUNT(\`serviceId\`) AS \`n_srv\` FROM \`produitservice\` AS \`produitservice\`;';
+      values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        nbServices.value = values.values[0].n_srv;
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count services from SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
     }
     else {
       await prefs.setPref('message', {
         messages: [
           {
             severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count services from SQLite DB !' })
+            content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
           }
         ],
         messagesVisibility: true,
       });
       messageVisibility.value = true;
     }
-  }
-  else {
-    await prefs.setPref('message', {
-      messages: [
-        {
-          severity: true,
-          content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
-        }
-      ],
-      messagesVisibility: true,
-    });
-    messageVisibility.value = true;
-  }
+  })();
 }
 
 // FUNCTIONS
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
+};
 // async function forceMessageItemsRerender() {
 //   renderComponent.value = false;
 //   await nextTick();
@@ -246,6 +310,19 @@ else {
 // };
 
 // WATCHERS
+watch(
+  orientation,
+  (newOrientation) => {
+    if (!!newOrientation) {
+      if (newOrientation === 'portrait-primary' || newOrientation === 'portrait-secondary'){
+        compact.value = true;
+      }
+      else {
+        compact.value = false;
+      }
+    }
+  }
+)
 
 // LIFECYCLE EVENTS
 

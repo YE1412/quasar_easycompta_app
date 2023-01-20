@@ -5,6 +5,9 @@
       :title="t('homeComponent.homeTable.heading')"
       :columns="headTable"
       :rows="contentTable"
+      :grid="compact"
+      :dense="!compact"
+      :hide-bottom="true"
       title-class="SenExtrabold-font"
       table-header-style="{text-align: center}"
       separator="horizontal">
@@ -85,6 +88,9 @@ const defaultHeadTableObj = [{
 
 const headTable = ref(props.headTableObj.length ? props.headTableObj : defaultHeadTableObj);
 const contentTable = ref(props.contentTableObj.length ? props.contentTable : []);
+const orientation = ref(null);
+const compact = ref(false);
+
 // console.log('main !');
 // console.log(headTable.value);
 // console.log(contentTable.value);
@@ -121,114 +127,121 @@ if (platform.is.desktop) {
   }
 }
 else {
-  prefs = await import('cap/storage/preferences');
-  // console.log('HomeTable initalisation !');
-  const usr = await prefs.getPref('user');
-  const session = await prefs.getPref('session');
-  // console.log(usr);
-  // console.log(session);
-  devise = usr.user.devise;
-  locale = !!session && !!session.langDisplayed ? session.langDisplayed.nom : 'en-US' ;
-  let dateStart = null, dateStartLibelle = null;
-  const now = new Date();
-  if (now.getMonth() < 5) {
-    dateStart = new Date(`${now.getFullYear() - 1}-06-01`);
-  } 
-  else {
-    dateStart = new Date(`${now.getFullYear()}-06-01`);
+  orientation.value = window.screen.orientation.type;
+  if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+    compact.value = true;
   }
-  dateStartLibelle = dateStart.toISOString();
-  // console.log(dateStartLibelle);
+  window.addEventListener('orientationchange', handleOrientation);
+  (async() => {
+    prefs = await import('cap/storage/preferences');
+    // console.log('HomeTable initalisation !');
+    const usr = await prefs.getPref('user');
+    const session = await prefs.getPref('session');
+    // console.log(usr);
+    // console.log(session);
+    devise = usr.user.devise;
+    locale = !!session && !!session.langDisplayed ? session.langDisplayed.nom : 'en-US' ;
+    let dateStart = null, dateStartLibelle = null;
+    const now = new Date();
+    if (now.getMonth() < 5) {
+      dateStart = new Date(`${now.getFullYear() - 1}-06-01`);
+    } 
+    else {
+      dateStart = new Date(`${now.getFullYear()}-06-01`);
+    }
+    dateStartLibelle = dateStart.toISOString();
+    // console.log(dateStartLibelle);
 
-  let isOpen = await isDbConnectionOpen(props.dbConn);
-  isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
-  if (isOpen) {
-    let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
-    // console.log(sql);
-    let values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      const res = values.values[0];
-      await prefs.setPref('counter', {
-          nbInvoices: res.n_inv,
-        },
-        false
-      );
-      // console.log('Prefs setted !');
+    let isOpen = await isDbConnectionOpen(props.dbConn);
+    isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
+    if (isOpen) {
+      let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
+      // console.log(sql);
+      let values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        const res = values.values[0];
+        await prefs.setPref('counter', {
+            nbInvoices: res.n_inv,
+          },
+          false
+        );
+        // console.log('Prefs setted !');
+      }
+      else {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count invoices from SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        // messageVisibility.value = true;
+      }
+
+      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
+      // console.log(sql);
+      values = await newQuery(props.dbConn, sql);
+      // console.log(values);
+      if (values.values.length){
+        const intRes = sanitizeQueryResult(values.values);
+        // console.log(intRes);
+        await setDecryptApi();
+        const res = await __TRANSFORMOBJ__(intRes);
+        // console.log(res);
+        let counterSess = await prefs.getPref('counter');
+        // console.log(counterSess);
+        counterSess = !!counterSess ? counterSess : {};
+        counterSess.invoicesFY = res;
+        await prefs.setPref('counter', counterSess, false);
+      }
+      // else {
+      //   await prefs.setPref('message', {
+      //     messages: [
+      //       {
+      //         severity: true,
+      //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
+      //       }
+      //     ],
+      //     messagesVisibility: true,
+      //   });
+      // }
     }
     else {
       await prefs.setPref('message', {
         messages: [
           {
             severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Select count invoices from SQLite DB !' })
+            content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
           }
         ],
         messagesVisibility: true,
       });
-      messageVisibility.value = true;
+      // messageVisibility.value = true;
     }
 
-    sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
-    // console.log(sql);
-    values = await newQuery(props.dbConn, sql);
-    // console.log(values);
-    if (values.values.length){
-      const intRes = sanitizeQueryResult(values.values);
-      // console.log(intRes);
-      await setDecryptApi();
-      const res = await __TRANSFORMOBJ__(intRes);
-      // console.log(res);
-      let counterSess = await prefs.getPref('counter');
-      // console.log(counterSess);
-      counterSess = !!counterSess ? counterSess : {};
-      counterSess.invoicesFY = res;
-      await prefs.setPref('counter', counterSess, false);
-    }
-    // else {
-    //   await prefs.setPref('message', {
-    //     messages: [
-    //       {
-    //         severity: true,
-    //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
-    //       }
-    //     ],
-    //     messagesVisibility: true,
-    //   });
-    // }
-  }
-  else {
-    await prefs.setPref('message', {
-      messages: [
+    if (devise.deviseId == 3) {
+      contentTable.value.push(
         {
-          severity: true,
-          content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
+          'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
+          'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
+          'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
         }
-      ],
-      messagesVisibility: true,
-    });
-    messageVisibility.value = true;
-  }
-
-  if (devise.deviseId == 3) {
-    contentTable.value.push(
-      {
-        'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
-        'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
-        'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
-      }
-    );
-  } else {
-    contentTable.value.push(
-      {
-        'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
-        'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
-        'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
-      }
-    );
-  }
-  // console.log('Hometable values !');
-  // console.log(contentTable.value);
+      );
+    } else {
+      contentTable.value.push(
+        {
+          'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
+          'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
+          'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
+        }
+      );
+    }
+    // console.log('Hometable values !');
+    // console.log(contentTable.value);
+  })();
 }
 
 // FUNCTIONS
@@ -804,6 +817,17 @@ function sanitizeQueryResult(obj: any) {
     }
   }
   return ret;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
+  // console.log(orientation.value);
+  if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+    compact.value = true;
+  }
+  else {
+    compact.value = false;
+  }
 };
 
 // WATCHERS

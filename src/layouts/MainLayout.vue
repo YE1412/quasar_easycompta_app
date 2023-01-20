@@ -38,10 +38,10 @@
           </q-btn>
         </q-item>
 
-        <q-space />
+        <q-space v-if="!compact"/>
 
         <q-item clickable class="float-right">
-          <q-btn-dropdown stretch flat fab fab-mini :label="t('toolbar.languageLabel')">
+          <q-btn-dropdown stretch flat fab fab-mini :label="!compact ? t('toolbar.languageLabel') : ''">
             <q-list>
               <q-item-label header>
                 {{ t('toolbar.dropdownHeader') }}
@@ -62,9 +62,9 @@
         </q-item>
         <!--<div class="float-right">Quasar v{{ $q.version }}</div>-->
         <div class="float-right">
-          <q-btn flat stretch v-if="connected" icon="mdi-logout" :label="t('startComponent.libelles.logout')" @click="logout" />
+          <q-btn flat stretch v-if="connected" icon="mdi-logout" :label="!compact ? t('startComponent.libelles.logout') : ''" @click="logout" />
           <router-link :to="{name: t('registerLinkName')}" style="text-decoration: none;color: black;">
-            <q-btn flat stretch v-if="!connected" icon="mdi-account-plus" :label="t('startComponent.libelles.signUp')" />
+            <q-btn flat stretch v-if="!connected" icon="mdi-account-plus" :label="!compact ? t('startComponent.libelles.signUp') : ''" />
           </router-link>  
         </div>
       </q-toolbar>
@@ -141,9 +141,9 @@
     </q-drawer>
 
     <q-page-container>
-      <Suspense>
+      <!-- <Suspense> -->
         <router-view @change-tab="tabChanges" :dbConn="db" v-if="renderComponent"/>
-      </Suspense>
+      <!-- </Suspense> -->
     </q-page-container>
 
     <q-footer class="frosted-glass" elevated>
@@ -202,6 +202,7 @@ const classAssoc: ClassLangAssoc = {
 };
 const tab = ref(undefined);
 const platform = $q.platform;
+// console.log(platform);
 const languages = ref([]);
 const comptaLinks: ComptaLinkProps[] = ref(getLinks());
 const leftDrawerOpen = ref(false);
@@ -209,6 +210,8 @@ const faviconSrc = import.meta.env.PROD && platform.is.desktop
   ? `dist/icons/${import.meta.env.PUB_ICON}`
   : `icons/${import.meta.env.PUB_ICON}`;
 const connected = ref(false);
+const orientation = ref(null);
+const compact = ref(false);
 
 let sessionStore = null, userStore = null, prefs = null;
 let db: Ref<SQLiteDBConnection> = ref(null);
@@ -221,6 +224,12 @@ if (platform.is.desktop){
   sessionStore = useSessionStore();
   userStore = useUserStore();
 } else {
+  // console.log(window.screen.orientation);
+  orientation.value = window.screen.orientation.type;
+  if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+    compact.value = true;
+  }
+  window.addEventListener('orientationchange', handleOrientation);
 }
 if (!!userCookies) {
   connected.value = userCookies.connected;
@@ -386,7 +395,12 @@ function getLinks(){
       link: t('comptaLinks.export.link'),
     },
   ];
-}
+};
+
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
+};
 
 // defineExpose({
 //   forceRerender
@@ -545,22 +559,30 @@ onMounted(() => {
 
 // WATCHERS
 watch(
-  route,
-  async (newR) => {
-    if (!import.meta.env.SSR) {
+  [route, orientation],
+  async ([newR, newOrientation]) => {
+    if (!import.meta.env.SSR && !!newR) {
       // console.log(newR.meta.titleKey);
       document.title = `Easy-Compta - ${t(newR.meta.titleKey)}`;
+      if (platform.is.desktop){
+        // console.log('Watcher connected !');
+        connected.value = userStore.getConnected;
+      }
+      else {
+        const userCookie = await prefs.getPref('user');
+        // console.log(userCookie);
+        connected.value = !!userCookie 
+          ? userCookie.connected
+          : false ;
+      }
     }
-    if (platform.is.desktop){
-      // console.log('Watcher connected !');
-      connected.value = userStore.getConnected;
-    }
-    else {
-      const userCookie = await prefs.getPref('user');
-      // console.log(userCookie);
-      connected.value = !!userCookie 
-        ? userCookie.connected
-        : false ;
+    if (!!newOrientation) {
+      if (newOrientation === 'portrait-primary' || newOrientation === 'portrait-secondary'){
+        compact.value = true;
+      }
+      else {
+        compact.value = false;
+      }
     }
   }
 )

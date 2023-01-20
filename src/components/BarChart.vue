@@ -1,6 +1,6 @@
 <template>
   <div
-    class="q-pa-md"
+    :class="cssClasses"
   >
     <div class="SenExtrabold-font">{{ t("homeComponent.barChart.heading") }}</div>
     <!-- <bar
@@ -14,9 +14,8 @@
       :width="width"
       :height="height"
     /> -->
-    <bar :data="chartData" 
-      :width="width"
-      :height="height"/>
+    <bar :data="chartData"
+      :style="chartStyle"/>
   </div>
 </template>
 
@@ -106,6 +105,28 @@ const chartData = ref({
     },
   ],
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
+const chartStyle = computed(() => {
+  const ret = {
+    position: 'relative',
+    responsive: true
+  };
+  if (!compact.value) {
+    ret.responsive = false;
+    ret.height = props.height;
+    ret.width = props.width;
+  }
+  return ret;
+});
 
 let counterStore = null, userStore = null, prefs = null;
 
@@ -116,7 +137,8 @@ if (platform.is.desktop){
   // console.log(chartData.value);
 }
 else {
-
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
 }
 (async() => {
   if (platform.is.desktop){
@@ -800,6 +822,10 @@ function checkLeapYear(year: number){
     }
   }
   return ret;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="column items-center justify-start">
+  <q-page class="column items-center justify-start">
     <!-- content -->
     <q-no-ssr>
       <MessagesItem v-if='messageVisibility && renderComponent' />
@@ -9,7 +9,7 @@
       style="min-width: 100%; height: 750px;"
       class="flex content-center justify-center items-center"
     >
-      <div class="absolute-center text-center">
+      <div class="absolute-center text-center" :style="compact ? 'width: 80%;' : ''">
         <div :class='platform.is.desktop ? headingDesktopClass : headingMobileClass'>{{ t('startComponent.title') }}
         </div>
         <q-form
@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { ref, computed, nextTick, getCurrentInstance } from 'vue';
+import { ref, computed, nextTick, getCurrentInstance, watch } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useSessionStore } from 'stores/session';
@@ -167,6 +167,7 @@ const app = getCurrentInstance();
 const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
 const platform = $q.platform;
+// console.log(platform);
 const login = ref(null);
 const pass = ref(null);
 const messageVisibility = ref(false);
@@ -182,6 +183,8 @@ const nonEmptyPass = computed(() => {
 });
 const headingDesktopClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold';
 const headingMobileClass = 'q-pt-lg q-pb-lg SenExtrabold-font text-h4 text-uppercase text-center text-bold';
+const orientation = ref(null);
+const compact = ref(false);
 
 let userStore = null, sessionStore = null, messageStore = null, prefs = null;
 
@@ -198,6 +201,11 @@ if (platform.is.desktop){
 }
 else {
   imgSrc.value = '/assets/imgs/slider-2.jpg';
+  orientation.value = window.screen.orientation.type;
+  if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+    compact.value = true;
+  }
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     // console.log('Get messages preferences !');
@@ -499,9 +507,26 @@ async function getSessionForMobile() {
     await prefs.setPref('session', session);
     resolve(true);
   });  
-}
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
+};
 
 // WATCHERS
+watch(
+  orientation,
+  (newOrientation) => {
+    if (!!newOrientation) {
+      if (newOrientation === 'portrait-primary' || newOrientation === 'portrait-secondary'){
+        compact.value = true;
+      }
+      else {
+        compact.value = false;
+      }
+    }
+  }
+)
 
 // LIFECYCLE EVENTS
 

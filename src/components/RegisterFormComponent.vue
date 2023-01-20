@@ -2,8 +2,8 @@
   <q-no-ssr>
     <MessagesItem v-if='messageVisibility && renderComponent' />
   </q-no-ssr>
-  <div class='q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold'>{{ t('profileComponent.titles.register') }}</div>
-  <div class='q-pa-lg' style='width: 70%'>
+  <div :class="'q-py-lg SenExtrabold-font '+ (compact ? 'text-h4' : 'text-h2') + ' text-uppercase text-center text-bold'">{{ t('profileComponent.titles.register') }}</div>
+  <div class='q-pa-lg' :style="!compact ? 'width: 70%;' : 'width: 100%;'">
     <q-form
       @submit='submit'
       @reset='reset'
@@ -267,6 +267,16 @@ const renderComponent = ref(true);
 const { t } = useI18n();
 // const progress = ref(0);
 const router = useRouter();
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 const validFirstName = computed(() => {
   const re = /^(([a-zA-Z])([-])*){2,30}$/;
   const ret = re.test(firstName.value);
@@ -420,6 +430,8 @@ else {
   // app = getCurrentInstance()
   // get = app.appContext.config.globalProperties.$get;
   // post = app.appContext.config.globalProperties.$post;
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     userCapService = await import('cap/service/cap.user.service');
     prefs = await import('cap/storage/preferences');
@@ -993,5 +1005,9 @@ function addedFile(files) {
 function removedFile() {
   companyLogoURL.value = null;
   companyLogo.value = null;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 </script>

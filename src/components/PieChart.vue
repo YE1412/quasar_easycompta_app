@@ -1,12 +1,11 @@
 <template>
   <div
-    class=""
+    :class="cssClasses"
   >
     <div class="SenExtrabold-font">{{ t("homeComponent.pieChart.heading") }}</div>
     <Pie
       :data="chartData"
-      :width="width"
-      :height="height"
+      :style="chartStyle"
     />
   </div>
 </template>
@@ -27,7 +26,7 @@ import { useCounterStore } from 'stores/counter';
 import { useUserStore } from 'stores/user';
 // import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { openDbConnection, isDbConnectionOpen, newQuery } from 'cap/storage';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
@@ -75,6 +74,28 @@ let payStats = null,
         },
       ],
     });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
+const chartStyle = computed(() => {
+  const ret = {
+    position: 'relative',
+    responsive: true
+  };
+  if (!compact.value) {
+    ret.responsive = false;
+    ret.height = props.height;
+    ret.width = props.width;
+  }
+  return ret;
+});
 
 let counterStore = null, userStore = null, prefs = null;
 
@@ -84,8 +105,10 @@ if (platform.is.desktop) {
   userStore = useUserStore(); 
 }
 else {
-  
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
 }
+
 (async () => {
   if (platform.is.desktop){
     if(!import.meta.env.SSR) {
@@ -746,5 +769,9 @@ function sanitizeQueryResult(obj: any) {
     }
   }
   return ret;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 </script>
