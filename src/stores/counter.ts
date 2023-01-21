@@ -17,7 +17,7 @@ export const useCounterStore = defineStore('counter', {
     prices: [],
     htFYI: 0.0,
     ttFYI: 0.0,
-    payFYI: 0.0,
+    // payFYI: 0.0,
     invoicesFY: [],
     nbInvoices: 0,
     nbOrders: 0,
@@ -50,9 +50,9 @@ export const useCounterStore = defineStore('counter', {
     getTtFYI(state: any) {
       return state.ttFYI;
     },
-    getPayFYI(state: any) {
-      return state.payFYI;
-    },
+    // getPayFYI(state: any) {
+    //   return state.payFYI;
+    // },
     getInvoicesFY(state: any) {
       return state.invoicesFY;
     },

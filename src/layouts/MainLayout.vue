@@ -56,9 +56,11 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-item-section avatar>
-            <span :class="`fi fi-${classAssoc[displayedLanguage.nom].class}`"></span>
-          </q-item-section>
+          <q-no-ssr>
+            <q-item-section avatar>
+              <span :class="`fi fi-${classAssoc[displayedLanguage.nom].class}`"></span>
+            </q-item-section>
+          </q-no-ssr>
         </q-item>
         <!--<div class="float-right">Quasar v{{ $q.version }}</div>-->
         <div class="float-right">
@@ -476,6 +478,9 @@ onBeforeMount(() => {
       });
     }
   }
+  // console.log('On before mount !');
+  // console.log(displayedLanguage.value);
+  // console.log(classAssoc[displayedLanguage.value.nom].class);
 });
 onBeforeUnmount(() => {
   if (!platform.is.desktop){
@@ -486,7 +491,9 @@ onBeforeUnmount(() => {
 onMounted(() => {
   // console.log('On mounted !');
   document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
-  
+  // console.log('On mounted !');
+  // console.log(displayedLanguage.value);
+  // console.log(classAssoc[displayedLanguage.value.nom].class);
   // if (!platform.is.desktop) {
   //   $q.loadingBar.setDefaults({
   //     color: 'primary',

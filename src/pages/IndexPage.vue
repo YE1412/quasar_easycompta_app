@@ -105,7 +105,7 @@
       :dbConn="dbConn"
     />
     <bar-chart cssClasses="q-pa-md full-width" :dbConn="dbConn" />
-    <pie-chart cssClasses="q-pa-md full-width" :dbConn="dbConn" />
+    <pie-chart cssClasses="q-pa-md full-width column flex items-center" :dbConn="dbConn" />
   </q-page>
 </template>
 

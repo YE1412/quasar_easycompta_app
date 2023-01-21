@@ -91,10 +91,8 @@ const contentTable = ref(props.contentTableObj.length ? props.contentTable : [])
 const orientation = ref(null);
 const compact = ref(false);
 
-// console.log('main !');
-// console.log(headTable.value);
-// console.log(contentTable.value);
-let userStore = null, devise = null, counterStore = null, locale = null, sessionStore = null, prefs = null;
+let userStore = null, devise = null, counterStore = null, locale = null, sessionStore = null, prefs = null, counter = null;
+
 // DECLARATIONS
 if (platform.is.desktop) {
   userStore = useUserStore();
@@ -104,6 +102,7 @@ if (platform.is.desktop) {
   if (!import.meta.env.SSR){
     (async() => {
       devise = userStore.getUser.devise;
+      await counterStore.getAllPrices();
       await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
       await counterStore.getFinancialYearNbInvoices(userStore.getUser.userId);
       if (devise.deviseId == 3) {
@@ -137,6 +136,8 @@ else {
     // console.log('HomeTable initalisation !');
     const usr = await prefs.getPref('user');
     const session = await prefs.getPref('session');
+    const count = await prefs.getPref('counter');
+    counter = !!count ? count : counter;
     // console.log(usr);
     // console.log(session);
     devise = usr.user.devise;
@@ -155,9 +156,27 @@ else {
     let isOpen = await isDbConnectionOpen(props.dbConn);
     isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
     if (isOpen) {
-      let sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
+      let newCounter = null;
+      let sql = 'SELECT \`stockPricesId\`, \`euro\`, \`dollar\`, \`livre\` FROM \`stock_prices\` AS \`stock_prices\`;';
+      let values = null;
       // console.log(sql);
-      let values = await newQuery(props.dbConn, sql);
+      if (!!counter === false || !!counter.prices === false || !counter.prices.length){
+        values = await newQuery(props.dbConn, sql);
+        // console.log(values);
+        if (!!values && values.values.length) {
+          newCounter = !!counter ? counter : {};
+          newCounter.prices = values.values;
+        }
+        else {
+          newCounter = !!counter ? counter : {};
+          newCounter.prices = [];
+        }
+        await prefs.setPref('counter', newCounter, false);
+        counter = newCounter;
+      }
+      sql = `SELECT COUNT(\`factureId\`) AS \`n_inv\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}');`;
+      // console.log(sql);
+      values = await newQuery(props.dbConn, sql);
       // console.log(values);
       if (values.values.length){
         const res = values.values[0];
@@ -295,6 +314,42 @@ async function getPayFYI() {
     for (const k in counterStore.getInvoicesFY) {
       for (const l in counterStore.getInvoicesFY[k]['payments']) {
         if (counterStore.getInvoicesFY[k]['payments'][l].etat === 1) {
+          // console.log(counterStore.getInvoicesFY[k]);
+          // ret += 
+          //   counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
+          ret += convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle));
+        }
+      }
+    }
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: 0,
+    }).format(ret.toFixed(0));
+  }
+  else {
+    const counter = await prefs.getPref('counter');
+    const invoices = !!counter ? counter.invoicesFY : [];
+    for (const k in invoices) {
+      for (const l in invoices[k]['payments']){
+        if (invoices[k]['payments'][l].etat === 1){
+          // console.log(invoices[k]);
+          // ret += invoices[k]['payments'][l].paymentValue ?? 0;
+          ret += convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle));
+        }
+      }
+    }
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: 0,
+    }).format(ret.toFixed(0));
+  }
+  return ret;
+};
+async function getNotPayFYI() {
+  let ret = 0.0;
+  if (platform.is.desktop){
+    for (const k in counterStore.getInvoicesFY) {
+      for (const l in counterStore.getInvoicesFY[k]['payments']) {
+        if (counterStore.getInvoicesFY[k]['payments'][l].etat === 0) {
+          console.log(counterStore.getInvoicesFY[k]);
           ret +=
             counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
         }
@@ -309,7 +364,8 @@ async function getPayFYI() {
     const invoices = !!counter ? counter.invoicesFY : [];
     for (const k in invoices) {
       for (const l in invoices[k]['payments']){
-        if (invoices[k]['payments'][l].etat === 1){
+        if (invoices[k]['payments'][l].etat === 0){
+          console.log(invoices[k]);
           ret += invoices[k]['payments'][l].paymentValue ?? 0;
         }
       }
@@ -828,6 +884,98 @@ function handleOrientation(){
   else {
     compact.value = false;
   }
+};
+function getConvertFunc(src: string) {
+  let ret = undefined;
+  switch (src) {
+    case 'euro':
+      ret = fromEuroToOther;
+      break;
+    case 'dollar':
+      ret = fromDollarToOther;
+      break;
+    case 'livre':
+      ret = fromLivreToOther;
+      break;
+    default:
+      ret = fromEuroToOther;
+      break;
+  }
+  return ret;
+};
+function convertAmount(val: number, dest: string, func: any) {
+  return func(val, dest);
+};
+function fromEuroToOther(val: number, dest: string): number {
+  let ret = val;
+  let stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getEuroPrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.euro === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'dollar':
+      ret *= produit !== null ? produit.dollar : 1;
+      break;
+    case 'livre':
+      ret *= produit !== null ? produit.livre : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
+};
+function fromDollarToOther(val: number, dest: string): number {
+  let ret = val, stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getDollarPrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.dollar === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'euro':
+      ret *= produit !== null ? produit.euro : 1;
+      break;
+    case 'livre':
+      ret *= produit !== null ? produit.livre : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
+};
+function fromLivreToOther(val: number, dest: string): number {
+  let ret = val;
+  let stock_price = null;
+  if (platform.is.desktop){
+    stock_price = counterStore.getLivrePrice;
+  }
+  else {
+    stock_price = counter.prices.find((p: any) => {
+      return p.livre === 1;
+    });
+  }
+  const produit = stock_price !== null ? stock_price : null;
+  switch (dest) {
+    case 'dollar':
+      ret *= produit !== null ? produit.dollar : 1;
+      break;
+    case 'euro':
+      ret *= produit !== null ? produit.euro : 1;
+      break;
+    default:
+      break;
+  }
+  return ret;
 };
 
 // WATCHERS

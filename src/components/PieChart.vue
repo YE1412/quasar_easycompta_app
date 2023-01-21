@@ -34,12 +34,12 @@ import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
 // VARIABLES
 interface PieChartProps {
-  chartId?: string;
-  datasetIdKey?: string;
+  // chartId?: string;
+  // datasetIdKey?: string;
   width?: number;
   height?: number;
   cssClasses?: string;
-  styles?: unknow;
+  // styles?: unknow;
   plugins?: [];
   dbConn: SQLiteDBConnection | null;
 };
@@ -47,12 +47,12 @@ const $q = useQuasar();
 const platform = $q.platform;
 const { t } = useI18n();
 const props = withDefaults(defineProps<PieChartProps>(), {
-  chartId: 'pie-chart',
-  datasetIdKey: 'label',
-  width: 400,
-  height: 400,
+  // chartId: 'pie-chart',
+  // datasetIdKey: 'label',
+  width: 200,
+  height: 200,
   cssClasses: '',
-  styles: () => ({}),
+  // styles: () => ({}),
   plugins: () => ([]),
   dbConn: null,
 });
@@ -62,18 +62,18 @@ let payStats = null,
   cashVal = null, 
   chqVal = null, 
   chartData = ref({
-      labels: [
-        t('homeComponent.pieChart.cbLabel'),
-        t('homeComponent.pieChart.cashLabel'),
-        t('homeComponent.pieChart.chqLabel'),
-      ],
-      datasets: [
-        {
-          backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-          data: [0, 0, 0],
-        },
-      ],
-    });
+    labels: [
+      t('homeComponent.pieChart.cbLabel'),
+      t('homeComponent.pieChart.cashLabel'),
+      t('homeComponent.pieChart.chqLabel'),
+    ],
+    datasets: [
+      {
+        backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+        data: [0, 0, 0],
+      },
+    ],
+  });
 const orientation = ref(null);
 const compact = computed(() => {
   let ret = false;
@@ -89,13 +89,21 @@ const chartStyle = computed(() => {
     position: 'relative',
     responsive: true
   };
+  // console.log(props.height);
   if (!compact.value) {
     ret.responsive = false;
-    ret.height = props.height;
-    ret.width = props.width;
+    ret.height = `${props.height}px`;
+    ret.width = `${props.width}px`;
   }
   return ret;
 });
+// const options = computed(() => {
+//   const ret = {
+//     responsive: true,
+//     position: 'relative'
+//   };
+//   return ret;
+// });
 
 let counterStore = null, userStore = null, prefs = null;
 
