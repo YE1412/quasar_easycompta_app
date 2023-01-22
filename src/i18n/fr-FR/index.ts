@@ -649,6 +649,7 @@ export default {
       totalFiscalYearHTIncomes: 'Total de revenus HT sur l\'année fiscale',
       totalFiscalYearTTIncomes: 'Total de revenus TTC sur l\'année fiscale',
       totalFiscalYearPaymentsIncomes: 'Encaissements sur l\'année fiscale',
+      totalFiscalYearPaymentsOverdue: 'Impayés sur l\'année fiscale',
     },
     labels: {
       servicesLabel: 'Service(s)',

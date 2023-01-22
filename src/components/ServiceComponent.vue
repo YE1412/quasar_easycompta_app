@@ -38,7 +38,7 @@
             :counter="false"
             :autogrow="false"
             :maxlength="30"
-            :clearable="true"
+            :clearable="!compact"
             :placeholders="t('servicesComponent.placeholders.name')"
             :rules="[
               val => nonEmptyNom || t('servicesComponent.errors.empty.name'),
@@ -57,7 +57,7 @@
             :label="addInputObject.montantHt.label"
             :hint="t('servicesComponent.hints.amount')"
             :hide-hint="true"
-            :clearable="true"
+            :clearable="!compact"
             :placeholders="t('servicesComponent.placeholders.amount')"
             :rules="[
               val => nonEmptyMontantHt || t('servicesComponent.errors.empty.amount'),
@@ -76,7 +76,7 @@
             :label="addInputObject.quantite.label"
             :hint="t('servicesComponent.hints.quantity')"
             :hide-hint="true"
-            :clearable="true"
+            :clearable="!compact"
             :placeholders="t('servicesComponent.placeholders.quantity')"
             :rules="[
               val => nonEmptyQuantite || t('servicesComponent.errors.empty.quantity'),
@@ -230,6 +230,16 @@ const validQuantite = computed(() => {
 const nonEmptyQuantite = computed(() => {
   return !!quantite.value && parseInt(quantite.value) != 0;
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, 
   // serviceStore = null, 
@@ -241,6 +251,8 @@ if (platform.is.desktop) {
   // serviceStore = useServiceStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -707,6 +719,10 @@ async function updateServiceInDb() {
       messageStore.setMessagesVisibility(true);
       return false;
     });
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

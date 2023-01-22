@@ -11,7 +11,7 @@
       :no-data-label="no_data_label"
       :no-results-label="t('forms.errors.empty.filterBodyContentText')"
       separator="horizontal"
-      :dense="platform.is.desktop ? false : true">
+      :dense="compact">
       <template v-slot:no-data="{icon, message}">
         <div class="full-width row flex-center text-accent q-gutter-sm">
           <q-icon size="2em" name="sentiment_dissatisfied"/>
@@ -222,6 +222,16 @@ const contentsForDisp = computed(() => {
 });
 const tableHeadForDisplay: Ref<TableColumnDef[]> = ref([]);
 const emits = [props.addActionName, props.updateActionName, props.deleteActionName];
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 // console.log(props);
 let serviceStore = null, actorStore = null, orderStore = null, paymentStore = null, invoiceStore = null, sessionStore = null, userStore = null, prefs = null, session = null;
 
@@ -236,6 +246,8 @@ if (platform.is.desktop) {
   userStore = useUserStore();
 } 
 else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     session = await prefs.getPref('session');
@@ -1334,6 +1346,10 @@ function fetchColumn() {
   } 
   // console.log(tableHead);
   return tableHead;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

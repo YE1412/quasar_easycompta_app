@@ -649,6 +649,7 @@ export default {
       totalFiscalYearHTIncomes: 'Total fiscal year incomes excl. taxes',
       totalFiscalYearTTIncomes: 'Total fiscal year incomes incl. taxes',
       totalFiscalYearPaymentsIncomes: 'Withdrawal in the fiscal year',
+      totalFiscalYearPaymentsOverdue: 'Overdue in the fiscal year',
     },
     labels: {
       servicesLabel: 'Service(s)',

@@ -25,6 +25,10 @@
               :props="propos">
               {{ propos.row.totalFiscalYearPaymentsIncomes }}
             </q-td>
+            <q-td style="text-align: center;" key="totalFiscalYearPaymentsOverdue"
+              :props="propos">
+              {{ propos.row.totalFiscalYearPaymentsOverdue }}
+            </q-td>
           </q-tr>
       </template>
     </q-table>
@@ -84,6 +88,14 @@ const defaultHeadTableObj = [{
   align: 'center',
   sortable: false,
   headerStyle: 'text-align: center',
+},
+{
+  name: 'totalFiscalYearPaymentsOverdue',
+  label: t('homeComponent.headTable.totalFiscalYearPaymentsOverdue'),
+  field: 'totalFiscalYearPaymentsOverdue',
+  align: 'center',
+  sortable: false,
+  headerStyle: 'text-align: center',
 }];
 
 const headTable = ref(props.headTableObj.length ? props.headTableObj : defaultHeadTableObj);
@@ -110,7 +122,8 @@ if (platform.is.desktop) {
           {
             'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
             'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
-            'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
+            'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`,
+            'totalFiscalYearPaymentsOverdue': `${await getNotPayFYI()} ${devise.symbole}`,
           }
         );
       } else {
@@ -118,7 +131,8 @@ if (platform.is.desktop) {
           {
             'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
             'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
-            'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
+            'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`,
+            'totalFiscalYearPaymentsOverdue': `${devise.symbole} ${await getNotPayFYI()}`,
           }
         );
       }
@@ -246,7 +260,8 @@ else {
         {
           'totalFiscalYearHTIncomes': `${await getHtFYI()} ${devise.symbole}`,
           'totalFiscalYearTTIncomes': `${await getTtFYI()} ${devise.symbole}`,
-          'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`
+          'totalFiscalYearPaymentsIncomes': `${await getPayFYI()} ${devise.symbole}`,
+          'totalFiscalYearPaymentsOverdue': `${await getNotPayFYI()} ${devise.symbole}`,
         }
       );
     } else {
@@ -254,7 +269,8 @@ else {
         {
           'totalFiscalYearHTIncomes': `${devise.symbole} ${await getHtFYI()}`,
           'totalFiscalYearTTIncomes': `${devise.symbole} ${await getTtFYI()}`,
-          'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`
+          'totalFiscalYearPaymentsIncomes': `${devise.symbole} ${await getPayFYI()}`,
+          'totalFiscalYearPaymentsOverdue': `${devise.symbole} ${await getNotPayFYI()}`,
         }
       );
     }
@@ -317,7 +333,9 @@ async function getPayFYI() {
           // console.log(counterStore.getInvoicesFY[k]);
           // ret += 
           //   counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
-          ret += convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle));
+          ret += counterStore.getInvoicesFY[k]['payments'][l].paymentValue
+            ? convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+            : 0 ;
         }
       }
     }
@@ -333,7 +351,9 @@ async function getPayFYI() {
         if (invoices[k]['payments'][l].etat === 1){
           // console.log(invoices[k]);
           // ret += invoices[k]['payments'][l].paymentValue ?? 0;
-          ret += convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle));
+          ret += invoices[k]['payments'][l].paymentValue
+            ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
+            : 0;
         }
       }
     }
@@ -349,9 +369,12 @@ async function getNotPayFYI() {
     for (const k in counterStore.getInvoicesFY) {
       for (const l in counterStore.getInvoicesFY[k]['payments']) {
         if (counterStore.getInvoicesFY[k]['payments'][l].etat === 0) {
-          console.log(counterStore.getInvoicesFY[k]);
-          ret +=
-            counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
+          // console.log(counterStore.getInvoicesFY[k]);
+          // ret +=
+            // counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
+          ret += counterStore.getInvoicesFY[k]['payments'][l].paymentValue 
+            ? convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+            : 0;
         }
       }
     }
@@ -365,8 +388,11 @@ async function getNotPayFYI() {
     for (const k in invoices) {
       for (const l in invoices[k]['payments']){
         if (invoices[k]['payments'][l].etat === 0){
-          console.log(invoices[k]);
-          ret += invoices[k]['payments'][l].paymentValue ?? 0;
+          // console.log(invoices[k]);
+          // ret += invoices[k]['payments'][l].paymentValue ?? 0;
+          ret += invoices[k]['payments'][l].paymentValue 
+            ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
+            : 0 ;
         }
       }
     }
