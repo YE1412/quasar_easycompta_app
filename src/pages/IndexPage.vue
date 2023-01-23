@@ -868,6 +868,7 @@ onBeforeMount(async() => {
       messageStore.setMessagesVisibility(true);
     messageVisibility.value = messageStore.getMessagesVisibility;
     if (!import.meta.env.SSR){
+      await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
       await counterStore.getNbOrdersFromDb();
       await counterStore.getNbActorsFromDb();
       await counterStore.getNbServicesFromDb();

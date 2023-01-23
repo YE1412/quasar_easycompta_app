@@ -345,7 +345,7 @@ const getFinancialYearInvoices = (req, res) => {
         'devise.deviseId',
         'buyer.actorId',
         'seller.actorId',
-        // 'commandes.orderId',
+        'commandes.orderId',
         'payments.paymentId',
       ],
       where: {
@@ -361,6 +361,7 @@ const getFinancialYearInvoices = (req, res) => {
         },
         { model: actor, as: 'buyer' },
         { model: actor, as: 'seller' },
+        invoice.orders,
         {
           model: payment,
         },

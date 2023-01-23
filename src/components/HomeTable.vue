@@ -281,6 +281,7 @@ async function getHtFYI() {
     const invoices = !!props.invoicesFY
       ? props.invoicesFY
       : counterStore.getInvoicesFY;
+      // console.log(invoices);
     for (const k in invoices) {
       // ret += invoices[k].invoiceHTPrice;
       // ret += invoices[k].invoiceHTPrice
