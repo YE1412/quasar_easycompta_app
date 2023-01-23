@@ -60,7 +60,7 @@ const props = withDefaults(defineProps<BarChartProps>(), {
 });
 const platform = $q.platform;
 const now = ref(new Date());
-const counter = ref(null);
+// const counter = ref(null);
 const yearLabel = computed(() => {
   if (now.value.getMonth() > 5) {
     return (now.value.getFullYear());
