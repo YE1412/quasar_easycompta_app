@@ -41,6 +41,7 @@
             :autogrow='false'
             :maxlength='15'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.firstName")'
             :rules='[
               val => nonEmptyPrenom || t("actorsComponent.errors.empty.firstName"),
@@ -64,6 +65,7 @@
             :autogrow='false'
             :maxlength='15'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.lastName")'
             :rules='[
               val => nonEmptyNom || t("actorsComponent.errors.empty.lastName"),
@@ -87,6 +89,7 @@
             :autogrow='false'
             :maxlength='50'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.email")'
             :rules='[
               val => nonEmptyEmail || t("actorsComponent.errors.empty.email"),
@@ -110,6 +113,7 @@
             :autogrow='false'
             :maxlength='15'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.streetNum")'
             :rules='[
               val => nonEmptyNumRue || t("actorsComponent.errors.empty.streetNum"),
@@ -133,6 +137,7 @@
             :autogrow='false'
             :maxlength='50'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.streetName")'
             :rules='[
               val => nonEmptyNomRue || t("actorsComponent.errors.empty.streetName"),
@@ -156,6 +161,7 @@
             :autogrow='false'
             :maxlength='15'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.cp")'
             :rules='[
               val => nonEmptyCp || t("actorsComponent.errors.empty.cp"),
@@ -179,6 +185,7 @@
             :autogrow='false'
             :maxlength='50'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.city")'
             :rules='[
               val => nonEmptyVille || t("actorsComponent.errors.empty.city"),
@@ -202,6 +209,7 @@
             :autogrow='false'
             :maxlength='10'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.tel")'
             :rules='[
               val => nonEmptyTel || t("actorsComponent.errors.empty.tel"),
@@ -225,6 +233,7 @@
             :autogrow='false'
             :maxlength='15'
             :clearable='true'
+            :dense="compact"
             :placeholders='t("actorsComponent.placeholders.sellerNum")'
             :rules='[
               val => nonEmptyNumCommercant || t("actorsComponent.errors.empty.sellerNum"),
@@ -523,6 +532,16 @@ const numCommercantState = computed(() => {
   setNumCommercantValue(actorType);
   return actorType === 2 || actorType === 1 ? false : true; 
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, 
   // actorStore = null, 
@@ -534,6 +553,8 @@ if (platform.is.desktop) {
   // actorStore = useActorStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -1030,6 +1051,10 @@ async function deleteActorFromSQLiteDb() {
   });
   messageVisibility.value= true;
   return false;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

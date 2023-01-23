@@ -2,8 +2,8 @@
   <q-no-ssr>
     <MessagesItem v-if='messageVisibility && renderComponent' />
   </q-no-ssr>
-  <div class='q-pt-lg q-pb-lg SenExtrabold-font text-h2 text-uppercase text-center text-bold'>{{ t('profileComponent.titles.update') }}</div>
-  <div class='q-pa-lg' style='width: 70%'>
+  <div :class="'q-pt-lg q-pb-lg SenExtrabold-font '+ (compact ? 'text-h4' : 'text-h2') + ' text-uppercase text-center text-bold'">{{ t('profileComponent.titles.update') }}</div>
+  <div class='q-pa-lg' :style="!compact ? 'width: 70%;' : 'width: 100%;'">
     <q-form
       @submit='submit'
       @reset='reset'
@@ -354,6 +354,16 @@ const validateForm = computed(() => {
   // const ret3 = !!companyLogo.value ? validCompanyLogo.value : true ;
   return ret1 && ret2;
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 // const doGetImgForMobiles = async():HttpResponse => {
 //   let ret = null;
 //   const options: HttpOptions = {
@@ -389,6 +399,8 @@ if (platform.is.desktop) {
   messageVisibility.value = messageStore.getMessagesVisibility;
 }
 else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -972,6 +984,10 @@ function addedFile(files) {
 function removedFile() {
   companyLogoURL.value = null;
   companyLogo.value = null;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 // function upload() {
 //   return uploadImageAxiosService

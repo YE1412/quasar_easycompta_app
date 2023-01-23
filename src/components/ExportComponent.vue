@@ -14,7 +14,7 @@
         :no-data-label="t('invoicesComponent.errors.empty.tableBodyContentText')"
         :no-results-label="t('forms.errors.empty.filterBodyContentText')"
         separator="horizontal"
-        :dense="platform === 'web' ? false : true">
+        :dense="compact">
         <template v-slot:no-data="{icon, message}">
           <div class="full-width row flex-center text-accent q-gutter-sm">
             <q-icon size="2em" name="sentiment_dissatisfied"/>
@@ -198,6 +198,16 @@ const contentsForDisp = computed(() => {
   return ret;
 });
 const selectedIds = ref([]);
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, 
   // messages: Ref<Message> = ref([]), 
@@ -221,6 +231,8 @@ if (platform.is.desktop) {
   fetchDatasForTable();
 }
 else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -901,6 +913,10 @@ function sanitizeQueryResult(obj: any) {
     }
   }
   return ret;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

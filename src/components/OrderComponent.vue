@@ -40,6 +40,7 @@
               :autogrow='false'
               :maxlength='30'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("ordersComponent.placeholders.contenuAdditionnel")'
               :rules='[
                 val => validContenuAdditionnel || t("ordersComponent.errors.empty.contenuAdditionnel")
@@ -63,6 +64,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("ordersComponent.placeholders.priceHt")'
             >
                 <template v-slot:prepend v-if='platform.is.desktop'>
@@ -84,7 +86,7 @@
               :options='selectServicesOption'
               :hint='t("ordersComponent.hints.services")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense='compact'
             >
                 <template v-slot:prepend v-if='platform.is.desktop'>
                   <q-icon name='home_repair_service' />
@@ -247,6 +249,16 @@ const formSubmitButtonState = computed(() => {
   // console.log(ret2);
   return ret1 || ret2;
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, 
   // orderStore = null, 
@@ -261,6 +273,8 @@ if (platform.is.desktop) {
   // orderStore = useOrderStore();
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -863,6 +877,10 @@ async function deleteOrderFromSQLiteDb() {
   });
   messageVisibility.value = true;
   return false;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

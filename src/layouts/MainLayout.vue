@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="frosted-glass" elevated>
-      <q-toolbar class="full-width">
+      <q-toolbar class="full-width justify-between">
         <q-btn
           flat
           dense
@@ -24,10 +24,13 @@
 
         <q-item
           clickable
+          :dense="compact"
+          style="padding: 2px 0 2px 16px"
         >
           <q-btn
             flat
-            :to="{name: connected ? t('homeLinkName') : t('startLinkName')}">
+            :to="{name: connected ? t('homeLinkName') : t('startLinkName')}"
+            padding="0 0">
             <q-item-section
               avatar
             >
@@ -40,8 +43,9 @@
 
         <q-space v-if="!compact"/>
 
-        <q-item clickable class="float-right">
-          <q-btn-dropdown stretch flat fab fab-mini :label="!compact ? t('toolbar.languageLabel') : ''">
+        <q-item clickable class="float-right" :dense="compact" :style="compact ? 'padding: 0;' : ''">
+          <q-btn-dropdown stretch flat fab fab-mini :label="!compact ? t('toolbar.languageLabel') : ''" 
+            padding="16px 0">
             <q-list>
               <q-item-label header>
                 {{ t('toolbar.dropdownHeader') }}
@@ -57,7 +61,7 @@
             </q-list>
           </q-btn-dropdown>
           <q-no-ssr>
-            <q-item-section avatar>
+            <q-item-section avatar style="padding: 0">
               <span :class="`fi fi-${classAssoc[displayedLanguage.nom].class}`"></span>
             </q-item-section>
           </q-no-ssr>

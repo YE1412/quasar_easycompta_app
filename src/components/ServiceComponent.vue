@@ -36,9 +36,10 @@
             :hint="t('servicesComponent.hints.name')"
             :hide-hint="true"
             :counter="false"
-            :autogrow="false"
+            :autogrow="true"
             :maxlength="30"
-            :clearable="!compact"
+            :clearable="true"
+            :dense="compact"
             :placeholders="t('servicesComponent.placeholders.name')"
             :rules="[
               val => nonEmptyNom || t('servicesComponent.errors.empty.name'),
@@ -57,7 +58,8 @@
             :label="addInputObject.montantHt.label"
             :hint="t('servicesComponent.hints.amount')"
             :hide-hint="true"
-            :clearable="!compact"
+            :clearable="true"
+            :dense="compact"
             :placeholders="t('servicesComponent.placeholders.amount')"
             :rules="[
               val => nonEmptyMontantHt || t('servicesComponent.errors.empty.amount'),
@@ -76,7 +78,8 @@
             :label="addInputObject.quantite.label"
             :hint="t('servicesComponent.hints.quantity')"
             :hide-hint="true"
-            :clearable="!compact"
+            :clearable="true"
+            :dense="compact"
             :placeholders="t('servicesComponent.placeholders.quantity')"
             :rules="[
               val => nonEmptyQuantite || t('servicesComponent.errors.empty.quantity'),

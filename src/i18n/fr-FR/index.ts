@@ -335,9 +335,9 @@ export default {
       facture: 'Facture',
     },
     placeholders: {
-      etat: 'État',
+      etat: 'États',
       paymentValue: 'Valeur',
-      paymentType: 'Type',
+      paymentType: 'Types',
       facture: 'Factures',
     },
     hints: {

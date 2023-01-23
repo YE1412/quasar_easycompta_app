@@ -112,3 +112,16 @@
 .messages > div > span.severityKo{
     color: vars.$severity-KO-text;
 }
+.compact-input {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.compact-input > td{
+	width: max-content;
+	height: max-content !important;
+	// overflow-x: scroll;
+}
+// .compact-input > th{
+// 	width: 89px;
+// }

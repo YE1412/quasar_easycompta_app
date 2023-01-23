@@ -45,9 +45,9 @@
       :rows="addDefaultRow"
       :row-key="ident"
       separator="horizontal"
-      :dense="platform.is.desktop ? false : true">
+      :hide-header="platform.is.desktop ? false : true">
       <template v-slot:body>
-        <q-tr>
+        <q-tr :class="!platform.is.desktop ? 'compact-input' : ''">
           <slot
             :name="addForm">
           </slot>

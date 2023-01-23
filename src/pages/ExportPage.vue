@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="row items-center justify-start">
+  <q-page padding class="row items-center justify-start content-start">
     <!-- content -->
     <export-component
       v-if="renderComponent"

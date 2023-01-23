@@ -42,6 +42,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("invoicesComponent.placeholders.date")'
               :reactive-rules='false'
               :rules='[
@@ -67,6 +68,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("invoicesComponent.placeholders.invoiceHTPrice")'
               :reactive-rules='true'
               :rules='[
@@ -92,6 +94,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("invoicesComponent.placeholders.invoiceTTPrice")'
               :reactive-rules='false'
             >
@@ -113,6 +116,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("invoicesComponent.placeholders.tva")'
               :reactive-rules='false'
               :rules='[
@@ -139,7 +143,7 @@
               :options='selectLanguagesOption'
               :hint='t("invoicesComponent.hints.language")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyLanguage || t("invoicesComponent.errors.empty.language")
               ]'
@@ -168,7 +172,7 @@
               :options='selectDevisesOption'
               :hint='t("invoicesComponent.hints.devise")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyDevise || t("invoicesComponent.errors.empty.devise")
               ]'
@@ -197,7 +201,7 @@
               :options='selectBuyersOption'
               :hint='t("invoicesComponent.hints.buyer")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyBuyer || t("invoicesComponent.errors.empty.buyer")
               ]'
@@ -226,7 +230,7 @@
               :options='selectSellersOption'
               :hint='t("invoicesComponent.hints.seller")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptySeller || t("invoicesComponent.errors.empty.seller")
               ]'
@@ -255,7 +259,7 @@
               :options='selectOrdersOption'
               :hint='t("invoicesComponent.hints.commande")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyCommandes || t("invoicesComponent.errors.empty.commande")
               ]'
@@ -284,7 +288,7 @@
               :options='selectPaymentsOption'
               :hint='t("invoicesComponent.hints.payment")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :reactive-rules='true'
               :rules='[
                 val => validPayments || t("invoicesComponent.errors.error.payment")
@@ -609,6 +613,16 @@ const formSubmitButtonState = computed(() => {
   // console.log(ret2);
   return ret1 || ret2;
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, 
   invoiceStore = null, 
@@ -627,6 +641,8 @@ if (platform.is.desktop) {
   userId.value = userStore.getUser.userId;
   messageVisibility.value = messageStore.getMessagesVisibility;
 } else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const usr = await prefs.getPref('user');
@@ -1244,17 +1260,18 @@ async function fetchDatasForForms() {
 async function addClickFromChild(e: Event, db: boolean) {
   e.preventDefault();
   if (!db) {
+    await fetchDatasForForms();
     invoiceId.value = 0;
     date.value = null;
     // invoiceHTPrice.value = 0;
     // invoiceTTPrice.value = 0;
-    language.value = null;
-    devise.value = null;
+    language.value = {value: 0, label: t('invoicesComponent.placeholders.language'), cannotSelect: true, langueId: 0, libelle: null, nom: null};
+    devise.value = {value: 0, label: t('invoicesComponent.placeholders.devise'), cannotSelect: true, deviseId: 0, libelle: null, symbole: null};
     tvaValue.value = null;
-    buyer.value = null;
-    seller.value = null;
-    commandes.value = [];
-    payments.value = [];
+    buyer.value = {value: 0, label: t('invoicesComponent.placeholders.buyer'), cannotSelect: true, actorId: 0, cp: null, email: null, nom: null, prenom: null, nomRue: null, numRue: null, tel: null, actorTypeId: 0, ville: null, numCommercant: null};
+    seller.value = {value: 0, label: t('invoicesComponent.placeholders.seller'), cannotSelect: true, actorId: 0, cp: null, email: null, nom: null, prenom: null, nomRue: null, numRue: null, tel: null, actorTypeId: 0, ville: null, numCommercant: null};
+    commandes.value = [{value: 0, label: t('invoicesComponent.placeholders.commande'), cannotSelect: true, orderId: 0, contenuAdditionnel: null, priceHt: 0, factureId: 0}];
+    payments.value = [{value: 0, label: t('invoicesComponent.placeholders.payment'), cannotSelect: true, paymentId: 0, etat: -1, paymentValue: 0, paymentType: 0, factureId: 0}];
     adminPropRef.value = true;
     displayPropRef.value = false;
     isForm.value = true;
@@ -1274,7 +1291,6 @@ async function addClickFromChild(e: Event, db: boolean) {
       payments: [],
       actions: null,
     };
-    await fetchDatasForForms();
     forceTableRerender();
   } else {
     // console.log('Adding invoice to db !');
@@ -1975,6 +1991,10 @@ function fromLivreToOther(val: number, dest: string): number {
       break;
   }
   return ret;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS

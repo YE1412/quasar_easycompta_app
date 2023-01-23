@@ -42,7 +42,7 @@
               :options='selectEtatsOption'
               :hint='t("paymentsComponent.hints.etat")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyEtat || t("paymentsComponent.errors.empty.etat")
               ]'
@@ -70,6 +70,7 @@
               :counter='false'
               :autogrow='false'
               :clearable='true'
+              :dense="compact"
               :placeholders='t("paymentsComponent.placeholders.paymentValue")'
               :reactive-rules='true'
               :rules='[
@@ -96,7 +97,7 @@
               :options='selectTypesOption'
               :hint='t("paymentsComponent.hints.paymentType")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyType || t("paymentsComponent.errors.empty.paymentType")
               ]'
@@ -125,7 +126,7 @@
               :options='selectInvoicesOption'
               :hint='t("paymentsComponent.hints.facture")'
               :hide-hint='true'
-              :dense='platform.is.desktop ? false : true'
+              :dense="compact"
               :rules='[
                 val => nonEmptyFacture || t("paymentsComponent.errors.empty.facture")
               ]'
@@ -316,6 +317,16 @@ const formSubmitButtonState = computed(() => {
   // console.log(ret2);
   return ret1 || ret2;
 });
+const orientation = ref(null);
+const compact = computed(() => {
+  let ret = false;
+  if (!!orientation.value){
+    if (orientation.value === 'portrait-primary' || orientation.value === 'portrait-secondary'){
+      ret = true;
+    }
+  }
+  return ret;
+});
 
 let messageStore = null, paymentStore = null, prefs = null, invoiceStore = null, userStore = null, user = null;
 
@@ -328,6 +339,8 @@ if (platform.is.desktop) {
   messageVisibility.value = messageStore.getMessagesVisibility;
   user = userStore.getUser;
 } else {
+  orientation.value = window.screen.orientation.type;
+  window.addEventListener('orientationchange', handleOrientation);
   (async () => {
     prefs = await import('cap/storage/preferences');
     const mess = await prefs.getPref('message');
@@ -562,11 +575,12 @@ async function fetchDatasForForms() {
 async function addClickFromChild(e: Event, db: boolean) {
   e.preventDefault();
   if (!db) {
+    await fetchDatasForForms();
     paymentId.value = 0;
-    etat.value = null;
+    etat.value = {value: -1, label: t('paymentsComponent.placeholders.etat'), etat: -1, cannotSelect: true};
     paymentValue.value = 0;
-    paymentType.value = null;
-    facture.value = null;
+    paymentType.value = {value: 0, label: t('paymentsComponent.placeholders.paymentType'), cannotSelect: true, paymentId: 0};
+    facture.value = {value: 0, label: t('paymentsComponent.placeholders.facture'), cannotSelect: true, factureId: 0, date: null, invoiceHTPrice: 0, invoiceTTPrice: 0, languageId: 0, deviseId: 0, tvaValue: 0, buyerId: 0, sellerId: 0, administratorId: 0};
     adminPropRef.value = true;
     displayPropRef.value = false;
     isForm.value = true;
@@ -580,7 +594,6 @@ async function addClickFromChild(e: Event, db: boolean) {
       facture: null,
       actions: '',
     };
-    await fetchDatasForForms();
     forceTableRerender();
   } else {
     // console.log('Adding payment to db !');
@@ -964,6 +977,10 @@ async function deletePaymentFromSQLiteDb() {
   });
   messageVisibility.value = true;
   return false;
+};
+function handleOrientation(){
+  // console.log(screen.orientation);
+  orientation.value = screen.orientation.type;
 };
 
 // WATCHERS
