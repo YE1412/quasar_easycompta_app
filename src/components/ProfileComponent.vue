@@ -170,10 +170,10 @@
         :hint="t('profileComponent.hints.userType')"
         :hide-hint="true"
         lazy-rules
-        :rules="[ val => nonEmptyUserType|| t('profileComponent.errors.empty.userType')
+        :rules="[ val => nonEmptyUserType || t('profileComponent.errors.empty.userType')
         ]"
       />
-      <div>
+      <div class="flex items-center content-center justify-center">
         <q-btn :label="t('profileComponent.libelles.updateButton')" type="submit" color="primary"/>
         <q-btn :label="t('profileComponent.libelles.resetButton')" type="reset" color="primary" flat class="q-ml-sm" />
       </div>

@@ -489,14 +489,16 @@ const invoiceHTPrice = computed(() => {
   if (int && (!!devise.value && devise.value.value != 0)) {
     ret = convertAmount(int, devise.value.libelle, getConvertFunc());
   }
-  return ret;
+  return ret.toFixed(2);
 });
 const invoiceTTPrice = computed(() => {
+  let ret = 0.0;
   if (!!tvaValue.value){
-    return parseFloat(invoiceHTPrice.value) * (1 + parseFloat(tvaValue.value));
+    ret = parseFloat(invoiceHTPrice.value) * (1 + (1 * parseFloat(tvaValue.value)));
   } else {
-    return parseFloat(invoiceHTPrice.value);
+    ret = parseFloat(invoiceHTPrice.value);
   }
+  return ret.toFixed(2);
 });
 const maxValue = computed(() => {
   let ret = 0,
@@ -1347,6 +1349,7 @@ async function addClickFromChild(e: Event, db: boolean) {
 async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
+    await fetchDatasForForms();
     // console.log(obj);
     isForm.value = true;
     formState.update = true;
@@ -1408,7 +1411,6 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
       payments: pay,
       actions: null,
     };
-    await fetchDatasForForms();;
     forceTableRerender();
   }
   else {

@@ -650,6 +650,8 @@ async function addClickFromChild(e: Event, db: boolean) {
 async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   e.preventDefault();
   if (!db) {
+    await fetchDatasForForms();
+    // console.log(obj);
     isForm.value = true;
     formState.update = true;
     formState.add = false;
@@ -667,12 +669,11 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
     let label = obj.payment_type.cb ? t('paymentsComponent.libelles.types.cb') : '';
     label = obj.payment_type.esp ? t('paymentsComponent.libelles.types.esp') : label;
     label = obj.payment_type.chq ? t('paymentsComponent.libelles.types.chq') : label;
-    paymentId.value = id;
+    paymentId.value = obj.paymentId;
     etat.value = {value: obj.etat, label: obj.etat ? t('paymentsComponent.libelles.etats.paid') : t('paymentsComponent.libelles.etats.not_paid') , etat: obj.etat, cannotSelect: false};
     paymentValue.value = obj.paymentValue;
-    paymentType.value = {value: obj.payment_type.paymentTypeId, label: label, cb: obj.payment_type.cb, esp: obj.payment_type.esp, chq: obj.payment_type.chq, cannotSelect: false};
+    paymentType.value = {value: obj.payment_type.paymentTypeId, label: label, paymentTypeId: obj.payment_type.paymentTypeId, cb: obj.payment_type.cb, esp: obj.payment_type.esp, chq: obj.payment_type.chq, cannotSelect: false};
     facture.value = obj.facture;
-    await fetchDatasForForms();
     forceTableRerender();
   } else {
     // console.log('Update payment to db !');

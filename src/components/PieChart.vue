@@ -4,6 +4,7 @@
   >
     <div class="SenExtrabold-font">{{ t("homeComponent.pieChart.heading") }}</div>
     <Pie
+      v-if="loaded"
       :data="chartData"
       :style="chartStyle"
     />
@@ -97,6 +98,7 @@ const chartStyle = computed(() => {
   }
   return ret;
 });
+const loaded = ref(false);
 // const options = computed(() => {
 //   const ret = {
 //     responsive: true,
@@ -205,6 +207,7 @@ else {
       },
     ],
   };
+  loaded.value = true;
   // console.log(chartData.value);
 })();
 

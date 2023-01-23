@@ -477,6 +477,7 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
   // console.log(obj);
   // console.log(id);
   if (!db) {
+    await fetchDatasForForms();
     let servicesSelected = [];
     let servObj = {}; 
     for (const k in obj.Services) {
@@ -511,11 +512,10 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
       priceHt: obj.priceHt,
       actions: ''
     };
-    orderId.value = id;
+    orderId.value = obj.orderId;
     contenuAdditionnel.value = obj.contenuAdditionnel;
     services.value = servicesSelected;
     // priceHt.value = obj.priceHt;
-    await fetchDatasForForms();
     forceTableRerender();
   } else {
     // orderId.value = id;

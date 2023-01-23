@@ -3,19 +3,9 @@
     :class="cssClasses"
   >
     <div class="SenExtrabold-font">{{ t("homeComponent.barChart.heading") }}</div>
-    <!-- <bar
-      :chart-options="chartOptions"
-      :chart-data="chartData"
-      :chart-id="chartId"
-      :dataset-id-key="datasetIdKey"
-      :plugins="plugins"
-      :css-classes="cssClasses"
-      :styles="styles"
-      :width="width"
-      :height="height"
-    /> -->
     <bar :data="chartData"
-      :style="chartStyle"/>
+      :style="chartStyle"
+      v-if="loaded" />
   </div>
 </template>
 
@@ -127,6 +117,7 @@ const chartStyle = computed(() => {
   }
   return ret;
 });
+const loaded = ref(false);
 
 let counterStore = null, userStore = null, prefs = null;
 
@@ -276,6 +267,7 @@ else {
       },
     ],
   };
+  loaded.value = true;
 })();
 
 // FUNCTIONS

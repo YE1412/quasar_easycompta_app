@@ -349,7 +349,6 @@ async function getTtFYI() {
       //   : 0;
       for (const l in invoices[k].commandes){
         ret += invoices[k].commandes[l].priceHt * (1 + (1 * invoices[k].tvaValue));
-        // console.log(ret);
       }
     }
     return new Intl.NumberFormat(locale, {
