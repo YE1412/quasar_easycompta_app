@@ -205,6 +205,7 @@ if (platform.is.desktop) {
     const mimeType = getMimeType(buildedPdf[0].name);
     await openFile(buildedPdf[0].uri, mimeType);
   }
+  // console.log('Redirecting to Export');
   router.push({name: t('exportLinkName')});
   // console.log(route.params);
 })();

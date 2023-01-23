@@ -158,31 +158,41 @@ else {
     if (isOpen) {
       const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}')`;
       // console.log(sql);
-      const values = await newQuery(props.dbConn, sql);
-      // console.log('BarChart !');
-      // console.log(values);
-      if (!!values && values.values.length){
-        const intRes = sanitizeQueryResult(values.values);
-        // console.log(intRes);
-        await setDecryptApi();
-        const res = await __TRANSFORMOBJ__(intRes);
-        // console.log(res);
-        let counterSess = await prefs.getPref('counter');
-        counterSess = !!counterSess ? counterSess : {};
-        counterSess.invoicesFY = res;
-        await prefs.setPref('counter', counterSess, false);
+      let counterSess = await prefs.getPref('counter');
+      if (!!counterSess === false || !!counterSess.invoicesFY === false || !counterSess.invoicesFY.length){
+        const values = await newQuery(props.dbConn, sql);
+        // console.log('BarChart !');
+        // console.log(values);
+        if (!!values && values.values.length){
+          const intRes = sanitizeQueryResult(values.values);
+          // console.log(intRes);
+          await setDecryptApi();
+          const res = await __TRANSFORMOBJ__(intRes);
+          // console.log(res);
+          // let counterSess = await prefs.getPref('counter');
+          // console.log(counterSess);
+          counterSess = !!counterSess ? counterSess : {};
+          counterSess.invoicesFY = res;
+          await prefs.setPref('counter', counterSess, false);
+          // console.log(counterSess);
+          // counter.value = counterSess;
+        }
+        // else {
+        //   await prefs.setPref('message', {
+        //     messages: [
+        //       {
+        //         severity: true,
+        //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
+        //       }
+        //     ],
+        //     messagesVisibility: true,
+        //   });
+        // }
+        counter.value = await prefs.getPref('counter');
       }
-      // else {
-      //   await prefs.setPref('message', {
-      //     messages: [
-      //       {
-      //         severity: true,
-      //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
-      //       }
-      //     ],
-      //     messagesVisibility: true,
-      //   });
-      // }
+      else {
+        counter.value = counterSess;
+      }
     }
     else {
       await prefs.setPref('message', {
@@ -195,65 +205,54 @@ else {
         messagesVisibility: true,
       });
       // messageVisibility.value = true;
+      counter.value = await prefs.getPref('counter');
     }
-    counter.value = await prefs.getPref('counter');
   }
 
   const lastDayNum = checkLeapYear(yearLabel.value + 1)
     ? '29'
     : '28';
   // console.log(lastDayNum);
+  // console.log(counter.value);
 
-  datas.value = [
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-06-01`),
-      new Date(`${yearLabel.value}-06-30`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-07-01`),
-      new Date(`${yearLabel.value}-07-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-08-01`),
-      new Date(`${yearLabel.value}-08-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-09-01`),
-      new Date(`${yearLabel.value}-09-30`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-10-01`),
-      new Date(`${yearLabel.value}-10-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-11-01`),
-      new Date(`${yearLabel.value}-11-30`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value}-12-01`),
-      new Date(`${yearLabel.value}-12-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value + 1}-01-01`),
-      new Date(`${yearLabel.value + 1}-01-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value + 1}-02-01`),
-      new Date(`${yearLabel.value + 1}-02-${lastDayNum}`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value + 1}-03-01`),
-      new Date(`${yearLabel.value + 1}-03-31`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value + 1}-04-01`),
-      new Date(`${yearLabel.value + 1}-04-30`)
-    ),
-    await getNbInvoices(
-      new Date(`${yearLabel.value + 1}-05-01`),
-      new Date(`${yearLabel.value + 1}-05-31`)
-    ),
-  ];
+  datas.value = [];
+  let ind = 0, month = 6;
+  while (ind < 12){
+    let param = [], last = 30;
+    const array1 = [7, 8, 10, 12, 1, 3, 5];
+    if (month === 13){
+      month = 1;
+    }
+    if (array1.findIndex((elem) => elem === month) !== -1){
+      last = 31;
+    }
+    if (month < 10){
+      if (month === 2){
+        param.push(`${yearLabel.value + 1}-0${month}-01`);
+        param.push(`${yearLabel.value + 1}-0${month}-${lastDayNum}`);
+      }
+      else if (month > 5){
+        param.push(`${yearLabel.value}-0${month}-01`);
+        param.push(`${yearLabel.value}-0${month}-${last}`);
+      }
+      else {
+        param.push(`${yearLabel.value + 1}-0${month}-01`);
+        param.push(`${yearLabel.value + 1}-0${month}-${last}`);
+      }
+    }
+    else {
+      param.push(`${yearLabel.value}-${month}-01`);
+      param.push(`${yearLabel.value}-${month}-${last}`);
+    }
+    // console.log(param);
+    const res = await getNbInvoices(
+      new Date(param[0]),
+      new Date(param[1])
+    );
+    datas.value.push(res);
+    ind++;
+    month++;
+  }
 
   // console.log(datas.value);
 
@@ -267,6 +266,7 @@ else {
       },
     ],
   };
+  // console.log(chartData.value);
   loaded.value = true;
 })();
 
