@@ -53,6 +53,7 @@ interface HomeTableProps {
   headTableObj?: [];
   contentTableObj?: [];
   cssClasses: string;
+  invoicesFY?: [] | null;
   dbConn: SQLiteDBConnection | null;
 };
 const $q = useQuasar();
@@ -60,6 +61,7 @@ const platform = $q.platform;
 const { t } = useI18n();
 const props = withDefaults(defineProps<HomeTableProps>(), {
   cssClasses: '',
+  invoicesFY: null,
   headTableObj: () => [
   ],
   contentTableObj: () => ([]),
@@ -115,7 +117,8 @@ if (platform.is.desktop) {
     (async() => {
       devise = userStore.getUser.devise;
       await counterStore.getAllPrices();
-      await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
+      if (!!props.invoicesFY === false)
+        await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
       await counterStore.getFinancialYearNbInvoices(userStore.getUser.userId);
       if (devise.deviseId == 3) {
         contentTable.value.push(
@@ -214,33 +217,25 @@ else {
         // messageVisibility.value = true;
       }
 
-      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
-      // console.log(sql);
-      values = await newQuery(props.dbConn, sql);
-      // console.log(values);
-      if (values.values.length){
-        const intRes = sanitizeQueryResult(values.values);
-        // console.log(intRes);
-        await setDecryptApi();
-        const res = await __TRANSFORMOBJ__(intRes);
-        // console.log(res);
+      if (!!props.invoicesFY === false){
+        sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
+        // console.log(sql);
         let counterSess = await prefs.getPref('counter');
-        // console.log(counterSess);
-        counterSess = !!counterSess ? counterSess : {};
-        counterSess.invoicesFY = res;
-        await prefs.setPref('counter', counterSess, false);
+        values = await newQuery(props.dbConn, sql);
+        // console.log(values);
+        if (values.values.length){
+          const intRes = sanitizeQueryResult(values.values);
+          // console.log(intRes);
+          await setDecryptApi();
+          const res = await __TRANSFORMOBJ__(intRes);
+          // console.log(res);
+          // let counterSess = await prefs.getPref('counter');
+          // console.log(counterSess);
+          counterSess = !!counterSess ? counterSess : {};
+          counterSess.invoicesFY = res;
+          await prefs.setPref('counter', counterSess, false);
+        }
       }
-      // else {
-      //   await prefs.setPref('message', {
-      //     messages: [
-      //       {
-      //         severity: true,
-      //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
-      //       }
-      //     ],
-      //     messagesVisibility: true,
-      //   });
-      // }
     }
     else {
       await prefs.setPref('message', {
@@ -283,14 +278,17 @@ else {
 async function getHtFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      // ret += counterStore.getInvoicesFY[k].invoiceHTPrice;
-      // ret += counterStore.getInvoicesFY[k].invoiceHTPrice
-      //   ? convertAmount(counterStore.getInvoicesFY[k].invoiceHTPrice, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      // ret += invoices[k].invoiceHTPrice;
+      // ret += invoices[k].invoiceHTPrice
+      //   ? convertAmount(invoices[k].invoiceHTPrice, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
       //   : 0 ;
-      for (const l in counterStore.getInvoicesFY[k].commandes){
-        // console.log(counterStore.getInvoicesFY[k].commandes[l].priceHt);
-        ret += counterStore.getInvoicesFY[k].commandes[l].priceHt;
+      for (const l in invoices[k].commandes){
+        // console.log(invoices[k].commandes[l].priceHt);
+        ret += invoices[k].commandes[l].priceHt;
       }
     }
     return new Intl.NumberFormat(locale, {
@@ -299,18 +297,10 @@ async function getHtFYI() {
   }
   else {
     const counter = await prefs.getPref('counter');
-    const invoices = !!counter ? counter.invoicesFY : [];
+    const invoices = !!props.invoicesFY 
+      ? props.invoicesFY
+      : (!!counter && !!counter.invoicesFY ? counter.invoicesFY : []);
     for (const k in invoices) {
-      // const invConverted = invoices[k].invoiceHTPrice
-      //   ? convertAmount(invoices[k].invoiceHTPrice, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
-      //   : 0;
-      // ret += invoices[k].invoiceHTPrice;
-      // console.log(invoices[k].invoiceHTPrice);
-      // console.log(new Intl.NumberFormat(locale, {
-      //     minimumFractionDigits: 2,
-      //   }).format(invConverted.toFixed(2)));
-      // ret += invConverted;
-      // console.log(invoices[k]);
       for (const l in invoices[k].commandes){
         // console.log(invoices[k].commandes[l]);
         ret += invoices[k].commandes[l].priceHt;
@@ -325,14 +315,12 @@ async function getHtFYI() {
 async function getTtFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      // ret += counterStore.getInvoicesFY[k].invoiceTTPrice;
-      // ret += counterStore.getInvoicesFY[k].invoiceTTPrice
-      //   ? convertAmount(counterStore.getInvoicesFY[k].invoiceTTPrice, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
-      //   : 0 ;
-      for (const l in counterStore.getInvoicesFY[k].commandes){
-        // ret += counterStore.getInvoicesFY[k].commandes[l].priceHt + (counterStore.getInvoicesFY[k].commandes[l].priceHt * counterStore.getInvoicesFY[k].tvaValue);
-        ret += counterStore.getInvoicesFY[k].commandes[l].priceHt * (1 + (1 * counterStore.getInvoicesFY[k].tvaValue));
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      for (const l in invoices[k].commandes){
+        ret += invoices[k].commandes[l].priceHt * (1 + invoices[k].tvaValue);
       }
     }
     return new Intl.NumberFormat(locale, {
@@ -341,14 +329,12 @@ async function getTtFYI() {
   }
   else {
     const counter = await prefs.getPref('counter');
-    const invoices = !!counter ? counter.invoicesFY : [];
+    const invoices = !!props.invoicesFY 
+      ? props.invoicesFY
+      : (!!counter && !!counter.invoicesFY ? counter.invoicesFY : []);
     for (const k in invoices) {
-      // ret += invoices[k].invoiceTTPrice;
-      // ret += invoices[k].invoiceTTPrice
-      //   ? convertAmount(invoices[k].invoiceTTPrice, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
-      //   : 0;
       for (const l in invoices[k].commandes){
-        ret += invoices[k].commandes[l].priceHt * (1 + (1 * invoices[k].tvaValue));
+        ret += invoices[k].commandes[l].priceHt * (1 + invoices[k].tvaValue);
       }
     }
     return new Intl.NumberFormat(locale, {
@@ -360,14 +346,14 @@ async function getTtFYI() {
 async function getPayFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      for (const l in counterStore.getInvoicesFY[k]['payments']) {
-        if (counterStore.getInvoicesFY[k]['payments'][l].etat === 1) {
-          // console.log(counterStore.getInvoicesFY[k]);
-          // ret += 
-          //   counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
-          ret += counterStore.getInvoicesFY[k]['payments'][l].paymentValue
-            ? convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      for (const l in invoices[k]['payments']) {
+        if (invoices[k]['payments'][l].etat === 1) {
+          ret += invoices[k]['payments'][l].paymentValue
+            ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
             : 0 ;
         }
       }
@@ -378,12 +364,12 @@ async function getPayFYI() {
   }
   else {
     const counter = await prefs.getPref('counter');
-    const invoices = !!counter ? counter.invoicesFY : [];
+    const invoices = !!props.invoicesFY 
+      ? props.invoicesFY
+      : (!!counter && !!counter.invoicesFY ? counter.invoicesFY : []);
     for (const k in invoices) {
       for (const l in invoices[k]['payments']){
         if (invoices[k]['payments'][l].etat === 1){
-          // console.log(invoices[k]);
-          // ret += invoices[k]['payments'][l].paymentValue ?? 0;
           ret += invoices[k]['payments'][l].paymentValue
             ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
             : 0;
@@ -399,14 +385,14 @@ async function getPayFYI() {
 async function getNotPayFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      for (const l in counterStore.getInvoicesFY[k]['payments']) {
-        if (counterStore.getInvoicesFY[k]['payments'][l].etat === 0) {
-          // console.log(counterStore.getInvoicesFY[k]);
-          // ret +=
-            // counterStore.getInvoicesFY[k]['payments'][l].paymentValue;
-          ret += counterStore.getInvoicesFY[k]['payments'][l].paymentValue 
-            ? convertAmount(counterStore.getInvoicesFY[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      for (const l in invoices[k]['payments']) {
+        if (invoices[k]['payments'][l].etat === 0) {
+          ret += invoices[k]['payments'][l].paymentValue 
+            ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
             : 0;
         }
       }
@@ -417,12 +403,12 @@ async function getNotPayFYI() {
   }
   else {
     const counter = await prefs.getPref('counter');
-    const invoices = !!counter ? counter.invoicesFY : [];
+    const invoices = !!props.invoicesFY 
+      ? props.invoicesFY
+      : (!!counter && !!counter.invoicesFY ? counter.invoicesFY : []);
     for (const k in invoices) {
       for (const l in invoices[k]['payments']){
         if (invoices[k]['payments'][l].etat === 0){
-          // console.log(invoices[k]);
-          // ret += invoices[k]['payments'][l].paymentValue ?? 0;
           ret += invoices[k]['payments'][l].paymentValue 
             ? convertAmount(invoices[k]['payments'][l].paymentValue, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
             : 0 ;
@@ -1048,4 +1034,6 @@ watch(
     contentTable.value = content;
   }
 );
+
+// LIFECYLLE EVENTS
 </script>

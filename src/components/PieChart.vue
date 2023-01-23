@@ -42,6 +42,7 @@ interface PieChartProps {
   cssClasses?: string;
   // styles?: unknow;
   plugins?: [];
+  invoicesFY?: [] | null;
   dbConn: SQLiteDBConnection | null;
 };
 const $q = useQuasar();
@@ -55,9 +56,10 @@ const props = withDefaults(defineProps<PieChartProps>(), {
   cssClasses: '',
   // styles: () => ({}),
   plugins: () => ([]),
+  invoicesFY: null,
   dbConn: null,
 });
-const counter = ref(null);
+// const counter = ref(null);
 let payStats = null, 
   cbVal = null, 
   cashVal = null, 
@@ -123,7 +125,8 @@ else {
   if (platform.is.desktop){
     if(!import.meta.env.SSR) {
       //await userStore.retrieveUser(1);
-      await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
+      if (!!props.invoicesFY === false)
+        await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
     }
   }
   else{
@@ -137,56 +140,38 @@ else {
     else {
       dateStart = new Date(`${now.getFullYear()}-06-01`);
     }
-
-    let isOpen = await isDbConnectionOpen(props.dbConn);
-    isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
-    if (isOpen) {
-      const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}')`;
-      // console.log(sql);
-      let counterSess = await prefs.getPref('counter');
-      if (!!counterSess === false || !!counterSess.invoicesFY === false || !counterSess.invoicesFY.length){
-        const values = await newQuery(props.dbConn, sql);
-        // console.log(values);
-        if (values.values.length){
-          const intRes = sanitizeQueryResult(values.values);
-          // console.log(intRes);
-          await setDecryptApi();
-          const res = await __TRANSFORMOBJ__(intRes);
-          // console.log(res);
-          counterSess = !!counterSess ? counterSess : {};
-          counterSess.invoicesFY = res;
-          await prefs.setPref('counter', counterSess, false);
-          counter.value = counterSess;
-        }
-        // else {
-        //   await prefs.setPref('message', {
-        //     messages: [
-        //       {
-        //         severity: true,
-        //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
-        //       }
-        //     ],
-        //     messagesVisibility: true,
-        //   });
-        // }
-        counter.value = await prefs.getPref('counter');
+    if (!!props.invoicesFY === false){
+      let isOpen = await isDbConnectionOpen(props.dbConn);
+      isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
+      if (isOpen) {
+        const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}')`;
+        // console.log(sql);
+          let counterSess = await prefs.getPref('counter');
+        // if (!!counterSess === false || !!counterSess.invoicesFY === false || !counterSess.invoicesFY.length){
+          const values = await newQuery(props.dbConn, sql);
+          // console.log(values);
+          if (values.values.length){
+            const intRes = sanitizeQueryResult(values.values);
+            // console.log(intRes);
+            await setDecryptApi();
+            const res = await __TRANSFORMOBJ__(intRes);
+            // console.log(res);
+            counterSess = !!counterSess ? counterSess : {};
+            counterSess.invoicesFY = res;
+            await prefs.setPref('counter', counterSess, false);
+          }
       }
       else {
-        counter.value = counterSess;
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
       }
-    }
-    else {
-      await prefs.setPref('message', {
-        messages: [
-          {
-            severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
-          }
-        ],
-        messagesVisibility: true,
-      });
-      // messageVisibility.value = true;
-      counter.value = await prefs.getPref('counter');
     }
   }
   payStats = await getPaymentsStats();
@@ -237,11 +222,14 @@ else {
 async function getPaymentsStats() {
   let ret = { cb: 0, cash: 0, chq: 0, all: 0 };
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      for (const l in counterStore.getInvoicesFY[k]['payments']) {
-        if (counterStore.getInvoicesFY[k]['payments'][l].etat) {
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      for (const l in invoices[k]['payments']) {
+        if (invoices[k]['payments'][l].etat) {
           switch (
-            counterStore.getInvoicesFY[k]['payments'][l].paymentType
+            invoices[k]['payments'][l].paymentType
           ) {
             case 1:
               ret.cb += 1;
@@ -263,7 +251,13 @@ async function getPaymentsStats() {
     }
   }
   else {
-    const invoices = !!counter.value ? counter.value.invoicesFY : [];
+    const count = await prefs.getPref('counter');
+    const invoices = !!props.invoicesFY
+    ? props.invoicesFY
+    : (!!count && !!count.invoicesFY ? count.invoicesFY : []);
+    // console.log(props);
+    // console.log(props.invoicesFY);
+    // console.log(invoices);
     for (const k in invoices) {
       for (const l in invoices[k]['payments']) {
         if (invoices[k]['payments'][l].etat) {

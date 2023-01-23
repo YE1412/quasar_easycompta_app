@@ -42,6 +42,7 @@ interface BarChartProps {
   cssClasses?: string;
   styles?: unknow;
   plugins?: [];
+  invoicesFY?: [] | null;
   dbConn: SQLiteDBConnection | null;
 };
 const $q = useQuasar();
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<BarChartProps>(), {
   cssClasses: '',
   styles: () => ({}),
   plugins: () => ([]),
+  invoicesFY: null,
   dbConn: null,
 });
 const platform = $q.platform;
@@ -135,7 +137,8 @@ else {
   if (platform.is.desktop){
     if (!import.meta.env.SSR){
       //await userStore.retrieveUser(1);
-      await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
+      if (!!props.invoicesFY === false)
+        await counterStore.getFinancialYearInvoices(userStore.getUser.userId);
     }
   }
   else {
@@ -153,59 +156,61 @@ else {
       dateStart = new Date(`${now.value.getFullYear()}-06-01`);
     }
 
-    let isOpen = await isDbConnectionOpen(props.dbConn);
-    isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
-    if (isOpen) {
-      const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}')`;
-      // console.log(sql);
-      let counterSess = await prefs.getPref('counter');
-      if (!!counterSess === false || !!counterSess.invoicesFY === false || !counterSess.invoicesFY.length){
-        const values = await newQuery(props.dbConn, sql);
-        // console.log('BarChart !');
-        // console.log(values);
-        if (!!values && values.values.length){
-          const intRes = sanitizeQueryResult(values.values);
-          // console.log(intRes);
-          await setDecryptApi();
-          const res = await __TRANSFORMOBJ__(intRes);
-          // console.log(res);
-          // let counterSess = await prefs.getPref('counter');
-          // console.log(counterSess);
-          counterSess = !!counterSess ? counterSess : {};
-          counterSess.invoicesFY = res;
-          await prefs.setPref('counter', counterSess, false);
-          // console.log(counterSess);
-          // counter.value = counterSess;
-        }
-        // else {
-        //   await prefs.setPref('message', {
-        //     messages: [
-        //       {
-        //         severity: true,
-        //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
-        //       }
-        //     ],
-        //     messagesVisibility: true,
-        //   });
+    if (!!props.invoicesFY === false){
+      let isOpen = await isDbConnectionOpen(props.dbConn);
+      isOpen = !isOpen || !!isOpen ? await openDbConnection(props.dbConn) : isOpen;
+      if (isOpen) {
+        const sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}' AND \`date_format\` > strftime('%s', '${dateStart.toISOString()}')`;
+        // console.log(sql);
+          let counterSess = await prefs.getPref('counter');
+        // if (!!counterSess === false || !!counterSess.invoicesFY === false || !counterSess.invoicesFY.length){
+          const values = await newQuery(props.dbConn, sql);
+          // console.log('BarChart !');
+          // console.log(values);
+          if (!!values && values.values.length){
+            const intRes = sanitizeQueryResult(values.values);
+            // console.log(intRes);
+            await setDecryptApi();
+            const res = await __TRANSFORMOBJ__(intRes);
+            // console.log(res);
+            // let counterSess = await prefs.getPref('counter');
+            // console.log(counterSess);
+            counterSess = !!counterSess ? counterSess : {};
+            counterSess.invoicesFY = res;
+            await prefs.setPref('counter', counterSess, false);
+            // console.log(counterSess);
+            // counter.value = counterSess;
+          }
+          // else {
+          //   await prefs.setPref('message', {
+          //     messages: [
+          //       {
+          //         severity: true,
+          //         content: t('homeComponent.results.ko.fetch_stats', { err: 'Select invoices from SQLite DB !' })
+          //       }
+          //     ],
+          //     messagesVisibility: true,
+          //   });
+          // }
+          // counter.value = await prefs.getPref('counter');
         // }
-        counter.value = await prefs.getPref('counter');
+        // else {
+        //   counter.value = counterSess;
+        // }
       }
       else {
-        counter.value = counterSess;
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
+            }
+          ],
+          messagesVisibility: true,
+        });
+        // messageVisibility.value = true;
+        // counter.value = await prefs.getPref('counter');
       }
-    }
-    else {
-      await prefs.setPref('message', {
-        messages: [
-          {
-            severity: true,
-            content: t('homeComponent.results.ko.fetch_stats', { err: 'Unable to open SQLite DB !' })
-          }
-        ],
-        messagesVisibility: true,
-      });
-      // messageVisibility.value = true;
-      counter.value = await prefs.getPref('counter');
     }
   }
 
@@ -269,23 +274,25 @@ else {
   // console.log(chartData.value);
   loaded.value = true;
 })();
+// console.log(props);
 
 // FUNCTIONS
 async function getNbInvoices(dateStart: Date, dateEnd: Date) {
   let ret = 0;
-  // console.log(`getNbInvoice from ${dateStart} to ${dateEnd}!`);
-  // console.log(counterStore.getInvoicesFY);
   if (platform.is.desktop){
-    for (const k in counterStore.getInvoicesFY) {
-      const d = new Date(counterStore.getInvoicesFY[k].date);
+    const invoices = !!props.invoicesFY
+      ? props.invoicesFY
+      : counterStore.getInvoicesFY;
+    for (const k in invoices) {
+      const d = new Date(invoices[k].date);
       if (d >= dateStart && d <= dateEnd) ret += 1;
     }
   }
   else {
-    // console.log(counter);
-    // console.log(dateStart.toISOString());
-    // console.log(dateEnd.toISOString());
-    const invoices = !!counter.value ? counter.value.invoicesFY : [];
+    const count = await prefs.getPref('counter');
+    const invoices = !!props.invoicesFY 
+      ? props.invoicesFY
+      : (!!count && !!count.invoicesFY ? count.invoicesFY : []);
     for (const k in invoices) {
       const d = new Date(invoices[k].date);
       if (d >= dateStart && d <= dateEnd)
