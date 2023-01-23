@@ -1270,8 +1270,8 @@ async function addClickFromChild(e: Event, db: boolean) {
     tvaValue.value = null;
     buyer.value = {value: 0, label: t('invoicesComponent.placeholders.buyer'), cannotSelect: true, actorId: 0, cp: null, email: null, nom: null, prenom: null, nomRue: null, numRue: null, tel: null, actorTypeId: 0, ville: null, numCommercant: null};
     seller.value = {value: 0, label: t('invoicesComponent.placeholders.seller'), cannotSelect: true, actorId: 0, cp: null, email: null, nom: null, prenom: null, nomRue: null, numRue: null, tel: null, actorTypeId: 0, ville: null, numCommercant: null};
-    commandes.value = [{value: 0, label: t('invoicesComponent.placeholders.commande'), cannotSelect: true, orderId: 0, contenuAdditionnel: null, priceHt: 0, factureId: 0}];
-    payments.value = [{value: 0, label: t('invoicesComponent.placeholders.payment'), cannotSelect: true, paymentId: 0, etat: -1, paymentValue: 0, paymentType: 0, factureId: 0}];
+    commandes.value = [];
+    payments.value = [];
     adminPropRef.value = true;
     displayPropRef.value = false;
     isForm.value = true;

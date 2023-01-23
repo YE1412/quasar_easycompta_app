@@ -214,7 +214,7 @@ else {
         // messageVisibility.value = true;
       }
 
-      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
+      sql = `SELECT \`facture\`.\`factureId\`, \`facture\`.\`date\`, \`facture\`.\`invoiceHTPrice\`, \`facture\`.\`invoiceTTPrice\`, \`facture\`.\`tvaValue\`, \`langue\`.\`langueId\` AS \`langue.langueId\`, \`langue\`.\`libelle\` AS \`langue.libelle\`, \`langue\`.\`nom\` AS \`langue.nom\`, \`devise\`.\`deviseId\` AS \`devise.deviseId\`, \`devise\`.\`symbole\` AS \`devise.symbole\`, \`devise\`.\`libelle\` AS \`devise.libelle\`, \`buyer\`.\`actorId\` AS \`buyer.actorId\`, \`buyer\`.\`cp\` AS \`buyer.cp\`, \`buyer\`.\`email\` AS \`buyer.email\`, \`buyer\`.\`nom\` AS \`buyer.nom\`, \`buyer\`.\`nomRue\` AS \`buyer.nomRue\`, \`buyer\`.\`numCommercant\` AS \`buyer.numCommercant\`, \`buyer\`.\`numRue\` AS \`buyer.numRue\`, \`buyer\`.\`prenom\` AS \`buyer.prenom\`, \`buyer\`.\`tel\` AS \`buyer.tel\`, \`buyer\`.\`actorTypeId\` AS \`buyer.actorTypeId\`, \`buyer\`.\`ville\` AS \`buyer.ville\`, \`seller\`.\`actorId\` AS \`seller.actorId\`, \`seller\`.\`cp\` AS \`seller.cp\`, \`seller\`.\`email\` AS \`seller.email\`, \`seller\`.\`nom\` AS \`seller.nom\`, \`seller\`.\`nomRue\` AS \`seller.nomRue\`, \`seller\`.\`numCommercant\` AS \`seller.numCommercant\`, \`seller\`.\`numRue\` AS \`seller.numRue\`, \`seller\`.\`prenom\` AS \`seller.prenom\`, \`seller\`.\`tel\` AS \`seller.tel\`, \`seller\`.\`actorTypeId\` AS \`seller.actorTypeId\`, \`seller\`.\`ville\` AS \`seller.ville\`, \`payments\`.\`paymentId\` AS \`payments.paymentId\`, \`payments\`.\`etat\` AS \`payments.etat\`, \`payments\`.\`paymentValue\` AS \`payments.paymentValue\`, \`payments\`.\`paymentType\` AS \`payments.paymentType\`, \`payments\`.\`factureId\` AS \`payments.factureId\`, strftime('%s', \`facture\`.\`date\`) AS \`date_format\`, \`commandes\`.\`orderId\` AS \`commandes.orderId\`, \`commandes\`.\`contenuAdditionnel\` AS \`commandes.contenuAdditionnel\`, \`commandes\`.\`priceHt\` AS \`commandes.priceHt\`, \`commandes\`.\`factureId\` AS \`commandes.factureId\` FROM \`facture\` AS \`facture\` LEFT OUTER JOIN \`langue\` AS \`langue\` ON \`facture\`.\`languageId\` = \`langue\`.\`langueId\` LEFT OUTER JOIN \`devise\` AS \`devise\` ON \`facture\`.\`deviseId\` = \`devise\`.\`deviseId\` LEFT OUTER JOIN \`personne\` AS \`buyer\` ON \`facture\`.\`buyerId\` = \`buyer\`.\`actorId\` LEFT OUTER JOIN \`personne\` AS \`seller\` ON \`facture\`.\`sellerId\` = \`seller\`.\`actorId\` LEFT OUTER JOIN \`payment\` AS \`payments\` ON \`facture\`.\`factureId\` = \`payments\`.\`factureId\` LEFT OUTER JOIN \`commande\` AS \`commandes\` ON \`facture\`.\`factureId\` = \`commandes\`.\`factureId\` WHERE \`facture\`.\`administratorId\` = '${usr.user.userId}'  AND \`date_format\` > strftime('%s', '${dateStartLibelle}')`;
       // console.log(sql);
       values = await newQuery(props.dbConn, sql);
       // console.log(values);
@@ -284,21 +284,41 @@ async function getHtFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
     for (const k in counterStore.getInvoicesFY) {
-      ret += counterStore.getInvoicesFY[k].invoiceHTPrice;
+      // ret += counterStore.getInvoicesFY[k].invoiceHTPrice;
+      // ret += counterStore.getInvoicesFY[k].invoiceHTPrice
+      //   ? convertAmount(counterStore.getInvoicesFY[k].invoiceHTPrice, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+      //   : 0 ;
+      for (const l in counterStore.getInvoicesFY[k].commandes){
+        // console.log(counterStore.getInvoicesFY[k].commandes[l].priceHt);
+        ret += counterStore.getInvoicesFY[k].commandes[l].priceHt;
+      }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   else {
     const counter = await prefs.getPref('counter');
     const invoices = !!counter ? counter.invoicesFY : [];
     for (const k in invoices) {
-      ret += invoices[k].invoiceHTPrice;
+      // const invConverted = invoices[k].invoiceHTPrice
+      //   ? convertAmount(invoices[k].invoiceHTPrice, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
+      //   : 0;
+      // ret += invoices[k].invoiceHTPrice;
+      // console.log(invoices[k].invoiceHTPrice);
+      // console.log(new Intl.NumberFormat(locale, {
+      //     minimumFractionDigits: 2,
+      //   }).format(invConverted.toFixed(2)));
+      // ret += invConverted;
+      // console.log(invoices[k]);
+      for (const l in invoices[k].commandes){
+        // console.log(invoices[k].commandes[l]);
+        ret += invoices[k].commandes[l].priceHt;
+      }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));  
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));  
   }
   return ret;
 };
@@ -306,21 +326,35 @@ async function getTtFYI() {
   let ret = 0.0;
   if (platform.is.desktop){
     for (const k in counterStore.getInvoicesFY) {
-      ret += counterStore.getInvoicesFY[k].invoiceTTPrice;
+      // ret += counterStore.getInvoicesFY[k].invoiceTTPrice;
+      // ret += counterStore.getInvoicesFY[k].invoiceTTPrice
+      //   ? convertAmount(counterStore.getInvoicesFY[k].invoiceTTPrice, devise.libelle, getConvertFunc(counterStore.getInvoicesFY[k].devise.libelle))
+      //   : 0 ;
+      for (const l in counterStore.getInvoicesFY[k].commandes){
+        // ret += counterStore.getInvoicesFY[k].commandes[l].priceHt + (counterStore.getInvoicesFY[k].commandes[l].priceHt * counterStore.getInvoicesFY[k].tvaValue);
+        ret += counterStore.getInvoicesFY[k].commandes[l].priceHt * (1 + (1 * counterStore.getInvoicesFY[k].tvaValue));
+      }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   else {
     const counter = await prefs.getPref('counter');
     const invoices = !!counter ? counter.invoicesFY : [];
     for (const k in invoices) {
-      ret += invoices[k].invoiceTTPrice;
+      // ret += invoices[k].invoiceTTPrice;
+      // ret += invoices[k].invoiceTTPrice
+      //   ? convertAmount(invoices[k].invoiceTTPrice, devise.libelle, getConvertFunc(invoices[k].devise.libelle))
+      //   : 0;
+      for (const l in invoices[k].commandes){
+        ret += invoices[k].commandes[l].priceHt * (1 + (1 * invoices[k].tvaValue));
+        // console.log(ret);
+      }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   return ret;
 };
@@ -340,8 +374,8 @@ async function getPayFYI() {
       }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   else {
     const counter = await prefs.getPref('counter');
@@ -358,8 +392,8 @@ async function getPayFYI() {
       }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   return ret;
 };
@@ -379,8 +413,8 @@ async function getNotPayFYI() {
       }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   else {
     const counter = await prefs.getPref('counter');
@@ -397,8 +431,8 @@ async function getNotPayFYI() {
       }
     }
     return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-    }).format(ret.toFixed(0));
+      minimumFractionDigits: 2,
+    }).format(ret.toFixed(2));
   }
   return ret;
 };
