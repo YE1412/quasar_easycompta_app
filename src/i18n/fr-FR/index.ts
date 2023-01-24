@@ -731,6 +731,7 @@ export default {
   forms: {
     headTable: {
       action: 'Actions',
+      export: 'Exporter en csv'
     },
     errors: {
       empty: {
@@ -738,6 +739,7 @@ export default {
       },
       error: {
         inputs: 'Une erreur est survenue lors de la validation du formulaire, veillez à vérifier que tous les champs soient valides !',
+        export: 'Votre navigateur a refusé le téléchargement du fichier...',
       },
     },
     addButtonText: 'Ajouter',
@@ -750,5 +752,8 @@ export default {
     results: {
       ko: 'Votre session a expirée, veuillez vous reconnecter !',
     }
+  },
+  footer: {
+    paragraph: '©2023 Administré par CryptoLogique - Entreprise de services du numérique (ESN)',
   },
 };

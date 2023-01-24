@@ -731,6 +731,7 @@ export default {
   forms: {
     headTable: {
       action: 'Actions',
+      export: 'Export to csv',
     },
     errors: {
       empty: {
@@ -738,6 +739,7 @@ export default {
       },
       error: {
         inputs: 'Something wrong happened, please check the form fields !',
+        export: 'Browser denied file download...',
       },
     },
     addButtonText: 'Add',
@@ -750,5 +752,8 @@ export default {
     results: {
       ko: 'Your session has expired, please login again !',
     }
+  },
+  footer: {
+    paragraph: '©2023 Powered by CryptoLogique - Digital services company',
   },
 };

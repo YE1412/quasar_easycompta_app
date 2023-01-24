@@ -156,7 +156,55 @@
       <q-toolbar>
         <q-toolbar-title>
           <div class="flex flex-center">
-            CryptoLogique
+            <q-list :separator="false" :bordered="false" class="q-py-sm">
+              <q-item style="padding: 0;">
+                <q-item-section class="content-center">
+                  <q-item-label>
+                    Easy-Compta
+                  </q-item-label>
+                </q-item-section> 
+              </q-item>
+              <q-item style="padding: 0;height: fit-content;flex-wrap: wrap;align-content: center;" class="text-grey" v-if="connected">
+                <q-item-section style="height: fit-content;">
+                  <q-tabs no-caps active-color="primary" indicator-color="transparent" v-model="tab" style="min-height: unset;height: fit-content;">
+                    <q-tab name="home" style="min-height: unset;height: fit-content;">
+                      <q-item :clickable="false" exact :to="{name: t('homeLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
+                        <q-item-section style="justify-content: start;">
+                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                            {{ t('homeTitle') }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-tab>
+                    <q-tab name="profile" style="min-height: unset;height: fit-content;">
+                      <q-item :clickable="false" exact :to="{name: t('profileLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
+                        <q-item-section style="justify-content: start;">
+                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                            {{ t('profileTitle') }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-tab>
+                    <q-tab name="about" style="min-height: unset;height: fit-content;">
+                      <q-item :clickable="false" exact :to="{name: t('aboutLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
+                        <q-item-section style="justify-content: start;">
+                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                            {{ t('aboutTitle') }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-tab>
+                  </q-tabs>
+                </q-item-section> 
+              </q-item>
+              <q-item style="padding: 0;">
+                <q-item-section class="content-center">
+                  <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;" class="text-grey">
+                    {{ t('footer.paragraph') }}
+                  </q-item-label>
+                </q-item-section> 
+              </q-item>
+            </q-list>
           </div>
         </q-toolbar-title>
       </q-toolbar>
@@ -495,77 +543,6 @@ onBeforeUnmount(() => {
 onMounted(() => {
   // console.log('On mounted !');
   document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
-  // console.log('On mounted !');
-  // console.log(displayedLanguage.value);
-  // console.log(classAssoc[displayedLanguage.value.nom].class);
-  // if (!platform.is.desktop) {
-  //   $q.loadingBar.setDefaults({
-  //     color: 'primary',
-  //     size: '15px',
-  //     position: 'bottom',
-  //   });
-  //   Loading.show();
-  //   $q.loadingBar.start();
-  //   (async() => {
-  //     // console.log(`Cookie Session`);
-  //     prefs = await import('cap/storage/preferences');
-  //     const session = await prefs.getPref('session');
-  //     if (db.value === null)
-  //       db.value = await getConnection(true);
-  //     if (!!session && !!session.langDisplayed && !!session.languages) {
-  //       languages.value = session.languages;
-  //       const currentLang = session.langDisplayed.nom;
-  //       displayedLanguage.value = session.languages.find((lang) => {
-  //         return lang.nom === currentLang;
-  //       });
-  //       locale.value = currentLang;
-  //     }
-  //     else {
-  //       let isOpen = await isDbConnectionOpen(db.value);
-  //       if (!isOpen){
-  //         isOpen = await openDbConnection(db.value);
-  //       }
-  //       const values = await newQuery(db.value, 'SELECT * FROM langue');
-  //       languages.value = values.values;
-  //       closeDbConnection(db.value);
-  //       const newSession = !!session ? session : {};
-  //       newSession.languages = values.values;
-  //       displayedLanguage.value = newSession.languages.find((lang) => {
-  //         return lang.nom === locale.value;
-  //       });
-  //       newSession.langDisplayed = displayedLanguage.value;
-  //       await prefs.setPref('session', newSession);
-  //     }
-  //     // console.log(`Local value --> ${locale.value}`);
-  //     $q.loadingBar.increment(1);
-  //     Loading.hide();
-  //     $q.loadingBar.stop();
-  //   })();
-  // }
-  // else {
-  //     if (sessionStore.getLangDisplayed !== null && sessionStore.getLanguages.length){
-  //       languages.value = sessionStore.getLanguages;
-  //       const currentLang = sessionStore.getLangDisplayed.nom;
-  //         displayedLanguage.value = sessionStore.getLanguages.find((lang) => {
-  //           return lang.nom === currentLang;
-  //         });
-  //       locale.value = currentLang;
-  //     }
-  //     else {
-  //       sessionStore.getLanguagesFromDB()
-  //       .then(() => {
-  //         languages.value = sessionStore.getLanguages;
-  //         const currentLang = locale.value;
-  //         displayedLanguage.value = languages.value.find((lang) => {
-  //           return lang.nom === currentLang;
-  //         });
-  //         sessionStore.setLangDisplayed(displayedLanguage.value);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //     }
-  //   }
 })
 
 // WATCHERS

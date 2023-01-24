@@ -12,6 +12,15 @@
       :no-results-label="t('forms.errors.empty.filterBodyContentText')"
       separator="horizontal"
       :dense="compact">
+      <template v-slot:top-right v-if="!admin">
+        <q-btn
+          color="primary"
+          icon-right="archive"
+          :label="t('forms.headTable.export')"
+          no-caps
+          @click="exportTable"
+        />
+      </template>
       <template v-slot:no-data="{icon, message}">
         <div class="full-width row flex-center text-accent q-gutter-sm">
           <q-icon size="2em" name="sentiment_dissatisfied"/>
@@ -71,7 +80,7 @@ import { useInvoiceStore } from 'stores/invoice';
 import { useSessionStore } from 'stores/session';
 // import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
+import { useQuasar, exportFile } from 'quasar';
 import { openDbConnection, isDbConnectionOpen, newQuery, closeDbConnection } from 'cap/storage';
 import { setDecryptApi, __TRANSFORMOBJ__ } from 'src/globals';
 
@@ -1350,6 +1359,52 @@ function fetchColumn() {
 function handleOrientation(){
   // console.log(screen.orientation);
   orientation.value = screen.orientation.type;
+};
+function wrapCsvValue(val: any, formatFn: any, row: any){
+  let formatted = formatFn !== void 0
+    ? formatFn(val, row)
+    : val;
+
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // formatted.split('\n').join('\\n')
+  // .split('\r').join('\\r');
+  return `"${formatted}"`;
+};
+function exportTable() {
+  // native encoding to csv format
+  const columns = tableHeadForDisplay.value;
+  const rows = contentsForDisp.value;
+  const content = [columns.map(col => wrapCsvValue(col.label))]
+    .concat(rows.map(row => columns.map(col => wrapCsvValue(
+        typeof col.field === 'function'
+          ? col.field(row)
+          : row[ col.field === void 0 ? col.name : col.field ],
+        col.format,
+        row
+      )).join(','))
+    ).join('\r\n');
+  const status = exportFile(
+    `${props.tableTitle}-table.csv`,
+    content,
+    'text/csv'
+  );
+
+  if (status !== true) {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('forms.errors.error.export')
+    });
+  }
 };
 
 // WATCHERS
