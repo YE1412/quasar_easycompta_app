@@ -61,26 +61,31 @@ const props = withDefaults(defineProps<BarChartProps>(), {
 const platform = $q.platform;
 const now = ref(new Date());
 // const counter = ref(null);
-const yearLabel = computed(() => {
-  if (now.value.getMonth() > 5) {
-    return (now.value.getFullYear());
-  } else {
-    return (now.value.getFullYear() - 1);
-  }
-});
+// const yearLabel = computed(() => {
+//   if (now.value.getMonth() > 5) {
+//     return (now.value.getFullYear());
+//   } else {
+//     return (now.value.getFullYear() - 1);
+//   }
+// });
+const yearLabel = new Date().getMonth() > 5
+  ? new Date().getFullYear()
+  : new Date().getFullYear() - 1;
+// console.log('YearLabel !');
+// console.log(yearLabel);
 const chartLabels = [
-  t('homeComponent.barChart.juneLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.julyLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.augustLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.septemberLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.octoberLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.novemberLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.decemberLabel', { year: yearLabel.value }),
-  t('homeComponent.barChart.januaryLabel', { year: yearLabel.value + 1 }),
-  t('homeComponent.barChart.februaryLabel', { year: yearLabel.value + 1 }),
-  t('homeComponent.barChart.marchLabel', { year: yearLabel.value + 1 }),
-  t('homeComponent.barChart.aprilLabel', { year: yearLabel.value + 1 }),
-  t('homeComponent.barChart.mayLabel', { year: yearLabel.value + 1 }),
+  t('homeComponent.barChart.juneLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.julyLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.augustLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.septemberLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.octoberLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.novemberLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.decemberLabel', { year: `${yearLabel}` }),
+  t('homeComponent.barChart.januaryLabel', { year: `${(yearLabel + 1)}` }),
+  t('homeComponent.barChart.februaryLabel', { year: `${(yearLabel + 1)}` }),
+  t('homeComponent.barChart.marchLabel', { year: `${(yearLabel + 1)}` }),
+  t('homeComponent.barChart.aprilLabel', { year: `${(yearLabel + 1)}` }),
+  t('homeComponent.barChart.mayLabel', { year: `${(yearLabel + 1)}` }),
 ];
 // const chartOptions = {
 //   responsive: true,
@@ -214,7 +219,7 @@ else {
     }
   }
 
-  const lastDayNum = checkLeapYear(yearLabel.value + 1)
+  const lastDayNum = checkLeapYear(yearLabel + 1)
     ? '29'
     : '28';
   // console.log(lastDayNum);
@@ -233,21 +238,21 @@ else {
     }
     if (month < 10){
       if (month === 2){
-        param.push(`${yearLabel.value + 1}-0${month}-01`);
-        param.push(`${yearLabel.value + 1}-0${month}-${lastDayNum}`);
+        param.push(`${yearLabel + 1}-0${month}-01`);
+        param.push(`${yearLabel + 1}-0${month}-${lastDayNum}`);
       }
       else if (month > 5){
-        param.push(`${yearLabel.value}-0${month}-01`);
-        param.push(`${yearLabel.value}-0${month}-${last}`);
+        param.push(`${yearLabel}-0${month}-01`);
+        param.push(`${yearLabel}-0${month}-${last}`);
       }
       else {
-        param.push(`${yearLabel.value + 1}-0${month}-01`);
-        param.push(`${yearLabel.value + 1}-0${month}-${last}`);
+        param.push(`${yearLabel + 1}-0${month}-01`);
+        param.push(`${yearLabel + 1}-0${month}-${last}`);
       }
     }
     else {
-      param.push(`${yearLabel.value}-${month}-01`);
-      param.push(`${yearLabel.value}-${month}-${last}`);
+      param.push(`${yearLabel}-${month}-01`);
+      param.push(`${yearLabel}-${month}-${last}`);
     }
     // console.log(param);
     const res = await getNbInvoices(

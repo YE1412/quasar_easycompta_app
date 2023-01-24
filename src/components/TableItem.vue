@@ -12,7 +12,7 @@
       :no-results-label="t('forms.errors.empty.filterBodyContentText')"
       separator="horizontal"
       :dense="compact">
-      <template v-slot:top-right v-if="!admin">
+      <template v-slot:top-right v-if="!admin && platform.is.desktop">
         <q-btn
           color="primary"
           icon-right="archive"

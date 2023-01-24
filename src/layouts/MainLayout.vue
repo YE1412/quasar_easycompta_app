@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout :view="(compact ? 'lHh' : 'lhh') +' Lpr lff'">
     <q-header class="frosted-glass" elevated>
       <q-toolbar class="full-width justify-between">
         <q-btn

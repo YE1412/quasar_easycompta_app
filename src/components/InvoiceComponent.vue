@@ -115,7 +115,7 @@
               :hide-hint='true'
               :counter='false'
               :autogrow='false'
-              :clearable='true'
+              :clearable='false'
               :dense="compact"
               :placeholders='t("invoicesComponent.placeholders.tva")'
               :reactive-rules='false'
@@ -559,10 +559,10 @@ const selectOrdersOption = ref([]);
 const payments = ref(null);
 const selectPaymentsOption = ref([]);
 const userId = ref(0);
-const formState: Ref<FormState> = ({
+const formState: FormState = {
   update: false,
   add: true,
-});
+};
 const defaultRow: Ref<DefaultInvoiceRow[]> = ref([]);
 const nonEmptyDate = computed(() => {
   return !!date.value && date.value != '';
@@ -570,7 +570,10 @@ const nonEmptyDate = computed(() => {
 const validDate = computed(() => {
   const dateRef = new Date(date.value);
   const now = new Date();
-  return dateRef >= new Date(`${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()} 00:00:00`);
+  if (formState.add)
+    return dateRef >= new Date(`${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()} 00:00:00`);
+  else
+    return true;
 });
 const nonEmptyInvoiceHTPrice = computed(() => {
   return (!!invoiceHTPrice.value && invoiceHTPrice.value != 0);
@@ -1293,6 +1296,7 @@ async function addClickFromChild(e: Event, db: boolean) {
       payments: [],
       actions: null,
     };
+    addInputObject.date.disabled = false;
     forceTableRerender();
   } else {
     // console.log('Adding invoice to db !');
@@ -1386,6 +1390,7 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
         pay.push(int);
       }
     }
+    // console.log(obj);
     invoiceId.value = obj.factureId;
     date.value = obj.date;
     // invoiceHTPrice.value = obj.invoiceHTPrice;
@@ -1411,6 +1416,7 @@ async function updateClickFromChild(e: Event, db: boolean, obj: any = null) {
       payments: pay,
       actions: null,
     };
+    addInputObject.date.disabled = true;
     forceTableRerender();
   }
   else {
