@@ -73,20 +73,34 @@ const yearLabel = new Date().getMonth() > 5
   : new Date().getFullYear() - 1;
 // console.log('YearLabel !');
 // console.log(yearLabel);
-const chartLabels = [
-  t('homeComponent.barChart.juneLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.julyLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.augustLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.septemberLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.octoberLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.novemberLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.decemberLabel', { year: `${yearLabel}` }),
-  t('homeComponent.barChart.januaryLabel', { year: `${(yearLabel + 1)}` }),
-  t('homeComponent.barChart.februaryLabel', { year: `${(yearLabel + 1)}` }),
-  t('homeComponent.barChart.marchLabel', { year: `${(yearLabel + 1)}` }),
-  t('homeComponent.barChart.aprilLabel', { year: `${(yearLabel + 1)}` }),
-  t('homeComponent.barChart.mayLabel', { year: `${(yearLabel + 1)}` }),
-];
+const chartLabels = [];
+chartLabels.push(
+  `${t('homeComponent.barChart.juneLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.julyLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.augustLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.septemberLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.octoberLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.novemberLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.decemberLabel')} ${yearLabel}`,
+  `${t('homeComponent.barChart.januaryLabel')} ${(yearLabel + 1)}`,
+  `${t('homeComponent.barChart.februaryLabel')} ${(yearLabel + 1)}`,
+  `${t('homeComponent.barChart.marchLabel')} ${(yearLabel + 1)}`,
+  `${t('homeComponent.barChart.aprilLabel')} ${(yearLabel + 1)}`,
+  `${t('homeComponent.barChart.mayLabel')} ${(yearLabel + 1)}`
+);
+//   t('homeComponent.barChart.juneLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.julyLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.augustLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.septemberLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.octoberLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.novemberLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.decemberLabel', { year: `${yearLabel}` }),
+//   t('homeComponent.barChart.januaryLabel', { year: `${(yearLabel + 1)}` }),
+//   t('homeComponent.barChart.februaryLabel', { year: `${(yearLabel + 1)}` }),
+//   t('homeComponent.barChart.marchLabel', { year: `${(yearLabel + 1)}` }),
+//   t('homeComponent.barChart.aprilLabel', { year: `${(yearLabel + 1)}` }),
+//   t('homeComponent.barChart.mayLabel', { year: `${(yearLabel + 1)}` }),
+// ];
 // const chartOptions = {
 //   responsive: true,
 //   maintainAspectRatio: false,
