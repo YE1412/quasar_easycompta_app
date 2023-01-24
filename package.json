@@ -20,6 +20,7 @@
     "@capacitor-community/file-opener": "^1.0.4",
     "@capacitor-community/http": "^1.4.1",
     "@capacitor-community/sqlite": "^4.5.0",
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/core": "^4.6.1",
     "@capacitor/filesystem": "^4.1.4",
     "@capacitor/preferences": "^4.0.2",

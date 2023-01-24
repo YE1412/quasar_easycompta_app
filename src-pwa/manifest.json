@@ -36,6 +36,10 @@
     {
       "src": "assets/imgs/slide-2.jpg",
       "type": "image/jpeg"
+    },
+    {
+      "src": "icons/logo.svg",
+      "type": "image/svg"
     }
   ]
 }

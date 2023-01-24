@@ -35,7 +35,7 @@
               avatar
             >
               <!-- <q-avatar> -->
-                <img :src="faviconSrc" />
+                <img :src="faviconSrc" height="32" width="32" />
               <!-- </q-avatar> -->
             </q-item-section>
           </q-btn>
@@ -170,7 +170,7 @@
                     <q-tab name="home" style="min-height: unset;height: fit-content;">
                       <q-item :clickable="false" exact :to="{name: t('homeLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
                         <q-item-section style="justify-content: start;">
-                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                          <q-item-label :style="'font-size: 14px;line-height: 1.715em;font-weight: 500;'">
                             {{ t('homeTitle') }}
                           </q-item-label>
                         </q-item-section>
@@ -179,7 +179,7 @@
                     <q-tab name="profile" style="min-height: unset;height: fit-content;">
                       <q-item :clickable="false" exact :to="{name: t('profileLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
                         <q-item-section style="justify-content: start;">
-                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                          <q-item-label :style="'font-size: 14px;line-height: 1.715em;font-weight: 500;'">
                             {{ t('profileTitle') }}
                           </q-item-label>
                         </q-item-section>
@@ -188,7 +188,7 @@
                     <q-tab name="about" style="min-height: unset;height: fit-content;">
                       <q-item :clickable="false" exact :to="{name: t('aboutLinkName')}" style="padding: 0;height: fit-content;min-height: unset;">
                         <q-item-section style="justify-content: start;">
-                          <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;">
+                          <q-item-label :style="'font-size: 14px;line-height: 1.715em;font-weight: 500;'">
                             {{ t('aboutTitle') }}
                           </q-item-label>
                         </q-item-section>
@@ -199,7 +199,7 @@
               </q-item>
               <q-item style="padding: 0;">
                 <q-item-section class="content-center">
-                  <q-item-label style="font-size: 14px;line-height: 1.715em;font-weight: 500;" class="text-grey">
+                  <q-item-label :style="'font-size: '+ (compact ? '7' : '14') +'px;line-height: 1.715em;font-weight: 500;'" class="text-grey">
                     {{ t('footer.paragraph') }}
                   </q-item-label>
                 </q-item-section> 
@@ -543,7 +543,10 @@ onBeforeUnmount(() => {
 onMounted(() => {
   // console.log('On mounted !');
   document.title = `Easy-Compta - ${t(route.meta.titleKey)}`;
-})
+  const link = document.querySelector('link[rel="icon"]:not([sizes])') as Element;
+          link.setAttribute('href', faviconSrc);
+          link.setAttribute('type', 'image/svg');
+});
 
 // WATCHERS
 watch(
