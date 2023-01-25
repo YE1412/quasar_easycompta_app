@@ -756,4 +756,5 @@ export default {
   footer: {
     paragraph: '©2023 Powered by CryptoLogique - Digital services company',
   },
+  noScript: 'This app use Javascript which is currently disabled or not supported !',
 };

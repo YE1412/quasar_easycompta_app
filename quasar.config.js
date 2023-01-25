@@ -170,6 +170,7 @@ module.exports = configure(function (ctx) {
         'LocalStorage',
         'SessionStorage',
         'Cookies',
+        'Meta',
       ]
     },
 

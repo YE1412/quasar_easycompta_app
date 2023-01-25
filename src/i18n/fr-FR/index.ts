@@ -671,7 +671,7 @@ export default {
       aprilLabel: 'Avril',
       mayLabel: 'Mai',
       datasetLabel: 'Nombre de facture(s)',
-      heading: 'Répartition de factures sur l\année fiscale',
+      heading: 'Répartition de factures sur l\'année fiscale',
     },
     pieChart: {
       cbLabel: 'Carte bleue',
@@ -756,4 +756,5 @@ export default {
   footer: {
     paragraph: '©2023 Administré par CryptoLogique - Entreprise de services du numérique (ESN)',
   },
+  noScript: 'Cette application est basée sur le javascript. Javascript actuellement désactivé ou non supporté !',
 };
