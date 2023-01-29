@@ -28,6 +28,12 @@ This is a web server side rendered (SSR) multi platform application to generate 
 
  Change the **envs/.env.production** file with your server and database settings.
 
+ **FIRST USE**
+
+ Turn the *-INIT-* variable to **true** to initialize the main database datas.
+
+ **Don't forget to change this variable to 'false' before restarting your web server.**
+
  `> npm run build:web`
 
  `> cd dist/ssr`
@@ -47,6 +53,12 @@ This is a web server side rendered (SSR) multi platform application to generate 
   `> npm run build:and`
 
 ## Usage
+ 
+ ### Web
+
+ Run the server.
+
+ Go to your browser **%PUB_APP_URL%** page.
 
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
