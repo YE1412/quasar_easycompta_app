@@ -1,4 +1,4 @@
-# <img alt="CryptoLogique Logo" src="/public/icons/logo.svg" /> Quasar Easy-Compta App
+# <img alt="CryptoLogique Logo" src="/public/icons/logo.svg" height="40"/> Quasar Easy-Compta App🔒
 
 This is a web server side rendered (SSR) multi platform application to generate invoices and make secure transactions to manage your business datas.
 
