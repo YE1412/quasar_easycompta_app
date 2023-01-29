@@ -1,0 +1,20 @@
+{
+  "appId": "org.capacitor.quasar.easycompta",
+  "appName": "EasyCompta",
+  "bundledWebRuntime": true,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorSQLite": {
+      "iosDatabaseLocation": "Library/CapacitorDatabase"
+    },
+    "SplashScreen": {
+      "androidScaleType": "CENTER_CROP",
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    }
+  },
+  "loggingBehavior": "production",
+}

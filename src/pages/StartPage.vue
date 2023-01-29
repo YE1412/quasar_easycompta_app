@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 /*eslint @typescript-eslint/no-explicit-any: 'off'*/
-import { ref, computed, nextTick, getCurrentInstance, watch } from 'vue';
+import { ref, computed, nextTick, getCurrentInstance, watch, onMounted } from 'vue';
 import { useUserStore } from 'stores/user';
 import { useMessageStore } from 'stores/message';
 import { useSessionStore } from 'stores/session';
@@ -163,6 +163,7 @@ interface StartProps {
 const props = withDefaults(defineProps<StartProps>(), {
   dbConn: null,
 });
+const emit = defineEmits(['change-tab']);
 const app = getCurrentInstance();
 const key = app.appContext.config.globalProperties.$key;
 const $q = useQuasar();
@@ -529,7 +530,9 @@ watch(
 )
 
 // LIFECYCLE EVENTS
-
+onMounted(() => {
+  emit('change-tab', undefined);
+});
 // OTHERS
 // Keyboard.addListener('keyboardWillShow', info => {
 //   console.log('keyboard will show with height:', info.keyboardHeight);

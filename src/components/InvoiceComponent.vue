@@ -721,7 +721,7 @@ async function fetchDatasForForms() {
       }, () => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_languages', {err: 'Empty result !'})
+          content: t('invoicesComponent.results.ko.fetch_languages.linked_empty')
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -729,7 +729,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_languages', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_languages.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -759,7 +759,7 @@ async function fetchDatasForForms() {
       }, () => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_devises', {err: 'Empty result !'})
+          content: t('invoicesComponent.results.ko.fetch_devises.linked_empty')
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -767,7 +767,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_devises', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_devises.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -813,7 +813,7 @@ async function fetchDatasForForms() {
       }, () => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_buyers', {err: 'Empty result !'})
+          content: t('invoicesComponent.results.ko.fetch_buyers.linked_empty')
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -821,7 +821,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_buyers', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_buyers.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -867,7 +867,7 @@ async function fetchDatasForForms() {
       }, () => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_sellers', {err: 'Empty result !'})
+          content: t('invoicesComponent.results.ko.fetch_sellers.linked_empty')
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -875,7 +875,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_sellers', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_sellers.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -907,7 +907,7 @@ async function fetchDatasForForms() {
       }, () => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_order', {err: 'Empty result !'})
+          content: t('invoicesComponent.results.ko.fetch_order.linked_empty')
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -915,7 +915,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_order', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_order.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -952,7 +952,7 @@ async function fetchDatasForForms() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('invoicesComponent.results.ko.fetch_payments', {err: err})
+          content: t('invoicesComponent.results.ko.fetch_payments.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -1003,12 +1003,24 @@ async function fetchDatasForForms() {
           selectLanguagesOption.value.push(obj);
         }
       } 
+      else if(!!values === false){
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_languages.linked_error')
+            }
+          ],
+          messagesVisibility: true
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           messages: [
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_languages', { err: 'Select from languages table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_languages.linked_empty')
             }
           ],
           messagesVisibility: true
@@ -1041,12 +1053,24 @@ async function fetchDatasForForms() {
           selectDevisesOption.value.push(obj);
         }
       }
+      else if (!!values === false){
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_devises.linked_error')
+            }
+          ],
+          messageVisibility: true
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           messages: [
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_devises', { err: 'Select from devises table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_devises.linked_empty')
             }
           ],
           messageVisibility: true
@@ -1096,12 +1120,24 @@ async function fetchDatasForForms() {
           allBuyers.value.push(obj);
         }
       }
+      else if(!!values === false){
+        await prefs.setPref('message', {
+          messages :[
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_buyers.linked_error')
+            }
+          ],
+          messageVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           messages :[
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_buyers', { err: 'Select from buyer table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_buyers.linked_empty')
             }
           ],
           messageVisibility: true,
@@ -1151,12 +1187,24 @@ async function fetchDatasForForms() {
           allSellers.value.push(obj);
         }
       }
+      else if (!!values === false){
+        await prefs.setPref('message', {
+          mesages: [
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_sellers.linked_error')
+            }
+          ],
+          messageVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           mesages: [
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_sellers', { err: 'Select from seller table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_sellers.linked_empty')
             }
           ],
           messageVisibility: true,
@@ -1192,12 +1240,23 @@ async function fetchDatasForForms() {
           selectOrdersOption.value.push(obj);
         }
       }
-      else {
+      else if (!!values === false){
         await prefs.setPref('message', {
           messages :[
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_orders', { err: 'Select from order table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_orders.linked_error')
+            }
+          ],
+          messageVisibility: true,
+        });
+        messageVisibility.value = true;
+      } else {
+        await prefs.setPref('message', {
+          messages :[
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_orders.linked_empty')
             }
           ],
           messageVisibility: true,
@@ -1240,7 +1299,7 @@ async function fetchDatasForForms() {
           messages: [
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_payments', { err: 'Select from payment table of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_payments.linked_error')
             }
           ],
           messageVisibility: true,
@@ -1253,7 +1312,7 @@ async function fetchDatasForForms() {
         messages: [
           {
             severity: true,
-            content: t('invoicesComponent.results.ko.fetch_languages', { err: 'Unable to open SQLite DB !' })
+            content: t('forms.errors.error.sqliteDb')
           }
         ],
         messageVisibility: true,

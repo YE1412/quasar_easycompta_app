@@ -245,7 +245,9 @@ const router = useRouter();
 // console.log(typeof route.path);
 const { t, locale } = useI18n({ useScope: 'global' });
 // const emit = defineEmits(['language-rerender']);
-const displayedLanguage = ref({nom: 'en-US'});
+const displayedLanguage = ['fr-FR', 'en-US'].includes($q.lang.getLocale()) 
+  ? ref({nom: $q.lang.getLocale()})
+  : ref({nom: 'en-US'});
 const classAssoc: ClassLangAssoc = {
   'en-US': {
     class: 'us'
@@ -274,6 +276,7 @@ let userCookies = $q.cookies.get('user');
 // console.log(userCookies);
 
 // DECLARATIONS
+// console.log($q.lang.getLocale());
 if (platform.is.desktop){
   sessionStore = useSessionStore();
   userStore = useUserStore();
@@ -296,6 +299,7 @@ else {
 function tabChanges(val: string){
   // console.log(val);
   tab.value = val;
+  useMeta(getMeta());
 };
 
 function toggleLeftDrawer() {
@@ -614,7 +618,6 @@ watch(
       if (platform.is.desktop){
         // console.log('Watcher connected !');
         connected.value = userStore.getConnected;
-        useMeta(getMeta());
       }
       else {
         const userCookie = await prefs.getPref('user');

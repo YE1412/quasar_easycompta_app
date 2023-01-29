@@ -288,7 +288,7 @@ async function fetchDatasForTable() {
       .catch((err) => {
         messageStore.messages.push({
           severity: true,
-          content: t('exportComponent.results.ko.fetch_invoices', {err: err})
+          content: t('exportComponent.results.ko.fetch_invoices.linked_error', {err: err})
         });
         messageStore.setMessagesVisibility(true);
         messageVisibility.value = true;
@@ -318,6 +318,18 @@ async function fetchDatasForTable() {
           payments.value[`${res[k].factureId}`] = res[k].payments;
         }
       }
+      else if(!!values === false) {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('exportComponent.results.ko.fetch_invoices.linked_error')
+            }
+          ],
+          messagesVisibility: true,
+        });
+        messageVisibility.value = true;
+      }
       closeDbConnection(props.dbConn);
     }
     else {
@@ -325,7 +337,7 @@ async function fetchDatasForTable() {
         messages: [
           {
             severity: true,
-            content: t('exportComponent.results.ko.fetch_invoices', {err: 'Unable to open SQLite DB !'})
+            content: t('forms.errors.error.sqliteDb')
           }
         ],
         messagesVisibility: true,

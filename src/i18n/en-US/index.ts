@@ -485,12 +485,42 @@ export default {
         add: 'An error occured while adding invoice: {err}',
         update: 'An error occured while updating invoice: {err}',
         delete: 'An error occured while deleting invoice: {err}',
-        fetch_languages: 'An error occured wihle fetching languages: {err}',
-        fetch_devises: 'An error occured while fetching devises: {err}',
-        fetch_buyers: 'An error occured while fetching buyers: {err}',
-        fetch_sellers: 'An error occured while fetching sellers: {err}',
-        fetch_orders: 'An error occured while fetching orders: {err}',
-        fetch_payments: 'An error occured while fetching payments: {err}',
+        fetch_languages: {
+          empty: 'No payment found !',
+          error: 'Select from payment table of SQLite !',
+          linked_empty: 'An error occured wihle fetching languages: @:invoicesComponent.results.ko.fetch_languages.empty',
+          linked_error: 'An error occured wihle fetching languages: @:invoicesComponent.results.ko.fetch_languages.error {err}',
+        },
+        fetch_devises: {
+          empty: 'No devise found !',
+          error: 'Select from devise table of SQLite !',
+          linked_empty: 'An error occured while fetching devises: @:invoicesComponent.results.ko.fetch_devises.empty',
+          linked_error: 'An error occured while fetching devises: @:invoicesComponent.results.ko.fetch_devises.error {err}',
+        },
+        fetch_buyers: {
+          empty: 'No buyer found !',
+          error: 'Select from actor table of SQLite !',
+          linked_empty: 'An error occured while fetching buyers: @:invoicesComponent.results.ko.fetch_buyers.empty',
+          linked_error: 'An error occured while fetching buyers: @:invoicesComponent.results.ko.fetch_buyers.error {err}',
+        },
+        fetch_sellers: {
+          empty: 'No seller found !',
+          error: 'Select from actor table of SQLite !',
+          linked_empty: 'An error occured while fetching sellers: @:invoicesComponent.results.ko.fetch_sellers.empty',
+          linked_error: 'An error occured while fetching sellers: @:invoicesComponent.results.ko.fetch_sellers.error {err}',
+        },
+        fetch_orders: {
+          empty: 'No order found !',
+          error: 'Select from order table of SQLite DB !',
+          linked_empty: 'An error occured while fetching orders: @:invoicesComponent.results.ko.fetch_orders.empty',
+          linked_error: 'An error occured while fetching orders: @:invoicesComponent.results.ko.fetch_orders.error {err}',
+        },
+        fetch_payments: {
+          empty: 'No payment found !',
+          error: 'Select from payment table of SQLite !',
+          linked_empty: 'An error occured while fetching payments: @:invoicesComponent.results.ko.fetch_payments.empty',
+          linked_error: 'An error occured while fetching payments: @:invoicesComponent.results.ko.fetch_payments.error {err}',
+        },
       },
     },
     libelles: {
@@ -610,7 +640,12 @@ export default {
         update: 'An error occured while updating user: {err}',
         delete: 'An error occured while deleting user: {err}',
         fetch_user: 'An error occured while fetching user informations: {err}',
-        fetch_userTypes: 'An error occured while fetching user types: {err}',
+        fetch_userTypes: {
+          empty: 'No user type found !',
+          error: 'Select from userType table of SQLite !',
+          linked_empty: 'An error occured while fetching user types: @:profileComponent.results.ko.fetch_userTypes.empty',
+          linked_error: 'An error occured while fetching user types: @:profileComponent.results.ko.fetch_userTypes.error {err}',
+        },
         upload: 'An error occured while uploading company logo file: {err}',
         checkEmail: 'An error occured while checking the email availability: {err}'
       },
@@ -620,7 +655,10 @@ export default {
     tableTitle: 'Export',
     results: {
       ko: {
-       fetch_invoices: 'An error occured while fetching invoices: {err}',
+        fetch_invoices: {
+          error: 'Select from invoice table of SQLite !',
+          linked_error: 'An error occured while fetching invoices: @:exportComponent.results.ko.fetch_invoices.error {err}',
+        },
       },
     },
     libelles: {
@@ -740,6 +778,7 @@ export default {
       error: {
         inputs: 'Something wrong happened, please check the form fields !',
         export: 'Browser denied file download...',
+        sqliteDb: 'Unbale to open SQLite DB !',
       },
     },
     addButtonText: 'Add',

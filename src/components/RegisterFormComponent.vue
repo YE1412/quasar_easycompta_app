@@ -577,7 +577,7 @@ async function hydrateForm() {
         }, () => {
           messageStore.messages.push({
             severity: true,
-            content: t('invoicesComponent.results.ko.fetch_devises', {err: 'Empty devise !'})
+            content: t('invoicesComponent.results.ko.fetch_devises.linked_empty')
           });
           messageVisibility.value = true;
           messageStore.setMessagesVisibility(true);
@@ -585,7 +585,7 @@ async function hydrateForm() {
         .catch((err) => {
           messageStore.messages.push({
             severity: true,
-            content: t('invoicesComponent.results.ko.fetch_devises', {err: err})
+            content: t('invoicesComponent.results.ko.fetch_devises.linked_error', {err: err})
           });
           messageVisibility.value = true;
           messageStore.setMessagesVisibility(true);
@@ -601,36 +601,36 @@ async function hydrateForm() {
       obj.admin = null;
       selectUserTypesOption.value.push(obj);
       userStore.getUserTypes()
-          .then((res) => {
-            for (const k in res) {
-              let label = res[k].regular && !res[k].admin ? t('profileComponent.libelles.types.regular') : '';
-              label = res[k].admin && !res[k].regular ? t('profileComponent.libelles.types.admin') : label;
-              label = res[k].admin && res[k].regular ? t('profileComponent.libelles.types.regular')+', '+t('profileComponent.libelles.types.admin') : label;
-              obj = {};
-              obj.value = res[k].userTypeId;
-              obj.label = label;
-              obj.cannotSelect = false;
-              obj.userTypeId = res[k].userTypeId;
-              obj.regular = res[k].regular;
-              obj.admin = res[k].admin;
-              selectUserTypesOption.value.push(obj);
-            }
-          }, () => {
-            messageStore.messages.push({
-              severity: true,
-              content: t('profileComponent.results.ko.fetch_userTypes', {err: 'Empty user type !'})
-            });
-            messageVisibility.value = true;
-            messageStore.setMessagesVisibility(true);
-          })
-          .catch((err) => {
-            messageStore.messages.push({
-              severity: true,
-              content: t('profileComponent.results.ko.fetch_userTypes', {err: err})
-            });
-            messageVisibility.value = true;
-            messageStore.setMessagesVisibility(true);
+        .then((res) => {
+          for (const k in res) {
+            let label = res[k].regular && !res[k].admin ? t('profileComponent.libelles.types.regular') : '';
+            label = res[k].admin && !res[k].regular ? t('profileComponent.libelles.types.admin') : label;
+            label = res[k].admin && res[k].regular ? t('profileComponent.libelles.types.regular')+', '+t('profileComponent.libelles.types.admin') : label;
+            obj = {};
+            obj.value = res[k].userTypeId;
+            obj.label = label;
+            obj.cannotSelect = false;
+            obj.userTypeId = res[k].userTypeId;
+            obj.regular = res[k].regular;
+            obj.admin = res[k].admin;
+            selectUserTypesOption.value.push(obj);
+          }
+        }, () => {
+          messageStore.messages.push({
+            severity: true,
+            content: t('profileComponent.results.ko.fetch_userTypes.linked_empty')
           });
+          messageVisibility.value = true;
+          messageStore.setMessagesVisibility(true);
+        })
+        .catch((err) => {
+          messageStore.messages.push({
+            severity: true,
+            content: t('profileComponent.results.ko.fetch_userTypes.linked_error', {err: err})
+          });
+          messageVisibility.value = true;
+          messageStore.setMessagesVisibility(true);
+        });
     }    
   } 
   else if(platform.is.mobile) {
@@ -665,12 +665,24 @@ async function hydrateForm() {
           selectDevisesOption.value.push(obj);
         }
       }
+      else if (!!values === false) {
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('invoicesComponent.results.ko.fetch_devises.linked_error')
+            }
+          ],
+          messagesVisibility: true
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           messages: [
             {
               severity: true,
-              content: t('invoicesComponent.results.ko.fetch_devises', { err: 'Select from devise (empty table) of SQLite DB !' })
+              content: t('invoicesComponent.results.ko.fetch_devises.linked_empty')
             }
           ],
           messagesVisibility: true
@@ -706,12 +718,24 @@ async function hydrateForm() {
           selectUserTypesOption.value.push(obj);
         }
       }
+      else if(!!values === false){
+        await prefs.setPref('message', {
+          messages: [
+            {
+              severity: true,
+              content: t('profileComponent.results.ko.fetch_userTypes.linked_error')
+            }
+          ],
+          messagesVisibility: true
+        });
+        messageVisibility.value = true;
+      }
       else {
         await prefs.setPref('message', {
           messages: [
             {
               severity: true,
-              content: t('profileComponent.results.ko.fetch_userTypes', { err: 'Select from userType (empty table) of SQLite DB !' })
+              content: t('profileComponent.results.ko.fetch_userTypes.linked_empty')
             }
           ],
           messagesVisibility: true
@@ -725,7 +749,7 @@ async function hydrateForm() {
         messages: [
           {
             severity: true,
-            content: t('profileComponent.results.ko.fetch_user', { err: 'Unable to open SQLite DB !' })
+            content: t('forms.errors.error.sqliteDb')
           }
         ],
         messagesVisibility: true

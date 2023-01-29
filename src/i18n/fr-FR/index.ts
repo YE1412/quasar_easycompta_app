@@ -485,12 +485,42 @@ export default {
         add: 'Une erreur est survenue lors de l\'ajout de la facture: {err}',
         update: 'Une erreur est survenue lors de la mise à jour de la facture: {err}',
         delete: 'Une erreur est survenue lors de la suppression de la facture: {err}',
-        fetch_languages: 'Une erreur est survenue lors de la récupération des langues: {err}',
-        fetch_devises: 'Une erreur est survenue lors de la récupération des devises: {err}',
-        fetch_buyers: 'Une erreur est survenue lors de la récupération de(s) acheteur(s): {err}',
-        fetch_sellers: 'Une erreur est survenue lors de la récupération de(s) vendeur(s): {err}',
-        fetch_orders: 'Une erreur est survenue lors de la récupération de(s) commande(s): {err}',
-        fetch_payments: 'Une erreur est survenue lors de la récupération de(s) paiement(s): {err}',
+        fetch_languages: {
+          empty: 'Aucun langage trouvé !',
+          error: 'Récupération depuis la table \'Langage\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération des langues: @:invoicesComponent.results.ko.fetch_languages.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération des langues: @:invoicesComponent.results.ko.fetch_languages.error {err}',
+        },
+        fetch_devises: {
+          empty: 'Aucune devise trouvée !',
+          error: 'Récupération depuis la table \'Devise\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération des devises: @:invoicesComponent.results.ko.fetch_devises.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération des devises: @:invoicesComponent.results.ko.fetch_devises.error {err}',
+        },
+        fetch_buyers: {
+          empty: 'Aucun acheteur trouvé !',
+          error: 'Récupération depuis la table \'Personne\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération de(s) acheteur(s): @:invoicesComponent.results.ko.fetch_buyers.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération de(s) acheteur(s): @:invoicesComponent.results.ko.fetch_buyers.error {err}',
+        },
+        fetch_sellers: {
+          empty: 'Aucun vendeur trouvé !',
+          error: 'Récupération depuis la table \'Personne\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération de(s) vendeur(s): @:invoicesComponent.results.ko.fetch_sellers.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération de(s) vendeur(s): @:invoicesComponent.results.ko.fetch_sellers.error {err}',
+        },
+        fetch_orders: {
+          empty: 'Aucune commande trouvée !',
+          error: 'Récupération depuis la table \'Commande\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération de(s) commande(s): @:invoicesComponent.results.ko.fetch_orders.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération de(s) commande(s): @:invoicesComponent.results.ko.fetch_orders.error {err}',
+        },
+        fetch_payments: {
+          empty: 'Aucun paiement trouvé !',
+          error: 'Récupération depuis la table \'Paiement\' SQLite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération de(s) paiement(s): @:invoicesComponent.results.ko.fetch_payments.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération de(s) paiement(s): @:invoicesComponent.results.ko.fetch_payments.error {err}',
+        },
       },
     },
     libelles: {
@@ -610,7 +640,12 @@ export default {
         update: 'Une erreur est survenue lors de la mise à jour de l\'utilisateur: {err}',
         delete: 'Une erreur est survenue lors de la suppression de l\'utilisateur: {err}',
         fetch_user: 'Une erreur est survenue lors de larécupération des informations de l\'utilisateur: {err}',
-        fetch_userTypes: 'Une erreur est survenue lors de la récupération des types d\'utilisateur: {err}',
+        fetch_userTypes: {
+          empty: 'Aucun type d\'utilisateur trouvé !',
+          error: 'Récupération depuis la table \'user_type\' SQlite !',
+          linked_empty: 'Une erreur est survenue lors de la récupération des types d\'utilisateur: @:profileComponent.results.ko.fetch_userTypes.empty',
+          linked_error: 'Une erreur est survenue lors de la récupération des types d\'utilisateur: @:profileComponent.results.ko.fetch_userTypes.error {err}',
+        },
         upload: 'Une erreur est survenue lors de l\'upoad du fichier de logo de l\'entreprise: {err}',
         checkEmail: 'Une erreur est survenue lors de la vérification de la disponibilité de l\'email: {err}'
       },
@@ -620,7 +655,10 @@ export default {
     tableTitle: 'Export',
     results: {
       ko: {
-        fetch_invoices: 'Une erreur est survenue lors de la récupération de(s) facture(s): {err}',
+        fetch_invoices: {
+          error: 'Récupération depuis la table \'Facture\' SQLite !',
+          linked_error: 'Une erreur est survenue lors de la récupération de(s) facture(s): @:exportComponent.results.ko.fetch_invoices.error {err}'
+        },
       },
     },
     libelles: {
@@ -740,6 +778,7 @@ export default {
       error: {
         inputs: 'Une erreur est survenue lors de la validation du formulaire, veillez à vérifier que tous les champs soient valides !',
         export: 'Votre navigateur a refusé le téléchargement du fichier...',
+        sqliteDb: 'Impossible d\'ouvrir la base de données SQLite !',
       },
     },
     addButtonText: 'Ajouter',
