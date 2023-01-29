@@ -1,6 +1,6 @@
 # <img alt="CryptoLogique Logo" src="/public/icons/logo.svg" height="40"/> Quasar Easy-Compta App🔒
 
-This is a web server side rendered (SSR) multi platform application to generate invoices and make secure transactions to manage your business datas.
+This is a web server side rendered (SSR) multi platform application to generate invoices and manage your business datas through secure transactions.
 
 ## Dependencies
 
@@ -27,8 +27,11 @@ This is a web server side rendered (SSR) multi platform application to generate 
  #### Web
 
  `> npm run build:web`
+
  `> cd dist/ssr`
+
  `> npm install`
+
  `> npm run start` --> this line run the server
 
  #### Mobile 
