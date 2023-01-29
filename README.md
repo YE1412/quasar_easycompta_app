@@ -26,6 +26,8 @@ This is a web server side rendered (SSR) multi platform application to generate 
 
  #### Web
 
+ Change the **envs/.env.production** file with your server and database settings.
+
  `> npm run build:web`
 
  `> cd dist/ssr`
@@ -34,7 +36,17 @@ This is a web server side rendered (SSR) multi platform application to generate 
 
  `> npm run start` --> this line run the server
 
- #### Mobile 
+ #### Mobile
+
+  - Ios : Build app for ios mobiles/tablets
+
+  `> npm run build:ios`
+
+  - Android : Build app for android mobiles and tablets
+
+  `> npm run build:and`
+
+## Usage
 
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
