@@ -60,6 +60,10 @@ This is a web server side rendered (SSR) multi platform application to generate 
 
  Go to your browser **%PUB_APP_URL%** page.
 
+ ### Mobile
+
+ Once builded, publish your app to the apple/play store.
+
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
 A Quasar Framework App
