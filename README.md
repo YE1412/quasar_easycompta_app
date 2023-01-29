@@ -62,7 +62,7 @@ This is a web server side rendered (SSR) multi platform application to generate 
 
  ### Mobile
 
- Once builded, publish your app to the apple/play store.
+ Once builded, publish your app to the apple/play store, follow the [quasar doc](https://quasar.dev/quasar-cli-vite/developing-capacitor-apps/publishing-to-store).
 
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
