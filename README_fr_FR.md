@@ -1,6 +1,6 @@
 # <img alt="CryptoLogique Logo" src="/public/icons/logo.svg" height="40"/> Quasar Easy-Compta App🔒
 
-Application web de type SSR multi-plateforme permettant de générer des factures et gérer les données financières à travers des transactions sécurisées vers des bases de données distantes/portables.
+Application web de type [SSR](https://vuejs.org/guide/scaling-up/ssr.html) multi-plateforme permettant de générer des factures et gérer les données financières à travers des transactions sécurisées vers des bases de données distantes/portables.
 
 ## Dépendances
 
