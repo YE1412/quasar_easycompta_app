@@ -60,7 +60,7 @@ This is a web server side rendered (SSR) multi-platform application to generate 
 
  Go to your browser **%PUB_APP_URL%** page.
 
- *- <u>NOTE:</u> PUB_APP_URL is a environment variable, it can be found in envs/.env.production file-*
+ *- _NOTE:_ PUB_APP_URL is a environment variable, it can be found in envs/.env.production file-*
 
  ### Mobile
 
@@ -70,8 +70,8 @@ This is a web server side rendered (SSR) multi-platform application to generate 
 
  Find it in the following path:
 
- - *-src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk-* for Android.
- - *-%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App-* for IOS with Xcode.
+ - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* for Android.
+ - *%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App* for IOS with Xcode.
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
 A Quasar Framework App

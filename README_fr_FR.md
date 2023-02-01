@@ -60,7 +60,7 @@ Application web de type SSR multi-plateforme permettant de générer des facture
 
  Se rendre sur votre navigateur à l'adresse suivante **%PUB_APP_URL%**.
 
- *- <u>NOTE:</u> PUB_APP_URL est une varable d'environnement se trouvant dans le fichier envs/.env.production-*
+ *- _NOTE:_ PUB_APP_URL est une varable d'environnement se trouvant dans le fichier envs/.env.production-*
 
  ### Mobile
 
@@ -69,6 +69,6 @@ Application web de type SSR multi-plateforme permettant de générer des facture
  Suivez la documention sur [quasar doc](https://quasar.dev/quasar-cli-vite/developing-capacitor-apps/publishing-to-store), pour publier une application sur le store. 
 
  Vous pouvez également utiliser votre application sans la publier en récupérant le fichier exécutable de votre application:
- 
- - *-src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk-* pour Android.
- - *-%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App-* pour IOS via Xcode.
+
+ - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* pour Android.
+ - *%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App* pour IOS via Xcode.
