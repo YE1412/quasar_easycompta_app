@@ -1,6 +1,6 @@
 # <img alt="CryptoLogique Logo" src="/public/icons/logo.svg" height="40"/> Quasar Easy-Compta App🔒
 
-Application web de type SSR multi-plateforme permettant de générer des factures et gérer les données financières à travers des transactions sécuriser vers des bases de doonées distantes/intégrées.
+Application web de type SSR multi-plateforme permettant de générer des factures et gérer les données financières à travers des transactions sécurisées vers des bases de données distantes/portables.
 
 ## Dépendances
 
@@ -70,5 +70,5 @@ Application web de type SSR multi-plateforme permettant de générer des facture
 
  Vous pouvez également utiliser votre application sans la publier en récupérant le fichier exécutable de votre application:
 
- - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* pour Android.
- - *__%MACOSLibraryFolder%__/Developer/Xcode/DerivedData/App-__%hash%__/Build/Products/App* pour IOS via Xcode.
+ - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* **pour Android**.
+ - *__%MACOSLibraryFolder%__/Developer/Xcode/DerivedData/App-__%hash%__/Build/Products/App* **pour IOS via Xcode**.
