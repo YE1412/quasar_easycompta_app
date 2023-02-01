@@ -60,7 +60,7 @@ This is a web server side rendered (SSR) multi-platform application to generate 
 
  Go to your browser **%PUB_APP_URL%** page.
 
- *- _NOTE:_ PUB_APP_URL is a environment variable, it can be found in envs/.env.production file-*
+ *- __NOTE:__ ::PUB_APP_URL:: is a environment variable, it can be found in envs/.env.production file-*
 
  ### Mobile
 
