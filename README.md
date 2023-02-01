@@ -71,7 +71,7 @@ This is a web server side rendered (SSR) multi-platform application to generate 
  Find it in the following path:
 
  - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* for Android.
- - *%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App* for IOS with Xcode.
+ - *__%MACOSLibraryFolder%__/Developer/Xcode/DerivedData/App-__%hash%__/Build/Products/App* for IOS with Xcode.
 <!-- # Quasar Easy-Compta App (quasar-easy-compta-app)
 
 A Quasar Framework App
