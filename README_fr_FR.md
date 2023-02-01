@@ -60,7 +60,7 @@ Application web de type SSR multi-plateforme permettant de générer des facture
 
  Se rendre sur votre navigateur à l'adresse suivante **%PUB_APP_URL%**.
 
- *- _NOTE:_ PUB_APP_URL est une varable d'environnement se trouvant dans le fichier envs/.env.production-*
+ *- __NOTE:__ PUB_APP_URL est une varable d'environnement se trouvant dans le fichier __envs/.env.production__ -*
 
  ### Mobile
 
@@ -71,4 +71,4 @@ Application web de type SSR multi-plateforme permettant de générer des facture
  Vous pouvez également utiliser votre application sans la publier en récupérant le fichier exécutable de votre application:
 
  - *src-capacitor/android/app/build/outputs/apk/debug/app-debug.apk* pour Android.
- - *%MACOSLibraryFolder%/Developer/Xcode/DerivedData/App-%hash%/Build/Products/App* pour IOS via Xcode.
+ - *__%MACOSLibraryFolder%__/Developer/Xcode/DerivedData/App-__%hash%__/Build/Products/App* pour IOS via Xcode.
