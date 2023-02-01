@@ -58,9 +58,9 @@ This is a web server side rendered (SSR) multi-platform application to generate 
 
  Run the server.
 
- Go to your browser **%PUB_APP_URL%** page.
+ Go to __your__ browser **%PUB_APP_URL%** page.
 
- *- __NOTE:__ ::PUB_APP_URL:: is a environment variable, it can be found in envs/.env.production file-*
+ *- __NOTE:__ __PUB_APP_URL__ is a environment variable, it can be found in __envs/.env.production file__ -*
 
  ### Mobile
 
