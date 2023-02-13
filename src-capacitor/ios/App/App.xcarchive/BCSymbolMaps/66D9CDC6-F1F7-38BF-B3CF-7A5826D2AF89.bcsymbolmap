@@ -1,0 +1,241 @@
+BCSymbolMap Version: 2.0
+Apple clang version 13.0.0 (clang-1300.0.29.3)
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk
+iPhoneOS15.0.sdk
+/Users/mados/Library/Developer/Xcode/DerivedData/App-bwuecpcarbsotpbwnxlatwbndmjt/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/CapacitorBlobWriter.build/DerivedSources/CapacitorBlobWriter_vers.c
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods
+__OBJC_METACLASS_RO_$_PodsDummy_CapacitorBlobWriter
+__OBJC_CLASS_RO_$_PodsDummy_CapacitorBlobWriter
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods/Target Support Files/CapacitorBlobWriter/CapacitorBlobWriter-dummy.m
++[BlobWriter(CAPPluginCategory) pluginMethods]
++[BlobWriter(CAPPluginCategory) getMethod:]
++[BlobWriter(CAPPluginCategory) pluginId]
++[BlobWriter(CAPPluginCategory) jsName]
+_OBJC_CLASSLIST_REFERENCES_$_
+_OBJC_CLASSLIST_REFERENCES_$_.1
+_OBJC_SELECTOR_REFERENCES_
+_OBJC_SELECTOR_REFERENCES_.5
+_OBJC_SELECTOR_REFERENCES_.7
+_OBJC_SELECTOR_REFERENCES_.9
+_OBJC_SELECTOR_REFERENCES_.11
+_OBJC_SELECTOR_REFERENCES_.13
+__OBJC_$_CATEGORY_CLASS_METHODS_BlobWriter_$_CAPPluginCategory
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_NSObject
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_NSObject
+__OBJC_$_PROP_LIST_NSObject
+__OBJC_$_PROTOCOL_METHOD_TYPES_NSObject
+__OBJC_PROTOCOL_$_NSObject
+__OBJC_LABEL_PROTOCOL_$_NSObject
+__OBJC_$_PROTOCOL_REFS_CAPBridgedPlugin
+__OBJC_$_PROTOCOL_CLASS_METHODS_CAPBridgedPlugin
+__OBJC_$_PROTOCOL_METHOD_TYPES_CAPBridgedPlugin
+__OBJC_PROTOCOL_$_CAPBridgedPlugin
+__OBJC_LABEL_PROTOCOL_$_CAPBridgedPlugin
+__OBJC_CATEGORY_PROTOCOLS_$_BlobWriter_$_CAPPluginCategory
+__OBJC_$_PROP_LIST_BlobWriter_$_CAPPluginCategory
+__OBJC_$_CATEGORY_BlobWriter_$_CAPPluginCategory
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/capacitor-blob-writer/ios/Plugin/Plugin.m
+node_modules/capacitor-blob-writer/ios/Plugin/Plugin.m
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor
+_$s19CapacitorBlobWriter0bC0C4loadyyFTo
+_$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyF
+_$sSo19GCDWebServerRequestCSo0aB8ResponseCSgIeggo_AbEIeyBya_TR
+_$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU0_
+_$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFTo
+_$s19CapacitorBlobWriter0bC0C10get_configyySo13CAPPluginCallCF
+_$sSKsE4last7ElementQzSgvgSS_Tg5
+_$s19CapacitorBlobWriter0bC0C10get_configyySo13CAPPluginCallCFTo
+_$s19CapacitorBlobWriter0bC0C6bridge8pluginId0E4NameAC0A017CAPBridgeProtocol_p_S2StcfcTo
+_$s19CapacitorBlobWriter0bC0CACycfcTo
+_$s19CapacitorBlobWriter0bC0CfETo
+_$ss22__RawDictionaryStorageC4findys10_HashTableV6BucketV6bucket_Sb5foundtxSHRzlFSS_Tg5
+_$ss22__RawDictionaryStorageC4find_9hashValues10_HashTableV6BucketV6bucket_Sb5foundtx_SitSHRzlFSS_Tg5
+_$ss11_StringGutsV15scalarAlignSlowySS5IndexVAEF
+_$sSD17dictionaryLiteralSDyxq_Gx_q_td_tcfCSS_ypTg5Tf4gd_n
+_$s19CapacitorBlobWriter0bC0C17emptyCorsResponse33_63459CFE15467D7311B0576F1CA99EF8LL10statusCode7requestSo012GCDWebServerF0CSi_So0pQ7RequestCtFTf4nnd_n
+_$sSlsE8dropLasty11SubSequenceQzSiFSS_Tg5Tf4ng_n
+_$s19CapacitorBlobWriter0bC0C6bridge8pluginId0E4NameAC0A017CAPBridgeProtocol_p_S2StcfcTf4gggn_n
+__swift_FORCE_LOAD_$_swiftCompatibility51
+___swift_instantiateConcreteTypeFromMangledName
+_$s10Foundation3URLVSgWOb
+_$s10Foundation3URLVSgWOc
+_$s10Foundation3URLVSgWOh
+_$sSS_yptWOc
+_$s10Foundation3URLVSgWOcTm
+_$sypWOb
+_$sSo19GCDWebServerRequestCMa
+_$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU_TA
+_block_copy_helper
+_block_destroy_helper
+_$sSo23GCDWebServerFileRequestCMa
+_$sSo19GCDWebServerRequestCMaTm
+_$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU0_TA
+_$sS2uSzsWl
+___swift_allocate_boxed_opaque_existential_0
+_block_copy_helper.4
+_block_destroy_helper.5
+_$s19CapacitorBlobWriter0bC0C7_server33_63459CFE15467D7311B0576F1CA99EF8LLSo12GCDWebServerCSgvpWvd
+_$s19CapacitorBlobWriter0bC0C13_authPassword33_63459CFE15467D7311B0576F1CA99EF8LLSSvpWvd
+_$s19CapacitorBlobWriter0bC0C9_authUser33_63459CFE15467D7311B0576F1CA99EF8LLSSvpWvd
+__METACLASS_DATA_BlobWriter
+__INSTANCE_METHODS_BlobWriter
+__IVARS_BlobWriter
+__DATA_BlobWriter
+_$s19CapacitorBlobWriterMXM
+_symbolic So9CAPPluginC
+_$s19CapacitorBlobWriter0bC0CMf
+_symbolic _____ 19CapacitorBlobWriter0bC0C
+_symbolic So12GCDWebServerCSg
+_symbolic SS
+_$s19CapacitorBlobWriter0bC0CMF
+__swift_FORCE_LOAD_$_swiftFoundation_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftObjectiveC_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftDarwin_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftCoreFoundation_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftDispatch_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftCoreGraphics_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftUIKit_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftCoreImage_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftMetal_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftQuartzCore_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftFileProvider_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftDataDetection_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftWebKit_$_CapacitorBlobWriter
+__swift_FORCE_LOAD_$_swiftCompatibility51_$_CapacitorBlobWriter
+_symbolic _____Sg 10Foundation3URLV
+_$s10Foundation3URLVSgMD
+_symbolic _____ySS_yptG s23_ContiguousArrayStorageC
+_$ss23_ContiguousArrayStorageCySS_yptGMD
+_symbolic _____ySSypG s18_DictionaryStorageC
+_$ss18_DictionaryStorageCySSypGMD
+_symbolic SS_ypt
+_$sSS_yptMD
+_$sSo19GCDWebServerRequestCML
+_block_descriptor
+_$sSo23GCDWebServerFileRequestCML
+_block_descriptor.6
+_symbolic _____yypG s23_ContiguousArrayStorageC
+_$ss23_ContiguousArrayStorageCyypGMD
+_$sS2uSzsWL
+___swift_reflection_version
+_objc_classes
+_$s19CapacitorBlobWriter0bC0C10get_configyySo13CAPPluginCallCFTq
+Apple clang version 13.0.0 (clang-1300.0.29.6)
+-private-discriminator _63459CFE15467D7311B0576F1CA99EF8
+<swift-imported-modules>
+Apple Swift version 5.5.1 (swiftlang-1300.0.31.4 clang-1300.0.29.6)
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/capacitor-blob-writer/ios/Plugin/Plugin.swift
+__swift_allocate_boxed_opaque_existential_0
+<compiler-generated>
+$sS2uSzsWl
+$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU0_TA
+$sSo19GCDWebServerRequestCMa
+block_destroy_helper
+block_copy_helper
+$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU_TA
+$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU_
+emptyCorsResponse
+objectdestroy
+$sypWOb
+$s10Foundation3URLVSgWOc
+$s10Foundation3URLVSgWOh
+$s10Foundation3URLVSgWOb
+__swift_instantiateConcreteTypeFromMangledName
+$s19CapacitorBlobWriter0bC0CMa
+init
+dropLast
+Swift runtime failure: arithmetic overflow
+Swift runtime failure: Can't drop a negative number of elements from a collection
+$sSSSlsSly11SubSequenceQzSny5IndexQzGcigTW
+$sSSSlsSl10startIndex0B0QzvgTW
+$sSS10startIndexSS0B0Vvg
+$sSSSlsSl8endIndex0B0QzvgTW
+$sSS8endIndexSS0B0Vvg
+$sSSSlsSl5index_8offsetBy07limitedC05IndexQzSgAE_SiAEtFTW
+$sSS5index_8offsetBy07limitedC0SS5IndexVSgAE_SiAEtF
+$sSKsE6_index_8offsetBy07limitedC05IndexQzSgAE_SiAEtFSS_Tgq5
+$sSSSlsSl5countSivgTW
+subscript.get
+$ss17_NativeDictionaryV7_valuesSpyq_GvgSS_SSTg5
+$ss17_NativeDictionaryV7_insert2at3key5valueys10_HashTableV6BucketV_xnq_ntFSS_ypTg5
+Swift runtime failure: Dictionary literal contains duplicate keys
+$sSp10initialize2toyx_tFyp_Tg5
+$ss17_NativeDictionaryV7_valuesSpyq_GvgSS_ypTg5
+$sSp10initialize2toyx_tFSS_Tg5
+$ss17_NativeDictionaryV5_keysSpyxGvgSS_ypTg5
+$sSa9formIndex5afterySiz_tFSS_ypt_Tg5
+$sSayxSicigSS_ypt_Tg5
+$sSa11_getElement_20wasNativeTypeChecked22matchingSubscriptCheckxSi_Sbs16_DependenceTokenVtFSS_ypt_Tg5
+$sSD7_nativeSDyxq_Gs17_NativeDictionaryVyxq_Gn_tcfCSS_ypTg5
+$ss17_NativeDictionaryV8capacityAByxq_GSi_tcfCSS_ypTg5
+$sSa5countSivgSS_ypt_Tg5
+$sSa9_getCountSiyFSS_ypt_Tg5
+$ss12_ArrayBufferV14immutableCountSivgSS_ypt_Tg5
+$ss12_ArrayBufferV7_natives011_ContiguousaB0VyxGvgSS_ypt_Tg5
+$ss11_StringGutsV15scalarAlignSlowySS5IndexVAEF
+$ss12_scalarAlignySiSRys5UInt8VG_SitF
+$ss22__RawDictionaryStorageC4find_9hashValues10_HashTableV6BucketV6bucket_Sb5foundtx_SitSHRzlFSS_Tg5
+$sSSSQsSQ2eeoiySbx_xtFZTW
+$sSS2eeoiySbSS_SStFZ
+$ss14_stringCompare__9expectingSbs11_StringGutsV_ADs01_D16ComparisonResultOtF
+$ss22__RawDictionaryStorageC4findys10_HashTableV6BucketV6bucket_Sb5foundtxSHRzlFSS_Tg5
+$sSSSHsSH13_rawHashValue4seedS2i_tFTW
+$sSHsE13_rawHashValue4seedS2i_tFSS_Tgq5
+$s19CapacitorBlobWriter0bC0CfETo
+deinit
+get_config
+last.get
+$sSSSlsSly7ElementQz5IndexQzcirTW
+$sSSySJSS5IndexVcir
+Swift runtime failure: Range requires lowerBound <= upperBound
+Swift runtime failure: String index is out of bounds
+$sSR8rebasingSRyxGs5SliceVyABG_tcfCs5UInt8V_Tgq5
+$sSSSKsSK5index6before5IndexQzAD_tFTW
+$sSSSlsSl7isEmptySbvgTW
+$sSS7isEmptySbvg
+_allocateUninitializedArray
+$sSa13_adoptStorage_5countSayxG_SpyxGts016_ContiguousArrayB0CyxGn_SitFZSS_ypt_Tg5
+$ss22_ContiguousArrayBufferV19firstElementAddressSpyxGvgSS_ypt_Tg5
+$ss22_ContiguousArrayBufferV5count7storageAByxGSi_s01_aB7StorageCyxGtcfCSS_ypt_Tg5
+$ss22_ContiguousArrayBufferV18_initStorageHeader5count8capacityySi_SitFSS_ypt_Tg5
+==
+$sSJSQsSQ2eeoiySbx_xtFZTW
+$sSJ2eeoiySbSJ_SJtFZ
+Swift runtime failure: Unexpectedly found nil while unwrapping an Optional value
+_server.get
+startServer
+$s19CapacitorBlobWriter0bC0C11startServer33_63459CFE15467D7311B0576F1CA99EF8LLyyFSo06GCDWebE8ResponseCSgSo0lE7RequestCcfU0_
+$sSa13_adoptStorage_5countSayxG_SpyxGts016_ContiguousArrayB0CyxGn_SitFZyp_Tg5
+$ss22_ContiguousArrayBufferV19firstElementAddressSpyxGvgyp_Tg5
+$ss22_ContiguousArrayBufferV5count7storageAByxGSi_s01_aB7StorageCyxGtcfCyp_Tg5
+$ss22_ContiguousArrayBufferV18_initStorageHeader5count8capacityySi_SitFyp_Tg5
+$sSo19GCDWebServerRequestCSo0aB8ResponseCSgIeggo_AbEIeyBya_TR
+appendInterpolation
+$sSus23CustomStringConvertiblessAAP11descriptionSSvgTW
+$sSS12_createEmpty19withInitialCapacitySSSi_tFZ
+$sSS12_createEmpty19withInitialCapacitySSSi_tFZTf4nd_n
+_server.set
+$sSSs20TextOutputStreamablessAAP5write2toyqd__z_ts0aB6StreamRd__lFTWs26DefaultStringInterpolationV_Tg5
+$sSS5write2toyxz_ts16TextOutputStreamRzlFs26DefaultStringInterpolationV_Tg5
+$ss26DefaultStringInterpolationVs16TextOutputStreamssACP5writeyySSFTW
+$ss26DefaultStringInterpolationV5writeyySSF
+random
+$ss17FixedWidthIntegerPsE6random2in5usingxSnyxG_qd__ztSGRd__lFZSu_s27SystemRandomNumberGeneratorVTg5
+$sSGsE4next10upperBoundqd__qd___ts17FixedWidthIntegerRd__SURd__lFs27SystemRandomNumberGeneratorV_SuTg5
+$sSuSLsSL1loiySbx_xtFZTW
+$sSus17FixedWidthIntegerssAAP014multipliedFullB02byx4high_9MagnitudeQz3lowtx_tFTW
+$sSu19multipliedFullWidth2bySu4high_Su3lowtSu_tF
+$sSGsE4nextqd__ys17FixedWidthIntegerRd__SURd__lFs27SystemRandomNumberGeneratorV_SuTg5
+$ss17FixedWidthIntegerPsE7_random5usingxqd__z_tSGRd__lFZSu_s27SystemRandomNumberGeneratorVTg5
+$ss27SystemRandomNumberGeneratorVSGsSG4nexts6UInt64VyFTW
+$ss27SystemRandomNumberGeneratorV4nexts6UInt64VyF
+$sSus17FixedWidthIntegerssAAP23addingReportingOverflowyx12partialValue_Sb8overflowtxFTW
+load
+$sSiSQsSQ2eeoiySbx_xtFZTW
+$s19CapacitorBlobWriter0bC0C9_authUser33_63459CFE15467D7311B0576F1CA99EF8LLSSvpfi
+$s19CapacitorBlobWriter0bC0C13_authPassword33_63459CFE15467D7311B0576F1CA99EF8LLSSvpfi
+$s19CapacitorBlobWriter0bC0C7_server33_63459CFE15467D7311B0576F1CA99EF8LLSo12GCDWebServerCSgvpfi
+/AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --driver-mode=g++ -D CMARK_STATIC_DEFINE -D GTEST_HAS_RTTI=0 -D SWIFT_INLINE_NAMESPACE=__runtime -D __STDC_CONSTANT_MACROS -D __STDC_FORMAT_MACROS -D __STDC_LIMIT_MACROS -I stdlib/toolchain/Compatibility51 -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/swift/stdlib/toolchain/Compatibility51 -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/swift/stdlib/include -I include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/swift/include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/llvm-project/llvm/include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Binaries/swiftlang/install/TempContent/Objects/BNI_Xcode/llvm-macosx-x86_64/include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/llvm-project/clang/include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Binaries/swiftlang/install/TempContent/Objects/BNI_Xcode/llvm-macosx-x86_64/tools/clang/include -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/cmark/src -I /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Binaries/swiftlang/install/TempContent/Objects/BNI_Xcode/cmark-macosx-x86_64/src -Wno-unknown-warning-option -Werror=unguarded-availability-new -fno-stack-protector -fPIC -fvisibility-inlines-hidden -Werror=date-time -Werror=unguarded-availability-new -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -Wimplicit-fallthrough -Wcovered-switch-default -Wno-class-memaccess -Wno-noexcept-type -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Wsuggest-override -Wstring-conversion -fdiagnostics-color -Werror=switch -Wdocumentation -Wimplicit-fallthrough -Wunreachable-code -Woverloaded-virtual -D OBJC_OLD_DISPATCH_PROTOTYPES=0 -O2 -D NDEBUG -arch arm64 -isysroot /AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk -fno-exceptions -funwind-tables -fno-rtti -Werror=gnu -Wall -Wglobal-constructors -Wexit-time-destructors -D SWIFT_COMPATIBILITY_LIBRARY=1 -D SWIFT_TARGET_LIBRARY_NAME=swiftCompatibility51 -fembed-bitcode=all --target=arm64-apple-ios7.0 -isysroot /AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk -arch arm64 -F/AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/../../../Developer/Library/Frameworks -F/AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/../../../Developer/AppleInternal/Library/Frameworks -O2 -g -D NDEBUG -D SWIFT_LIBRARY_EVOLUTION=0 -D SWIFT_RUNTIME_OS_VERSIONING -std=c++14 -MD -MT stdlib/toolchain/Compatibility51/CMakeFiles/swiftCompatibility51-iphoneos-arm64.dir/Overrides.cpp.o -MF stdlib/toolchain/Compatibility51/CMakeFiles/swiftCompatibility51-iphoneos-arm64.dir/Overrides.cpp.o.d -o stdlib/toolchain/Compatibility51/CMakeFiles/swiftCompatibility51-iphoneos-arm64.dir/Overrides.cpp.o -c /AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/swift/stdlib/toolchain/Compatibility51/Overrides.cpp -Wno-reorder-init-list -Wno-implicit-int-float-conversion -Wno-c99-designator -Wno-final-dtor-non-final-class -Wno-extra-semi-stmt -Wno-misleading-indentation -Wno-quoted-include-in-framework-header -Wno-enum-enum-conversion -Wno-enum-float-conversion -Wno-elaborated-enum-base -Xclang -clang-vendor-feature=+nullptrToBoolConversion -Xclang -clang-vendor-feature=+messageToSelfInClassMethodIdReturnType -Xclang -clang-vendor-feature=+disableInferNewAvailabilityFromInit -Xclang -clang-vendor-feature=+disableNeonImmediateRangeCheck -Xclang -clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation -Xclang -fno-odr-hash-protocols -Xclang -clang-vendor-feature=+revert09abecef7bbf -mlinker-version=711 -stdlib=libc++
+/AppleInternal/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk
+/AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Sources/swiftlang/swiftlang-1300.0.31.4/swift/stdlib/toolchain/Compatibility51/Overrides.cpp
+/AppleInternal/BuildRoot/Library/Caches/com.apple.xbs/Binaries/swiftlang/install/TempContent/Objects/BNI_Xcode/swift-macosx-x86_64

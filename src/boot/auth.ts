@@ -3,7 +3,7 @@
 
 import sessionAxiosService from 'app/src/db/services/session.service';
 import { i18n } from 'app/src/boot/i18n';
-import { Platform, Cookies } from 'quasar';
+import { Platform, Cookies, Notify } from 'quasar';
 import * as prefs from 'app/src/capacitor/storage/preferences';
 
 const t = i18n.global.t;
@@ -49,10 +49,17 @@ async function validateSession(sessionCookie: any, platform: any, sessionPref: a
   if (platform.is.desktop)
     return sessionAxiosService.validate(!!sessionCookie ? sessionCookie.sessionId : '');
   else {
-    if ((!!sessionPref && !!sessionCookie) && (sessionPref.sessionId === sessionCookie.sessionId))
-      return true;
-    else
+    // console.log(sessionCookie);
+    // console.log(sessionPref);
+    if (!!sessionPref && !!sessionCookie){
+      if (sessionPref.sessionId === sessionCookie.sessionId)
+        return true;
+      else
+        return false;
+    }
+    else{
       return false;
+    }
   }
 };
 // function isRealPath(to: string) {
@@ -347,12 +354,18 @@ async function checkForWeb(to: any, from: any, next: any, router: any, cookie: a
 
 async function checkForMobiles(to: any, from: any, next: any, router: any, cookie: any, platform: any) {
   // console.log('Route Navigation For Mobiles !');
-  let sessionCookie = null, userCookie = null;
-  if (!!cookie.getAll().session){
+  let sessionCookie = null, userCookie = null, sessionPref = null;
+  if (cookie.has('session')){
     sessionCookie = JSON.parse(decodeURIComponent(cookie.getAll().session));
   }
-  if (!!cookie.getAll().user){
+  else {
+    sessionCookie = prefs.getCookie('session');
+  }
+  if (cookie.has('user')){
     userCookie = JSON.parse(decodeURIComponent(cookie.getAll().user));
+  }
+  else {
+    userCookie = prefs.getCookie('user');
   }
   i18n.global.locale.value = !!sessionCookie && !!sessionCookie.langDisplayed
     ? sessionCookie.langDisplayed.nom
@@ -361,15 +374,20 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
   const hasRoute = hasNecessaryRoute(to, router);
   const requireAuth = to.meta.requiresAuth;
   // debugRoute(from, to, hasRoute, requireAuth, sessionCookie, userCookie);
-  if (requireAuth && !!userCookie && !userCookie.connected) {
-    const sessionPref = await prefs.getPref('session');
-    // console.log('Seesion Prefs');
-    // console.log(sessionPref);
-    const res = await validateSession(sessionCookie, platform, sessionPref);
+  // console.log('Routing !');
+  // console.log(userCookie);
+  // console.log(sessionCookie);
+  // if (requireAuth && ((!!userCookie && !userCookie.connected) || (!!userPref && !userPref.connected))) {
+  if (requireAuth && (!!userCookie && !userCookie.connected)) {
+    // console.log(platform);
+    sessionPref = await prefs.getPref('session');
+    let res = true;
+    res = await validateSession(sessionCookie, platform, sessionPref);
     if (res){
-      if (!!userCookie.user 
+      // console.log('Session validated !');
+      if (!!userCookie.user
         && Object.keys(userCookie.user).length
-        && Object.getPrototypeOf(userCookie.user) === Object.prototype){
+        && (Object.getPrototypeOf(userCookie.user) === Object.prototype)){
         userCookie.connected = true;
         await prefs.setPref('user', userCookie);
         // cookie.set('user', JSON.stringify(userCookie), {path: '/', sameSite: 'Lax', secure: false});
@@ -390,8 +408,15 @@ async function checkForMobiles(to: any, from: any, next: any, router: any, cooki
       }
     }
     else {
+      // console.log('Session unvalidated !');
       await prefs.setPref('user', {connected: false, user: {}});
-      if (sessionCookie && sessionCookie.sessionId !== ''){
+      Notify.create({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('session.results.ko')
+      });
+      if (!!sessionCookie && sessionCookie.sessionId !== ''){
         await prefs.setPref('message', {
           messages: [
             {
@@ -436,6 +461,7 @@ export default ({ store, router, ssrContext }) => {
 		? Cookies.parseSSR(ssrContext)
 		: Cookies;
 	router.beforeEach(async(to: any, from: any, next: any) => {
+      // console.log('Before Each for routing !');
       if (platform.is.desktop) {
 	      await checkForWeb(to, from, next, router, cookies, platform, store.state.value);
 	    }

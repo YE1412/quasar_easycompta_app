@@ -1,0 +1,370 @@
+BCSymbolMap Version: 2.0
+Apple clang version 13.0.0 (clang-1300.0.29.3)
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk
+iPhoneOS15.0.sdk
+/Users/mados/Library/Developer/Xcode/DerivedData/App-bwuecpcarbsotpbwnxlatwbndmjt/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/CapacitorCordova.build/DerivedSources/Cordova_vers.c
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods
+-[AppDelegate viewController]
+-[AppDelegate setViewController:]
+-[AppDelegate .cxx_destruct]
+__OBJC_METACLASS_RO_$_AppDelegate
+__OBJC_$_INSTANCE_METHODS_AppDelegate
+_OBJC_IVAR_$_AppDelegate._viewController
+__OBJC_$_INSTANCE_VARIABLES_AppDelegate
+__OBJC_$_PROP_LIST_AppDelegate
+__OBJC_CLASS_RO_$_AppDelegate
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/AppDelegate.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/AppDelegate.m
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/AppDelegate.h
+__OBJC_METACLASS_RO_$_PodsDummy_CapacitorCordova
+__OBJC_CLASS_RO_$_PodsDummy_CapacitorCordova
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods/Target Support Files/CapacitorCordova/CapacitorCordova-dummy.m
+-[CDVCommandDelegateImpl initWithWebView:pluginManager:]
+-[CDVCommandDelegateImpl pathForResource:]
+-[CDVCommandDelegateImpl flushCommandQueueWithDelayedJs]
+-[CDVCommandDelegateImpl evalJsHelper2:]
+___40-[CDVCommandDelegateImpl evalJsHelper2:]_block_invoke
+___40-[CDVCommandDelegateImpl evalJsHelper2:]_block_invoke_2
+___copy_helper_block_e8_32s40s
+___destroy_helper_block_e8_32s40s
+-[CDVCommandDelegateImpl isValidCallbackId:]
+-[CDVCommandDelegateImpl sendPluginResult:callbackId:]
+-[CDVCommandDelegateImpl evalJs:]
+-[CDVCommandDelegateImpl evalJs:scheduledOnRunLoop:]
+-[CDVCommandDelegateImpl getCommandInstance:]
+-[CDVCommandDelegateImpl runInBackground:]
+-[CDVCommandDelegateImpl settings]
+-[CDVCommandDelegateImpl urlTransformer]
+-[CDVCommandDelegateImpl setUrlTransformer:]
+-[CDVCommandDelegateImpl .cxx_destruct]
+_OBJC_SELECTOR_REFERENCES_
+_OBJC_CLASSLIST_REFERENCES_$_
+_OBJC_SELECTOR_REFERENCES_.2
+_OBJC_CLASSLIST_REFERENCES_$_.5
+_OBJC_SELECTOR_REFERENCES_.7
+_OBJC_CLASSLIST_REFERENCES_$_.8
+_OBJC_SELECTOR_REFERENCES_.12
+_OBJC_SELECTOR_REFERENCES_.14
+_OBJC_SELECTOR_REFERENCES_.16
+_OBJC_SELECTOR_REFERENCES_.18
+_OBJC_SELECTOR_REFERENCES_.20
+_OBJC_SELECTOR_REFERENCES_.24
+_OBJC_CLASSLIST_REFERENCES_$_.25
+_OBJC_SELECTOR_REFERENCES_.29
+_OBJC_SELECTOR_REFERENCES_.33
+___block_descriptor_32_e20_v24?08"NSError"16l
+___block_literal_global
+_OBJC_SELECTOR_REFERENCES_.38
+___block_descriptor_48_e8_32s40s_e5_v8?0l
+_OBJC_SELECTOR_REFERENCES_.41
+_OBJC_SELECTOR_REFERENCES_.45
+_OBJC_SELECTOR_REFERENCES_.47
+_OBJC_SELECTOR_REFERENCES_.51
+_OBJC_SELECTOR_REFERENCES_.53
+_OBJC_SELECTOR_REFERENCES_.55
+_OBJC_SELECTOR_REFERENCES_.57
+_OBJC_SELECTOR_REFERENCES_.59
+_OBJC_SELECTOR_REFERENCES_.63
+_OBJC_SELECTOR_REFERENCES_.65
+_OBJC_SELECTOR_REFERENCES_.69
+_OBJC_SELECTOR_REFERENCES_.71
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_NSObject
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_NSObject
+__OBJC_$_PROP_LIST_NSObject
+__OBJC_$_PROTOCOL_METHOD_TYPES_NSObject
+__OBJC_PROTOCOL_$_NSObject
+__OBJC_LABEL_PROTOCOL_$_NSObject
+__OBJC_$_PROTOCOL_REFS_CDVCommandDelegate
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_CDVCommandDelegate
+__OBJC_$_PROP_LIST_CDVCommandDelegate
+__OBJC_$_PROTOCOL_METHOD_TYPES_CDVCommandDelegate
+__OBJC_PROTOCOL_$_CDVCommandDelegate
+__OBJC_LABEL_PROTOCOL_$_CDVCommandDelegate
+__OBJC_CLASS_PROTOCOLS_$_CDVCommandDelegateImpl
+__OBJC_METACLASS_RO_$_CDVCommandDelegateImpl
+__OBJC_$_INSTANCE_METHODS_CDVCommandDelegateImpl
+_OBJC_IVAR_$_CDVCommandDelegateImpl._webView
+_OBJC_IVAR_$_CDVCommandDelegateImpl._manager
+_OBJC_IVAR_$_CDVCommandDelegateImpl._callbackIdPattern
+_OBJC_IVAR_$_CDVCommandDelegateImpl.urlTransformer
+__OBJC_$_INSTANCE_VARIABLES_CDVCommandDelegateImpl
+__OBJC_$_PROP_LIST_CDVCommandDelegateImpl
+__OBJC_CLASS_RO_$_CDVCommandDelegateImpl
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVCommandDelegateImpl.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVCommandDelegateImpl.m
+NSMakeRange
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSRange.h
+__destroy_helper_block_e8_32s40s
+__copy_helper_block_e8_32s40s
+__40-[CDVCommandDelegateImpl evalJsHelper2:]_block_invoke_2
+__40-[CDVCommandDelegateImpl evalJsHelper2:]_block_invoke
+-[CDVConfigParser init]
+-[CDVConfigParser parser:didStartElement:namespaceURI:qualifiedName:attributes:]
+-[CDVConfigParser parser:didEndElement:namespaceURI:qualifiedName:]
+-[CDVConfigParser parser:parseErrorOccurred:]
+-[CDVConfigParser pluginsDict]
+-[CDVConfigParser setPluginsDict:]
+-[CDVConfigParser settings]
+-[CDVConfigParser setSettings:]
+-[CDVConfigParser startPage]
+-[CDVConfigParser setStartPage:]
+-[CDVConfigParser startupPluginNames]
+-[CDVConfigParser setStartupPluginNames:]
+-[CDVConfigParser .cxx_destruct]
+_OBJC_SELECTOR_REFERENCES_.4
+_OBJC_SELECTOR_REFERENCES_.6
+_OBJC_CLASSLIST_REFERENCES_$_.7
+_OBJC_SELECTOR_REFERENCES_.9
+_OBJC_SELECTOR_REFERENCES_.11
+_OBJC_SELECTOR_REFERENCES_.15
+_OBJC_SELECTOR_REFERENCES_.19
+_OBJC_SELECTOR_REFERENCES_.21
+_OBJC_SELECTOR_REFERENCES_.35
+__OBJC_$_PROTOCOL_REFS_NSXMLParserDelegate
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_NSXMLParserDelegate
+__OBJC_$_PROTOCOL_METHOD_TYPES_NSXMLParserDelegate
+__OBJC_PROTOCOL_$_NSXMLParserDelegate
+__OBJC_LABEL_PROTOCOL_$_NSXMLParserDelegate
+__OBJC_CLASS_PROTOCOLS_$_CDVConfigParser
+__OBJC_METACLASS_RO_$_CDVConfigParser
+__OBJC_$_INSTANCE_METHODS_CDVConfigParser
+_OBJC_IVAR_$_CDVConfigParser.pluginsDict
+_OBJC_IVAR_$_CDVConfigParser.settings
+_OBJC_IVAR_$_CDVConfigParser.startPage
+_OBJC_IVAR_$_CDVConfigParser.startupPluginNames
+__OBJC_$_INSTANCE_VARIABLES_CDVConfigParser
+__OBJC_$_PROP_LIST_CDVConfigParser
+__OBJC_CLASS_RO_$_CDVConfigParser
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVConfigParser.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVConfigParser.m
++[CDVInvokedUrlCommand commandFromJson:]
+-[CDVInvokedUrlCommand initFromJson:]
+-[CDVInvokedUrlCommand initWithArguments:callbackId:className:methodName:]
+-[CDVInvokedUrlCommand massageArguments]
+-[CDVInvokedUrlCommand argumentAtIndex:]
+-[CDVInvokedUrlCommand argumentAtIndex:withDefault:]
+-[CDVInvokedUrlCommand argumentAtIndex:withDefault:andClass:]
+-[CDVInvokedUrlCommand arguments]
+-[CDVInvokedUrlCommand callbackId]
+-[CDVInvokedUrlCommand className]
+-[CDVInvokedUrlCommand methodName]
+-[CDVInvokedUrlCommand .cxx_destruct]
+_OBJC_CLASSLIST_REFERENCES_$_.3
+_OBJC_SELECTOR_REFERENCES_.5
+_OBJC_SELECTOR_REFERENCES_.13
+_OBJC_CLASSLIST_REFERENCES_$_.14
+_OBJC_CLASSLIST_REFERENCES_$_.23
+_OBJC_SELECTOR_REFERENCES_.25
+_OBJC_CLASSLIST_REFERENCES_$_.26
+_OBJC_SELECTOR_REFERENCES_.28
+_OBJC_SELECTOR_REFERENCES_.30
+_OBJC_SELECTOR_REFERENCES_.32
+_OBJC_SELECTOR_REFERENCES_.34
+__OBJC_$_CLASS_METHODS_CDVInvokedUrlCommand
+__OBJC_METACLASS_RO_$_CDVInvokedUrlCommand
+__OBJC_$_INSTANCE_METHODS_CDVInvokedUrlCommand
+__OBJC_$_INSTANCE_VARIABLES_CDVInvokedUrlCommand
+__OBJC_$_PROP_LIST_CDVInvokedUrlCommand
+__OBJC_CLASS_RO_$_CDVInvokedUrlCommand
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVInvokedUrlCommand.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVInvokedUrlCommand.m
+llvm.loop.mustprogress
+-[UIView(org_apache_cordova_UIView_Extension) scrollView]
+-[CDVPlugin initWithWebViewEngine:]
+-[CDVPlugin pluginInitialize]
+-[CDVPlugin dispose]
+-[CDVPlugin handleOpenURL:]
+-[CDVPlugin onAppTerminate]
+-[CDVPlugin onMemoryWarning]
+-[CDVPlugin onReset]
+-[CDVPlugin dealloc]
+-[CDVPlugin appDelegate]
+-[CDVPlugin webViewEngine]
+-[CDVPlugin setWebViewEngine:]
+-[CDVPlugin viewController]
+-[CDVPlugin setViewController:]
+-[CDVPlugin commandDelegate]
+-[CDVPlugin setCommandDelegate:]
+-[CDVPlugin hasPendingOperation]
+-[CDVPlugin setHasPendingOperation:]
+-[CDVPlugin webView]
+-[CDVPlugin setWebView:]
+-[CDVPlugin className]
+-[CDVPlugin setClassName:]
+-[CDVPlugin .cxx_destruct]
+__OBJC_$_CATEGORY_INSTANCE_METHODS_UIView_$_org_apache_cordova_UIView_Extension
+__OBJC_$_PROP_LIST_UIView_$_org_apache_cordova_UIView_Extension
+__OBJC_$_CATEGORY_UIView_$_org_apache_cordova_UIView_Extension
+_OBJC_SELECTOR_REFERENCES_.36
+_OBJC_SELECTOR_REFERENCES_.40
+_OBJC_SELECTOR_REFERENCES_.42
+_OBJC_SELECTOR_REFERENCES_.44
+_OBJC_CLASSLIST_REFERENCES_$_.45
+_OBJC_SELECTOR_REFERENCES_.49
+_OBJC_CLASSLIST_REFERENCES_$_.50
+_OBJC_SELECTOR_REFERENCES_.52
+_OBJC_SELECTOR_REFERENCES_.54
+__OBJC_METACLASS_RO_$_CDVPlugin
+__OBJC_$_INSTANCE_METHODS_CDVPlugin
+_OBJC_IVAR_$_CDVPlugin.hasPendingOperation
+_OBJC_IVAR_$_CDVPlugin.webViewEngine
+_OBJC_IVAR_$_CDVPlugin.viewController
+_OBJC_IVAR_$_CDVPlugin.commandDelegate
+_OBJC_IVAR_$_CDVPlugin.webView
+_OBJC_IVAR_$_CDVPlugin._className
+__OBJC_$_INSTANCE_VARIABLES_CDVPlugin
+__OBJC_$_PROP_LIST_CDVPlugin
+__OBJC_CLASS_RO_$_CDVPlugin
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPlugin.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPlugin.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPlugin.h
+-[CDVPlugin(CDVPluginResources) pluginLocalizedString:]
+-[CDVPlugin(CDVPluginResources) pluginImageResource:]
+_OBJC_CLASSLIST_REFERENCES_$_.12
+__OBJC_$_CATEGORY_INSTANCE_METHODS_CDVPlugin_$_CDVPluginResources
+__OBJC_$_CATEGORY_CDVPlugin_$_CDVPluginResources
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPlugin+Resources.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPlugin+Resources.m
+-[CDVPluginManager initWithParser:viewController:webView:]
+-[CDVPluginManager getCommandInstance:]
+-[CDVPluginManager registerPlugin:withClassName:]
+-[CDVPluginManager onAppDidEnterBackground:]
+-[CDVPluginManager onAppWillEnterForeground:]
+-[CDVPluginManager pluginsMap]
+-[CDVPluginManager setPluginsMap:]
+-[CDVPluginManager pluginObjects]
+-[CDVPluginManager setPluginObjects:]
+-[CDVPluginManager settings]
+-[CDVPluginManager setSettings:]
+-[CDVPluginManager viewController]
+-[CDVPluginManager setViewController:]
+-[CDVPluginManager webView]
+-[CDVPluginManager setWebView:]
+-[CDVPluginManager commandDelegate]
+-[CDVPluginManager setCommandDelegate:]
+-[CDVPluginManager .cxx_destruct]
+_OBJC_SELECTOR_REFERENCES_.10
+_OBJC_SELECTOR_REFERENCES_.22
+_OBJC_SELECTOR_REFERENCES_.26
+_OBJC_CLASSLIST_REFERENCES_$_.29
+_OBJC_CLASSLIST_REFERENCES_$_.30
+_OBJC_SELECTOR_REFERENCES_.46
+_OBJC_SELECTOR_REFERENCES_.48
+_OBJC_SELECTOR_REFERENCES_.50
+_OBJC_SELECTOR_REFERENCES_.56
+_OBJC_SELECTOR_REFERENCES_.58
+_OBJC_SELECTOR_REFERENCES_.60
+_OBJC_SELECTOR_REFERENCES_.64
+__OBJC_METACLASS_RO_$_CDVPluginManager
+__OBJC_$_INSTANCE_METHODS_CDVPluginManager
+_OBJC_IVAR_$_CDVPluginManager._pluginsMap
+_OBJC_IVAR_$_CDVPluginManager._pluginObjects
+_OBJC_IVAR_$_CDVPluginManager._settings
+_OBJC_IVAR_$_CDVPluginManager._viewController
+_OBJC_IVAR_$_CDVPluginManager._webView
+_OBJC_IVAR_$_CDVPluginManager._commandDelegate
+__OBJC_$_INSTANCE_VARIABLES_CDVPluginManager
+__OBJC_$_PROP_LIST_CDVPluginManager
+__OBJC_CLASS_RO_$_CDVPluginManager
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPluginManager.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPluginManager.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPluginManager.h
++[CDVPluginResult initialize]
+-[CDVPluginResult init]
+-[CDVPluginResult initWithStatus:message:]
++[CDVPluginResult resultWithStatus:]
++[CDVPluginResult resultWithStatus:messageAsString:]
++[CDVPluginResult resultWithStatus:messageAsArray:]
++[CDVPluginResult resultWithStatus:messageAsInt:]
++[CDVPluginResult resultWithStatus:messageAsNSInteger:]
++[CDVPluginResult resultWithStatus:messageAsNSUInteger:]
++[CDVPluginResult resultWithStatus:messageAsDouble:]
++[CDVPluginResult resultWithStatus:messageAsBool:]
++[CDVPluginResult resultWithStatus:messageAsDictionary:]
++[CDVPluginResult resultWithStatus:messageAsArrayBuffer:]
++[CDVPluginResult resultWithStatus:messageAsMultipart:]
++[CDVPluginResult resultWithStatus:messageToErrorObject:]
+-[CDVPluginResult setKeepCallbackAsBool:]
+-[CDVPluginResult argumentsAsJSON]
++[CDVPluginResult setVerbose:]
++[CDVPluginResult isVerbose]
+-[CDVPluginResult JSONStringFromArray:]
+-[CDVPluginResult status]
+-[CDVPluginResult message]
+-[CDVPluginResult keepCallback]
+-[CDVPluginResult setKeepCallback:]
+-[CDVPluginResult associatedObject]
+-[CDVPluginResult setAssociatedObject:]
+-[CDVPluginResult .cxx_destruct]
+_OBJC_CLASSLIST_REFERENCES_$_.21
+_OBJC_SELECTOR_REFERENCES_.43
+_org_apache_cordova_CommandStatusMsgs
+_OBJC_CLASSLIST_REFERENCES_$_.48
+_OBJC_SELECTOR_REFERENCES_.66
+_OBJC_CLASSLIST_REFERENCES_$_.67
+_OBJC_SELECTOR_REFERENCES_.73
+_OBJC_SELECTOR_REFERENCES_.75
+_OBJC_SELECTOR_REFERENCES_.77
+_gIsVerbose
+_OBJC_CLASSLIST_REFERENCES_$_.78
+_OBJC_SELECTOR_REFERENCES_.80
+_OBJC_SELECTOR_REFERENCES_.84
+_OBJC_CLASSLIST_REFERENCES_$_.85
+_OBJC_SELECTOR_REFERENCES_.87
+__OBJC_$_CLASS_METHODS_CDVPluginResult
+__OBJC_METACLASS_RO_$_CDVPluginResult
+__OBJC_$_INSTANCE_METHODS_CDVPluginResult
+_OBJC_IVAR_$_CDVPluginResult.status
+_OBJC_IVAR_$_CDVPluginResult.message
+_OBJC_IVAR_$_CDVPluginResult.keepCallback
+_OBJC_IVAR_$_CDVPluginResult.associatedObject
+__OBJC_$_INSTANCE_VARIABLES_CDVPluginResult
+__OBJC_$_PROP_LIST_CDVPluginResult
+__OBJC_CLASS_RO_$_CDVPluginResult
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPluginResult.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVPluginResult.m
+messageFromMultipart
+massageMessage
+messageFromArrayBuffer
++[CDVURLProtocol canInitWithRequest:]
++[CDVURLProtocol canonicalRequestForRequest:]
+-[CDVURLProtocol startLoading]
+-[CDVURLProtocol stopLoading]
++[CDVURLProtocol requestIsCacheEquivalent:toRequest:]
+-[CDVURLProtocol sendResponseWithResponseCode:data:mimeType:]
+_OBJC_CLASSLIST_REFERENCES_$_.9
+_OBJC_SELECTOR_REFERENCES_.17
+__OBJC_$_CLASS_METHODS_CDVURLProtocol
+__OBJC_METACLASS_RO_$_CDVURLProtocol
+__OBJC_$_INSTANCE_METHODS_CDVURLProtocol
+__OBJC_CLASS_RO_$_CDVURLProtocol
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVURLProtocol.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVURLProtocol.m
+-[CDVViewController pluginObjects]
+-[CDVViewController setPluginObjects:]
+-[CDVViewController settings]
+-[CDVViewController webView]
+-[CDVViewController .cxx_destruct]
+_OBJC_IVAR_$_CDVViewController._pluginObjects
+_OBJC_IVAR_$_CDVViewController._settings
+_OBJC_IVAR_$_CDVViewController._webView
+__OBJC_METACLASS_RO_$_CDVViewController
+__OBJC_$_INSTANCE_METHODS_CDVViewController
+__OBJC_$_INSTANCE_VARIABLES_CDVViewController
+__OBJC_$_PROP_LIST_CDVViewController
+__OBJC_CLASS_RO_$_CDVViewController
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVViewController.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVViewController.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/CDVViewController.h
+-[NSDictionary(CordovaPreferences) cordovaSettingForKey:]
+-[NSDictionary(CordovaPreferences) cordovaBoolSettingForKey:defaultValue:]
+-[NSDictionary(CordovaPreferences) cordovaFloatSettingForKey:defaultValue:]
+-[NSMutableDictionary(CordovaPreferences) setCordovaSetting:forKey:]
+_OBJC_SELECTOR_REFERENCES_.8
+__OBJC_$_CATEGORY_INSTANCE_METHODS_NSDictionary_$_CordovaPreferences
+__OBJC_$_CATEGORY_NSDictionary_$_CordovaPreferences
+__OBJC_$_CATEGORY_INSTANCE_METHODS_NSMutableDictionary_$_CordovaPreferences
+__OBJC_$_CATEGORY_NSMutableDictionary_$_CordovaPreferences
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/NSDictionary+CordovaPreferences.m
+node_modules/@capacitor/ios/CapacitorCordova/CapacitorCordova/Classes/Public/NSDictionary+CordovaPreferences.m

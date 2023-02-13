@@ -30,9 +30,7 @@
             :placeholder="t('startComponent.placeholders.login')"
             :clearable="true"
             lazy-rules
-            :rules="[ 
-              val => nonEmptyLogin || t('startComponent.errors.empty.login')
-            ]"
+            :rules="[ val => nonEmptyLogin || t('startComponent.errors.empty.login') ]"
           >
             <template v-slot:prepend>
               <q-icon name="mdi-account" color="white" />
@@ -52,8 +50,7 @@
             :placeholder="t('startComponent.placeholders.pass')"
             :clearable="true"
             lazy-rules
-            :rules="[ val => nonEmptyPass || t('startComponent.errors.empty.pass')
-            ]"
+            :rules="[ val => nonEmptyPass || t('startComponent.errors.empty.pass') ]"
           >
             <template v-slot:hint>
                 <!-- <div style="color: white;">
@@ -94,9 +91,7 @@
                 :placeholder="t('startComponent.placeholders.login')"
                 :clearable="true"
                 lazy-rules
-                :rules="[ 
-                  val => nonEmptyLogin || t('startComponent.errors.empty.login')
-                ]"
+                :rules="[val => nonEmptyLogin || t('startComponent.errors.empty.login')]"
               >
                 <template v-slot:prepend>
                   <q-icon name="mdi-account" color="white" />
@@ -116,8 +111,7 @@
                 :placeholder="t('startComponent.placeholders.pass')"
                 :clearable="true"
                 lazy-rules
-                :rules="[ val => nonEmptyPass || t('startComponent.errors.empty.pass')
-                ]"
+                :rules="[ val => nonEmptyPass || t('startComponent.errors.empty.pass')]"
               >
                 <template v-slot:hint>
                     <!-- <div style="color: white;">
@@ -248,9 +242,10 @@ async function transformObject(obj: any) {
   __FORMATOBJ__(obj, key);
 };
 async function submit(){
-  // console.log('login !');
+  // console.log('login to remote or portable DB !');
+  // console.log(platform);
   const ret = await loginDb();
-  // console.log('login done !');
+  // console.log(`Login result --> ${ret} !`);
   if (platform.is.desktop){
     if (ret) {
       const res = await sessionStore.getSession()
@@ -293,7 +288,6 @@ async function submit(){
     }
   }
   else {
-    // console.log(`Login result --> ${ret} !`);
     if (ret){
       const res = await getSessionForMobile()
         .then((res) => {
@@ -324,11 +318,12 @@ async function submit(){
       }
       else {
         // const usr = await prefs.getPref('user');
-        // if (!!usr ===false){
+        // if (!!usr === false){
         //   usr = {};
         //   usr.user = 
         // }
         // await prefs.setPref('user', usr);
+        // console.log(usr);
         await prefs.setPref('message', {
           messages: [],
           messagesVisibility: false,
@@ -408,7 +403,8 @@ async function loginDb() {
         const result = await __TRANSFORMOBJ__(intRes[0]);
         // console.log(result);
         await prefs.setPref('user', {user: result, connected: false});
-        // console.log('Prefs setted !');
+        // console.log(`Prefs setted - ${setted} !`);
+        // console.log($q);
         res = true;
       }
       else {

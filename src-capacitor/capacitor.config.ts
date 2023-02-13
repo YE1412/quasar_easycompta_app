@@ -18,6 +18,9 @@ const config: CapacitorConfig = {
     		androidScaleType: 'CENTER_CROP',
     		splashFullScreen: true,
     		splashImmersive: true
+	    },
+	    CapacitorCookies: {
+	    	enabled: true
 	    }
   	},
   	loggingBehavior: "production",

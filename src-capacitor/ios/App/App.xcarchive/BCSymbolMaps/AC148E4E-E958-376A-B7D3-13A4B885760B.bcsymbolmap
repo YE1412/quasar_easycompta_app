@@ -1,0 +1,41 @@
+BCSymbolMap Version: 2.0
+Apple clang version 13.0.0 (clang-1300.0.29.3)
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk
+iPhoneOS15.0.sdk
+/Users/mados/Library/Developer/Xcode/DerivedData/App-bwuecpcarbsotpbwnxlatwbndmjt/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/CordovaPlugins.build/DerivedSources/CordovaPlugins_vers.c
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods
+-[CDVOrientation screenOrientation:]
+_OBJC_SELECTOR_REFERENCES_
+_OBJC_SELECTOR_REFERENCES_.2
+_OBJC_SELECTOR_REFERENCES_.4
+_OBJC_CLASSLIST_REFERENCES_$_
+_OBJC_CLASSLIST_REFERENCES_$_.5
+_OBJC_SELECTOR_REFERENCES_.7
+_OBJC_SELECTOR_REFERENCES_.9
+_OBJC_CLASSLIST_REFERENCES_$_.10
+_OBJC_SELECTOR_REFERENCES_.12
+_OBJC_CLASSLIST_REFERENCES_$_.13
+_OBJC_SELECTOR_REFERENCES_.15
+_OBJC_SELECTOR_REFERENCES_.17
+_OBJC_SELECTOR_REFERENCES_.21
+_OBJC_CLASSLIST_REFERENCES_$_.22
+_OBJC_SELECTOR_REFERENCES_.24
+_OBJC_CLASSLIST_REFERENCES_$_.25
+_OBJC_SELECTOR_REFERENCES_.27
+_OBJC_SELECTOR_REFERENCES_.31
+_OBJC_SELECTOR_REFERENCES_.33
+_OBJC_SELECTOR_REFERENCES_.35
+_OBJC_SELECTOR_REFERENCES_.37
+__OBJC_METACLASS_RO_$_CDVOrientation
+__OBJC_$_INSTANCE_METHODS_CDVOrientation
+__OBJC_$_INSTANCE_VARIABLES_CDVOrientation
+__OBJC_CLASS_RO_$_CDVOrientation
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/capacitor-cordova-ios-plugins/sources/CordovaPluginScreenOrientation/CDVOrientation.m
+capacitor-cordova-ios-plugins/sources/CordovaPluginScreenOrientation/CDVOrientation.m
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios
+UIInterfaceOrientationIsPortrait
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIApplication.h
+UIInterfaceOrientationIsLandscape
+__OBJC_METACLASS_RO_$_PodsDummy_CordovaPlugins
+__OBJC_CLASS_RO_$_PodsDummy_CordovaPlugins
+/Users/mados/Documents/quasar-easycompta-app/src-capacitor/ios/App/Pods/Target Support Files/CordovaPlugins/CordovaPlugins-dummy.m

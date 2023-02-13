@@ -1,0 +1,7 @@
+import { a as axios } from "./index2.js";
+axios.defaults.withCredentials = true;
+let url = null, http = null;
+url = "http://localhost:9000/dist".slice(-1) === "/" ? `${"http://localhost:9000/dist"}api` : `${"http://localhost:9000/dist"}/api`;
+http = axios.create({ baseURL: `${url}`, withCredentials: true });
+export { http as h };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXg0LmpzIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvZGIvc2VydmljZXMvaW5kZXgudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgYXhpb3MgfSBmcm9tICdhcHAvc3JjL2Jvb3QvYXhpb3MnO1xuXG5heGlvcy5kZWZhdWx0cy53aXRoQ3JlZGVudGlhbHMgPSB0cnVlO1xuXG5sZXQgdXJsID0gbnVsbCwgaHR0cCA9IG51bGw7XG5cbi8vIGNvbnNvbGUubG9nKHByb2Nlc3MuZW52KTtcbi8vIGNvbnNvbGUubG9nKGltcG9ydC5tZXRhLmVudik7XG5cbi8vIGlmICghaW1wb3J0Lm1ldGEuZW52LlNTUil7XG51cmwgPSBpbXBvcnQubWV0YS5lbnYuUFVCX0FQUF9VUkwuc2xpY2UoLTEpID09PSAnLycgXG4gID8gYCR7aW1wb3J0Lm1ldGEuZW52LlBVQl9BUFBfVVJMfWFwaWBcbiAgOiBgJHtpbXBvcnQubWV0YS5lbnYuUFVCX0FQUF9VUkx9L2FwaWA7XG5odHRwID0gYXhpb3MuY3JlYXRlKHsgYmFzZVVSTDogYCR7dXJsfWAsIHdpdGhDcmVkZW50aWFsczogdHJ1ZSwgfSk7XG4vLyB9XG5cbmV4cG9ydCB7IGh0dHAgfTsiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUVBLE1BQU0sU0FBUyxrQkFBa0I7QUFFN0IsSUFBQSxNQUFNLE1BQU0sT0FBTztBQU12QixNQUFNLDZCQUE0QixNQUFNLEVBQUUsTUFBTSxNQUM1QyxHQUFHLG9DQUNILEdBQUc7QUFDUCxPQUFPLE1BQU0sT0FBTyxFQUFFLFNBQVMsR0FBRyxPQUFPLGlCQUFpQixNQUFPOzsifQ==
