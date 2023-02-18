@@ -60,7 +60,7 @@ This is a web server side rendered ([SSR](https://vuejs.org/guide/scaling-up/ssr
 
  Go to your browser **%PUB_APP_URL%** page.
 
- *- __NOTE:__ __PUB_APP_URL__ is a environment variable located in __envs/.env.production__ file -*
+ *- __NOTE:__ __PUB_APP_URL__ is an environment variable located in __envs/.env.production__ file -*
 
  ### Mobile
 
